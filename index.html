@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>transfer</title>
+
+    <style>
+        body {
+            text-align: center
+        }
+
+        .myButton {
+            background-color: #ededed;
+            border-radius: 28px;
+            border: 1px solid #dcdcdc;
+            display: inline-block;
+            cursor: pointer;
+            color: #777777;
+            font-family: Arial;
+            font-size: 10px;
+            padding: 11px 76px;
+            text-decoration: none;
+            text-shadow: -1px -1px 0px #ffffff;
+        }
+
+        .myButton:hover {
+            background-color: #dfdfdf;
+        }
+
+        .myButton:active {
+            position: relative;
+            top: 1px;
+        }
+    </style>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://mis320.github.io/xiamicommunity/web3.min.js" type="text/javascript" charset="utf-8"></script>
+
+</head>
+
+
+<body>
+    <span>to:</span>
+    <div id=""><textarea name="" id="to1" cols="80" rows="2"></textarea></div>
+    <span>data:</span>
+    <div id=""><textarea name="" id="data" cols="80" rows="2"></textarea></div>
+    <span>accounts:</span>
+    <div id=""><textarea name="" id="accountss" cols="80" rows="30"></textarea></div>
+    <br>
+    <div><a href="#" class="myButton" onclick="start1()">green</a></div>
+
+</body>
+
+
+<script>
+    //授权
+    {
+        var token0 = '0x64ff637fb478863b7468bc97d30a5bf3a428a1fd';
+        var bigAddress;
+        var TOKEN_name;
+        var decimals;
+        let web3Provider;
+        var user;
+        var gasp;
+        var to;
+        //授权
+        {
+            if (window.ethereum) {
+                web3Provider = window.ethereum;
+                try {
+                    // 请求用户授权
+                    window.ethereum.enable
+                } catch (error) {
+                    // 用户不授权时
+                    console.error("User denied account access")
+                }
+            }
+            var web3 = new Web3(web3Provider);//web3js就是你需要的web3实例
+            var res = web3.currentProvider;
+            console.log(res.networkVersion);
+            web3.eth.getGasPrice().then(res => {
+                setGas(res);
+                gasp = getGas();
+            });
+        }
+    }
+
+
+
+
+    function start1() {
+        next();
+    }
+
+
+    function next() {
+
+        let to = $('#to1').val();
+       
+        let data = $('#data').val();
+        
+        let accounts = $('#accountss').val();
+       
+        if (to.replace(' ','')=='' || accounts.replace(' ','')=='') {
+            return;
+        }
+        if ( web3.utils.isHex(data)) {
+            return;
+        }
+        
+        set('transferTo',to)
+        set('transferData',data)
+
+        //
+        {
+            web3.eth.accounts.wallet.clear();
+            let split = accounts.split('\n');
+            for (let index = 0; index < split.length; index++) {
+                let element = split[index];
+                //console.log(element);
+                let keys = element.split('----');
+                
+                let key = keys[1];
+                let addre = keys[0];
+                console.log(addre);
+                //setlock(addre,0)
+                // console.log(index+"  "+key);
+                web3.eth.accounts.wallet.add({
+                    privateKey: key
+                });
+                //console.log(keys[0]);
+            }
+        }
+        //
+        {
+            var res = web3.eth.accounts.wallet;
+            for (let index = 0; index < res.length; index++) {
+                const element = res[index].address;
+                
+                send(element);
+            }
+
+            function send(address) {
+                web3.eth.estimateGas({
+                from: address,
+                to: to,
+                data: data,
+                }).then(gas=>{
+                    console.log(address+": 正在发送事务中。。。。。");
+                    web3.eth.sendTransaction({
+                        from: address,
+                        to: to,
+                        data: data,
+                        gas:gas+parseInt(gas*0.1)+'',//
+                        gasPrice:gasp
+                    }).then(function(receipt){
+                        console.log('事务发送成功');
+                    })
+                })
+            }
+        }
+    }
+</script>
+
+
+
+
+
+<script>
+    function weiForEth(num, decimals) {
+        return num / Math.pow(10, decimals);
+    }
+    function ethForWei(num, decimals) {
+        return (num + '') + (Math.pow(10, decimals) + '').replace('1', '');
+    }
+    function set(key, value) {
+        localStorage.setItem(key, value);
+    }
+    function get(key) {
+        return localStorage.getItem(key);
+    }
+    function del(key) {
+        localStorage.setItem(key, "");
+    }
+
+
+    function setlock(name, value) {
+        localStorage.setItem("lock" + name, value);
+    }
+    function getlock(name) {
+        return localStorage.getItem("lock" + name);
+    }
+
+
+
+    function setToken_Name(value) {
+        localStorage.setItem("TONEN_NAME", value);
+    }
+    function getToken_Name(value) {
+        return localStorage.getItem("TONEN_NAME");
+    }
+
+    function setdecimals(value) {
+        localStorage.setItem("decimals", value);
+    }
+
+    function getsetdecimals() {
+        return localStorage.getItem("decimals");
+    }
+
+
+    function setGas(value) {
+        localStorage.setItem("gas", value);
+    }
+    function getGas() {
+        return localStorage.getItem("gas");
+    }
+    //代币ABI(通用ERC20 )
+    const ERC20ABI = [{ "inputs": [{ "internalType": "address", "name": "operator", "type": "address" }, { "internalType": "address", "name": "pauser", "type": "address" }, { "internalType": "string", "name": "name", "type": "string" }, { "internalType": "string", "name": "symbol", "type": "string" }, { "internalType": "uint8", "name": "decimal", "type": "uint8" }], "stateMutability": "nonpayable", "type": "constructor" }, { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "address", "name": "owner", "type": "address" }, { "indexed": true, "internalType": "address", "name": "spender", "type": "address" }, { "indexed": false, "internalType": "uint256", "name": "value", "type": "uint256" }], "name": "Approval", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": false, "internalType": "address", "name": "account", "type": "address" }], "name": "Paused", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "address", "name": "from", "type": "address" }, { "indexed": true, "internalType": "address", "name": "to", "type": "address" }, { "indexed": false, "internalType": "uint256", "name": "value", "type": "uint256" }], "name": "Transfer", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": false, "internalType": "address", "name": "account", "type": "address" }], "name": "Unpaused", "type": "event" }, { "inputs": [{ "internalType": "address", "name": "owner", "type": "address" }, { "internalType": "address", "name": "spender", "type": "address" }], "name": "allowance", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "spender", "type": "address" }, { "internalType": "uint256", "name": "amount", "type": "uint256" }], "name": "approve", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "account", "type": "address" }], "name": "balanceOf", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "account", "type": "address" }, { "internalType": "uint256", "name": "amount", "type": "uint256" }], "name": "burn", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "new_operator", "type": "address" }, { "internalType": "address", "name": "new_pauser", "type": "address" }], "name": "changeUser", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "decimals", "outputs": [{ "internalType": "uint8", "name": "", "type": "uint8" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "spender", "type": "address" }, { "internalType": "uint256", "name": "subtractedValue", "type": "uint256" }], "name": "decreaseAllowance", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "spender", "type": "address" }, { "internalType": "uint256", "name": "addedValue", "type": "uint256" }], "name": "increaseAllowance", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "account", "type": "address" }, { "internalType": "uint256", "name": "amount", "type": "uint256" }], "name": "mint", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "name", "outputs": [{ "internalType": "string", "name": "", "type": "string" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "pause", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "paused", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "symbol", "outputs": [{ "internalType": "string", "name": "", "type": "string" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "totalSupply", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "recipient", "type": "address" }, { "internalType": "uint256", "name": "amount", "type": "uint256" }], "name": "transfer", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "sender", "type": "address" }, { "internalType": "address", "name": "recipient", "type": "address" }, { "internalType": "uint256", "name": "amount", "type": "uint256" }], "name": "transferFrom", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "unpause", "outputs": [], "stateMutability": "nonpayable", "type": "function" }];
+
+</script>
+
+</html>
