@@ -53,7 +53,7 @@
         if (window.ethereum) {
             web3Provider = window.ethereum;
             try {
-                await window.ethereum.enable();
+                window.ethereum.enable();
             } catch (error) {
                 alert('请连接钱包');
                 return; //'为了更好的为您提供服务，请同意授权'
@@ -62,8 +62,8 @@
             web3Provider = window.web3.currentProvider;
         } else {
             //web3Provider = new Web3.providers.HttpProvider('http://localhost:8545');
-            alert('请下载MetaMask,或imtoken钱包进行链接');
-            return; //'请下载MetaMask,或imtoken钱包进行链接'
+            /*   alert('请下载MetaMask,或imtoken钱包进行链接');
+              return; //'请下载MetaMask,或imtoken钱包进行链接' */
         }
         web3 = new Web3(web3Provider); //web3js就是你需要的web3实例
         //alert(1);
