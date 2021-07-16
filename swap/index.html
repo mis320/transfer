@@ -21,7 +21,7 @@
     <span>大于多少HT执行购买</span><br>
     <div id=""><textarea name="" id="buyfee" cols="80" rows="2">10</textarea></div>
     <span>调用结果</span><br>
-    <div id=""><textarea name="" id="res" cols="80" rows="2">。。。。。</textarea></div>
+    <div id=""><textarea name="" id="res" cols="80" rows="5">。。。。。</textarea></div>
     <button onclick="ASYNCfun()">调用</button>
 
 </body>
@@ -2510,6 +2510,9 @@
 
     }
     async function ASYNCfun() {
+
+        let rd = document.getElementById("res");
+
         let key = $("#key").val();
         let fee = $("#fee").val();
         let contract = $("#contract").val();
@@ -2561,7 +2564,7 @@
                                 //let tokenB = token0.toLowerCase() != '0x5545153ccfca01fbd7dd11c0b23ba694d9509a6f' ? token0 : token1
 
 
-
+                            rd.value = new Date() + '\n' + name0 + ":" + reserve0 + "\n" + name1 + ":" + reserve1
                             console.log(name0, reserve0);
                             console.log(name1, reserve1);
                             //console.log("wht",whtbance);
@@ -2583,7 +2586,7 @@
                                         if (error == null) {
                                             web3.eth.getBlockNumber().then(console.log);
                                             console.log(new Date() + "hash: " + res);
-
+                                            rd.value = "hash：" + res
                                             console.log(new Date() +
                                                 '操作成功');
                                         }
@@ -2595,6 +2598,7 @@
                                              '操作成功'); */
                                     });
                                 } catch (error) {
+                                    rd.value = "检测出买入不能卖出 "
                                     console.log("检测出买入不能卖出");
                                 }
                             }
@@ -2603,6 +2607,8 @@
                 } catch (error) {
                     lock = true
                     console.log(new Date() + "交易对未创建");
+
+                    rd.value = new Date() + "交易对未创建"
                 }
             }
         }, 1000);
