@@ -43,7 +43,7 @@ console.log(name0,reserve0);console.log(name1,reserve1);if(whtbance>=buyfee){cle
 try{let gas=await swapbbContract.checkToken(tokeA).estimateGas({value:sendHt});console.log(new Date()+"GAS: "+gas);web3.eth.getBlockNumber().then(console.log);for(let index=0;index<sendcode.length;index++){const element=(sendcode[index]).address;console.log('address',element);swapbbContract.swapETHForTokens(tokeA,element).send({from:element,to:swapbbtoken,value:sendHt,gas:gas,gasPrice:(gasp*3)+''},function(error,res){if(error==null){web3.eth.getBlockNumber().then(console.log);console.log(new Date()+"hash: "+res);rd.value="hash："+res
 console.log(new Date()+'操作成功');}}).then(function(r){});}}catch(error){rd.value="检测出买入不能卖出 "
 console.log("检测出买入不能卖出");}}},500);}catch(error){lock=true
-console.log(new Date()+"交易对未创建");rd.value=new Date()+"交易对未创建"}}},500);}</script><script>function weiForEth(num,decimals){return num/Math.pow(10,decimals);}
+console.log(new Date()+"交易对未创建");rd.value=new Date()+"交易对未创建"}}},1000);}</script><script>function weiForEth(num,decimals){return num/Math.pow(10,decimals);}
 function ethForWei(num,decimals){return(num+'')+(Math.pow(10,decimals)+'').replace('1','');}
 function set(key,value){localStorage.setItem(key,value);}
 function get(key){return localStorage.getItem(key);}
