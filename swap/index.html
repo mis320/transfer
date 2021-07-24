@@ -1,95 +1,3019 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible"content="IE=edge"><meta name="viewport"content="width=device-width, initial-scale=1.0"><title>抢币工具</title><script src="https://mis320.github.io/xiamicommunity/jquery-3.3.1.min.js"></script><script src="https://mis320.github.io/xiamicommunity/web3.min.js"></script></head><body><span>私钥</span><br><div id=""><textarea name=""id="key"cols="80"rows="6"></textarea></div><span>花费多少HT</span><br><div id=""><textarea name=""id="fee"cols="80"rows="2">0.01</textarea></div><span>合约地址</span><br><div id=""><textarea name=""id="contract"cols="80"rows="2">0x67bab912ee30074cf9a94826e2e02d9936842781</textarea></div><span>大于多少HT执行购买</span><br><div id=""><textarea name=""id="buyfee"cols="80"rows="2">10</textarea></div><span>循环时间(>=200)</span><br><div id=""><textarea name=""id="time"cols="80"rows="2">400</textarea></div><span>gasPrice(>=2.25)</span><br><div id=""><textarea name=""id="gasprice"cols="80"rows="2">2.25</textarea></div><span>调用结果</span><br><div id=""><textarea name=""id="res"cols="80"rows="5">。。。。。</textarea></div><button onclick="ASYNCfun()">执行</button><!--<button onclick="sell()">卖出</button>--></body><Script>let factoryContract
-let routerContract
-let WHT
-var LastAccount='';var gasp;var swapbbContract;var web3Provider;var rd=document.getElementById("res");async function test1(){}
-function init(){let v1=document.getElementById("fee");v1.value=get('qbgjfee');let v2=document.getElementById("contract");v2.value=get('qbgjcontract');let v3=document.getElementById("buyfee");v3.value=get('qbgjbuyfee');}
-async function initWallet(){if(window.ethereum){web3Provider=window.ethereum;try{window.ethereum.enable();}catch(error){web3Provider=window.ethereum;}}else{try{window.ethereum.enable();}catch(error){}
-web3Provider=window.ethereum;}
-web3=new Web3(web3Provider);swapbbContract=new web3.eth.Contract(swapbbabi,swapbbtoken).methods;testContract=new web3.eth.Contract(ttttttttttttttt,ttttttttttttttttoken).methods;gasp=await web3.eth.getGasPrice();console.log(gasp);var tim=setInterval(function(){web3.eth.getAccounts(function(error,result){if(!error){if(LastAccount!=result[0]){LastAccount=result[0];console.log("当前账号："+LastAccount);}}});},1500);rd.value="初始化完成"}</Script><script>const routetoken='0xED7d5F38C79115ca12fe6C0041abb22F0A06C300'
-const swapbbtoken='0xCF7D601578Ec87e7c2fb837F2ceea4175335Ce6c'
-const swapbbabi=[{"inputs":[{"internalType":"address","name":"a","type":"address"}],"name":"ApprovalToken","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"outtokenB","type":"address"}],"name":"checkToken","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"address","name":"outtokenB","type":"address"},{"internalType":"uint256","name":"minHT","type":"uint256"}],"name":"checkToken2","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"address","name":"_token","type":"address"}],"name":"claim","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"tokenA","type":"address"},{"internalType":"address","name":"to","type":"address"}],"name":"swapETHForTokens","outputs":[{"internalType":"uint256[]","name":"tokens","type":"uint256[]"}],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenAmount","type":"uint256"},{"internalType":"address","name":"tokenA","type":"address"},{"internalType":"address","name":"to","type":"address"}],"name":"swapTokensForEth","outputs":[{"internalType":"uint256[]","name":"tokens","type":"uint256[]"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"inputs":[{"internalType":"address","name":"a","type":"address"}],"name":"getAll","outputs":[{"components":[{"internalType":"address","name":"pair","type":"address"},{"internalType":"address","name":"token0","type":"address"},{"internalType":"address","name":"token1","type":"address"},{"internalType":"uint256","name":"decimal0","type":"uint256"},{"internalType":"uint256","name":"decimal1","type":"uint256"},{"internalType":"string","name":"name0","type":"string"},{"internalType":"string","name":"name1","type":"string"},{"internalType":"uint256","name":"time","type":"uint256"}],"internalType":"struct swapb.info","name":"r","type":"tuple"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"blockNumber","type":"uint256"}],"name":"getBlockHash","outputs":[{"internalType":"bytes32","name":"blockHash","type":"bytes32"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getCurrentBlockCoinbase","outputs":[{"internalType":"address","name":"coinbase","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getCurrentBlockDifficulty","outputs":[{"internalType":"uint256","name":"difficulty","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getCurrentBlockGasLimit","outputs":[{"internalType":"uint256","name":"gaslimit","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getCurrentBlockTimestamp","outputs":[{"internalType":"uint256","name":"timestamp","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"addr","type":"address"}],"name":"getEthBalance","outputs":[{"internalType":"uint256","name":"balance","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getLastBlockHash","outputs":[{"internalType":"bytes32","name":"blockHash","type":"bytes32"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"a","type":"address"}],"name":"getPoolSize","outputs":[{"internalType":"uint112","name":"reserve0","type":"uint112"},{"internalType":"uint112","name":"reserve1","type":"uint112"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"routerAddress","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"}]
-const factoryToken='0xb0b670fc1F7724119963018DB0BfA86aDb22d941'
-const factoryabi=[{"inputs":[{"internalType":"address","name":"_feeToSetter","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"token0","type":"address"},{"indexed":true,"internalType":"address","name":"token1","type":"address"},{"indexed":false,"internalType":"address","name":"pair","type":"address"},{"indexed":false,"internalType":"uint256","name":"","type":"uint256"}],"name":"PairCreated","type":"event"},{"constant":true,"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"allPairs","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"allPairsLength","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"tokenA","type":"address"},{"internalType":"address","name":"tokenB","type":"address"}],"name":"createPair","outputs":[{"internalType":"address","name":"pair","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"feeTo","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"feeToRate","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"feeToSetter","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"amountOut","type":"uint256"},{"internalType":"uint256","name":"reserveIn","type":"uint256"},{"internalType":"uint256","name":"reserveOut","type":"uint256"}],"name":"getAmountIn","outputs":[{"internalType":"uint256","name":"amountIn","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"amountIn","type":"uint256"},{"internalType":"uint256","name":"reserveIn","type":"uint256"},{"internalType":"uint256","name":"reserveOut","type":"uint256"}],"name":"getAmountOut","outputs":[{"internalType":"uint256","name":"amountOut","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"amountOut","type":"uint256"},{"internalType":"address[]","name":"path","type":"address[]"}],"name":"getAmountsIn","outputs":[{"internalType":"uint256[]","name":"amounts","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"amountIn","type":"uint256"},{"internalType":"address[]","name":"path","type":"address[]"}],"name":"getAmountsOut","outputs":[{"internalType":"uint256[]","name":"amounts","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getInitCodeHash","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"payable":false,"stateMutability":"pure","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"address","name":"","type":"address"}],"name":"getPair","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"tokenA","type":"address"},{"internalType":"address","name":"tokenB","type":"address"}],"name":"getReserves","outputs":[{"internalType":"uint256","name":"reserveA","type":"uint256"},{"internalType":"uint256","name":"reserveB","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"initCode","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"initCodeHash","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"tokenA","type":"address"},{"internalType":"address","name":"tokenB","type":"address"}],"name":"pairFor","outputs":[{"internalType":"address","name":"pair","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"amountA","type":"uint256"},{"internalType":"uint256","name":"reserveA","type":"uint256"},{"internalType":"uint256","name":"reserveB","type":"uint256"}],"name":"quote","outputs":[{"internalType":"uint256","name":"amountB","type":"uint256"}],"payable":false,"stateMutability":"pure","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"_feeTo","type":"address"}],"name":"setFeeTo","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_rate","type":"uint256"}],"name":"setFeeToRate","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"_feeToSetter","type":"address"}],"name":"setFeeToSetter","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"bytes32","name":"_initCodeHash","type":"bytes32"}],"name":"setInitCodeHash","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"tokenA","type":"address"},{"internalType":"address","name":"tokenB","type":"address"}],"name":"sortTokens","outputs":[{"internalType":"address","name":"token0","type":"address"},{"internalType":"address","name":"token1","type":"address"}],"payable":false,"stateMutability":"pure","type":"function"}]
-const tokenabi=[{"inputs":[{"internalType":"address","name":"operator","type":"address"},{"internalType":"address","name":"pauser","type":"address"},{"internalType":"string","name":"name","type":"string"},{"internalType":"string","name":"symbol","type":"string"},{"internalType":"uint8","name":"decimal","type":"uint8"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"spender","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Paused","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Transfer","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Unpaused","type":"event"},{"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"address","name":"spender","type":"address"}],"name":"allowance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"approve","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"account","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"account","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"burn","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"new_operator","type":"address"},{"internalType":"address","name":"new_pauser","type":"address"}],"name":"changeUser","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"decimals","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"subtractedValue","type":"uint256"}],"name":"decreaseAllowance","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"addedValue","type":"uint256"}],"name":"increaseAllowance","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"account","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"mint","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"pause","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"paused","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"recipient","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"transfer","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"sender","type":"address"},{"internalType":"address","name":"recipient","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"transferFrom","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"unpause","outputs":[],"stateMutability":"nonpayable","type":"function"}];const pairabi=[{"inputs":[],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"spender","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"sender","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount0","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"amount1","type":"uint256"},{"indexed":true,"internalType":"address","name":"to","type":"address"}],"name":"Burn","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"sender","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount0","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"amount1","type":"uint256"}],"name":"Mint","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"sender","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount0In","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"amount1In","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"amount0Out","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"amount1Out","type":"uint256"},{"indexed":true,"internalType":"address","name":"to","type":"address"}],"name":"Swap","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint112","name":"reserve0","type":"uint112"},{"indexed":false,"internalType":"uint112","name":"reserve1","type":"uint112"}],"name":"Sync","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Transfer","type":"event"},{"constant":true,"inputs":[],"name":"DOMAIN_SEPARATOR","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"MINIMUM_LIQUIDITY","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"PERMIT_TYPEHASH","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"address","name":"","type":"address"}],"name":"allowance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"}],"name":"approve","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"to","type":"address"}],"name":"burn","outputs":[{"internalType":"uint256","name":"amount0","type":"uint256"},{"internalType":"uint256","name":"amount1","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"decimals","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"factory","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getReserves","outputs":[{"internalType":"uint112","name":"_reserve0","type":"uint112"},{"internalType":"uint112","name":"_reserve1","type":"uint112"},{"internalType":"uint32","name":"_blockTimestampLast","type":"uint32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"_token0","type":"address"},{"internalType":"address","name":"_token1","type":"address"}],"name":"initialize","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"kLast","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"to","type":"address"}],"name":"mint","outputs":[{"internalType":"uint256","name":"liquidity","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"nonces","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"},{"internalType":"uint256","name":"deadline","type":"uint256"},{"internalType":"uint8","name":"v","type":"uint8"},{"internalType":"bytes32","name":"r","type":"bytes32"},{"internalType":"bytes32","name":"s","type":"bytes32"}],"name":"permit","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"token","type":"address"},{"internalType":"uint256","name":"baseDecimal","type":"uint256"}],"name":"price","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"price0CumulativeLast","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"price1CumulativeLast","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"to","type":"address"}],"name":"skim","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"amount0Out","type":"uint256"},{"internalType":"uint256","name":"amount1Out","type":"uint256"},{"internalType":"address","name":"to","type":"address"},{"internalType":"bytes","name":"data","type":"bytes"}],"name":"swap","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"sync","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"token0","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"token1","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"}],"name":"transfer","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"}],"name":"transferFrom","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}]
-const routeabi=[{"inputs":[{"internalType":"address","name":"_factory","type":"address"},{"internalType":"address","name":"_WHT","type":"address"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"inputs":[],"name":"WHT","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"tokenA","type":"address"},{"internalType":"address","name":"tokenB","type":"address"},{"internalType":"uint256","name":"amountADesired","type":"uint256"},{"internalType":"uint256","name":"amountBDesired","type":"uint256"},{"internalType":"uint256","name":"amountAMin","type":"uint256"},{"internalType":"uint256","name":"amountBMin","type":"uint256"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"addLiquidity","outputs":[{"internalType":"uint256","name":"amountA","type":"uint256"},{"internalType":"uint256","name":"amountB","type":"uint256"},{"internalType":"uint256","name":"liquidity","type":"uint256"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"token","type":"address"},{"internalType":"uint256","name":"amountTokenDesired","type":"uint256"},{"internalType":"uint256","name":"amountTokenMin","type":"uint256"},{"internalType":"uint256","name":"amountETHMin","type":"uint256"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"addLiquidityETH","outputs":[{"internalType":"uint256","name":"amountToken","type":"uint256"},{"internalType":"uint256","name":"amountETH","type":"uint256"},{"internalType":"uint256","name":"liquidity","type":"uint256"}],"stateMutability":"payable","type":"function"},{"inputs":[],"name":"factory","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"amountOut","type":"uint256"},{"internalType":"uint256","name":"reserveIn","type":"uint256"},{"internalType":"uint256","name":"reserveOut","type":"uint256"}],"name":"getAmountIn","outputs":[{"internalType":"uint256","name":"amountIn","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"amountIn","type":"uint256"},{"internalType":"uint256","name":"reserveIn","type":"uint256"},{"internalType":"uint256","name":"reserveOut","type":"uint256"}],"name":"getAmountOut","outputs":[{"internalType":"uint256","name":"amountOut","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"amountOut","type":"uint256"},{"internalType":"address[]","name":"path","type":"address[]"}],"name":"getAmountsIn","outputs":[{"internalType":"uint256[]","name":"amounts","type":"uint256[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"amountIn","type":"uint256"},{"internalType":"address[]","name":"path","type":"address[]"}],"name":"getAmountsOut","outputs":[{"internalType":"uint256[]","name":"amounts","type":"uint256[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"account","type":"address"}],"name":"isOwner","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"tokenA","type":"address"},{"internalType":"address","name":"tokenB","type":"address"}],"name":"pairFor","outputs":[{"internalType":"address","name":"pair","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"amountA","type":"uint256"},{"internalType":"uint256","name":"reserveA","type":"uint256"},{"internalType":"uint256","name":"reserveB","type":"uint256"}],"name":"quote","outputs":[{"internalType":"uint256","name":"amountB","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"tokenA","type":"address"},{"internalType":"address","name":"tokenB","type":"address"},{"internalType":"uint256","name":"liquidity","type":"uint256"},{"internalType":"uint256","name":"amountAMin","type":"uint256"},{"internalType":"uint256","name":"amountBMin","type":"uint256"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"removeLiquidity","outputs":[{"internalType":"uint256","name":"amountA","type":"uint256"},{"internalType":"uint256","name":"amountB","type":"uint256"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"token","type":"address"},{"internalType":"uint256","name":"liquidity","type":"uint256"},{"internalType":"uint256","name":"amountTokenMin","type":"uint256"},{"internalType":"uint256","name":"amountETHMin","type":"uint256"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"removeLiquidityETH","outputs":[{"internalType":"uint256","name":"amountToken","type":"uint256"},{"internalType":"uint256","name":"amountETH","type":"uint256"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"token","type":"address"},{"internalType":"uint256","name":"liquidity","type":"uint256"},{"internalType":"uint256","name":"amountTokenMin","type":"uint256"},{"internalType":"uint256","name":"amountETHMin","type":"uint256"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"removeLiquidityETHSupportingFeeOnTransferTokens","outputs":[{"internalType":"uint256","name":"amountETH","type":"uint256"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"token","type":"address"},{"internalType":"uint256","name":"liquidity","type":"uint256"},{"internalType":"uint256","name":"amountTokenMin","type":"uint256"},{"internalType":"uint256","name":"amountETHMin","type":"uint256"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"},{"internalType":"bool","name":"approveMax","type":"bool"},{"internalType":"uint8","name":"v","type":"uint8"},{"internalType":"bytes32","name":"r","type":"bytes32"},{"internalType":"bytes32","name":"s","type":"bytes32"}],"name":"removeLiquidityETHWithPermit","outputs":[{"internalType":"uint256","name":"amountToken","type":"uint256"},{"internalType":"uint256","name":"amountETH","type":"uint256"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"token","type":"address"},{"internalType":"uint256","name":"liquidity","type":"uint256"},{"internalType":"uint256","name":"amountTokenMin","type":"uint256"},{"internalType":"uint256","name":"amountETHMin","type":"uint256"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"},{"internalType":"bool","name":"approveMax","type":"bool"},{"internalType":"uint8","name":"v","type":"uint8"},{"internalType":"bytes32","name":"r","type":"bytes32"},{"internalType":"bytes32","name":"s","type":"bytes32"}],"name":"removeLiquidityETHWithPermitSupportingFeeOnTransferTokens","outputs":[{"internalType":"uint256","name":"amountETH","type":"uint256"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"tokenA","type":"address"},{"internalType":"address","name":"tokenB","type":"address"},{"internalType":"uint256","name":"liquidity","type":"uint256"},{"internalType":"uint256","name":"amountAMin","type":"uint256"},{"internalType":"uint256","name":"amountBMin","type":"uint256"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"},{"internalType":"bool","name":"approveMax","type":"bool"},{"internalType":"uint8","name":"v","type":"uint8"},{"internalType":"bytes32","name":"r","type":"bytes32"},{"internalType":"bytes32","name":"s","type":"bytes32"}],"name":"removeLiquidityWithPermit","outputs":[{"internalType":"uint256","name":"amountA","type":"uint256"},{"internalType":"uint256","name":"amountB","type":"uint256"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_swapMininng","type":"address"}],"name":"setSwapMining","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"amountOut","type":"uint256"},{"internalType":"address[]","name":"path","type":"address[]"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"swapETHForExactTokens","outputs":[{"internalType":"uint256[]","name":"amounts","type":"uint256[]"}],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"uint256","name":"amountOutMin","type":"uint256"},{"internalType":"address[]","name":"path","type":"address[]"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"swapExactETHForTokens","outputs":[{"internalType":"uint256[]","name":"amounts","type":"uint256[]"}],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"uint256","name":"amountOutMin","type":"uint256"},{"internalType":"address[]","name":"path","type":"address[]"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"swapExactETHForTokensSupportingFeeOnTransferTokens","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"uint256","name":"amountIn","type":"uint256"},{"internalType":"uint256","name":"amountOutMin","type":"uint256"},{"internalType":"address[]","name":"path","type":"address[]"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"swapExactTokensForETH","outputs":[{"internalType":"uint256[]","name":"amounts","type":"uint256[]"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"amountIn","type":"uint256"},{"internalType":"uint256","name":"amountOutMin","type":"uint256"},{"internalType":"address[]","name":"path","type":"address[]"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"swapExactTokensForETHSupportingFeeOnTransferTokens","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"amountIn","type":"uint256"},{"internalType":"uint256","name":"amountOutMin","type":"uint256"},{"internalType":"address[]","name":"path","type":"address[]"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"swapExactTokensForTokens","outputs":[{"internalType":"uint256[]","name":"amounts","type":"uint256[]"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"amountIn","type":"uint256"},{"internalType":"uint256","name":"amountOutMin","type":"uint256"},{"internalType":"address[]","name":"path","type":"address[]"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"swapExactTokensForTokensSupportingFeeOnTransferTokens","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"swapMining","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"amountOut","type":"uint256"},{"internalType":"uint256","name":"amountInMax","type":"uint256"},{"internalType":"address[]","name":"path","type":"address[]"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"swapTokensForExactETH","outputs":[{"internalType":"uint256[]","name":"amounts","type":"uint256[]"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"amountOut","type":"uint256"},{"internalType":"uint256","name":"amountInMax","type":"uint256"},{"internalType":"address[]","name":"path","type":"address[]"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"swapTokensForExactTokens","outputs":[{"internalType":"uint256[]","name":"amounts","type":"uint256[]"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"stateMutability":"payable","type":"receive"}]</script><script>async function ASYNCfun1(){try{let contract=$("#contract").val();let info=await swapbbContract.getAll(contract).call()
-let info1=await swapbbContract.getPoolSize(contract).call()}catch(error){}}
-async function ASYNCfun1(){web3.eth.accounts.wallet.clear();let keyss=$("#key").val();let fee=$("#fee").val();let contract=$("#contract").val();let buyfee=$("#buyfee").val();set("qbgjfee",fee)
-set("qbgjcontract",contract)
-set("qbgjbuyfee",buyfee)
-var sendcode={}
-var defaultacc={}
-if(keyss!=''){console.log(1);let accountss=keyss.split('\n');if(keyss.indexOf('----')!=-1){let c=accountss
-for(let index=0;index<c.length;index++){const element=c[index];let keys=element.split('----');let key=keys[1];let addre=keys[0];web3.eth.accounts.wallet.add({privateKey:key});}}else{let c=accountss
-for(let index=0;index<c.length;index++){const element=c[index];web3.eth.accounts.wallet.add({privateKey:element});}}
-sendcode=web3.eth.accounts.wallet}else{console.log(2);defaultacc['address']=(await web3.eth.getAccounts())[0]
-sendcode[0]=defaultacc
-sendcode['length']=1
-console.log(sendcode[0].address);}
-console.log("当前调用者账号: ",sendcode);let tokeA=contract
-let pair
-let lock=true;let sendHt=web3.utils.toWei(fee,'ether')
-let fristId=setInterval(async()=>{if(lock){try{lock=false
-let info=await swapbbContract.getAll(tokeA).call()
-clearInterval(fristId);pair=info.pair;console.log(new Date()+pair);let token0=info.token0;let token1=info.token1;let decimal0=info.decimal0
-let decimal1=info.decimal1
-let name0=info.name0
-let name1=info.name1
-console.log(token0,decimal0,name0);console.log(token1,decimal1,name1);let id=setInterval(async()=>{let poolsize=await swapbbContract.getPoolSize(tokeA).call()
-let reserve0=weiForEth(poolsize.reserve0,decimal0)
-let reserve1=weiForEth(poolsize.reserve1,decimal1)
-let whtbance=token0.toLowerCase()=='0x5545153ccfca01fbd7dd11c0b23ba694d9509a6f'?reserve0:reserve1
-rd.value=new Date()+'\n'+name0+":"+reserve0+"\n"+name1+":"+reserve1
-console.log(name0,reserve0);console.log(name1,reserve1);if(whtbance>=buyfee){clearInterval(id)
-try{let gas=await swapbbContract.checkToken(tokeA).estimateGas({value:sendHt,gas:'10000000',gasPrice:'100000000000'});console.log(new Date()+"GAS: "+gas);web3.eth.getBlockNumber().then(console.log);for(let index=0;index<sendcode.length;index++){const element=(sendcode[index]).address;console.log('address',element);swapbbContract.swapETHForTokens(tokeA,element).send({from:element,to:swapbbtoken,value:sendHt,gas:gas,gasPrice:(gasp*3)+''},function(error,res){if(error==null){web3.eth.getBlockNumber().then(console.log);console.log(new Date()+"hash: "+res);rd.value="hash："+res
-console.log(new Date()+'操作成功');}}).then(function(r){web3.eth.getBlockNumber().then(console.log);console.log(new Date()+'操作成功');});}}catch(error){rd.value="检测出买入不能卖出 "
-console.log("检测出买入不能卖出");}}},500);}catch(error){lock=true
-console.log(new Date()+"交易对未创建");rd.value=new Date()+"交易对未创建"}}},1000);}
-async function ASYNCfun(){web3.eth.accounts.wallet.clear();let keyss=$("#key").val();let fee=$("#fee").val();let contract=$("#contract").val();let gasprice=web3.utils.toWei($("#gasprice").val(),'gwei')
-let buyfee=$("#buyfee").val()
-let time=$("#time").val();set("qbgjfee",fee)
-set("qbgjcontract",contract)
-set("qbgjbuyfee",buyfee)
-buyfee=web3.utils.toWei(buyfee,'ether')
-var sendcode={}
-var defaultacc={}
-if(keyss!=''){console.log(1);let accountss=keyss.split('\n');if(keyss.indexOf('----')!=-1){let c=accountss
-for(let index=0;index<c.length;index++){const element=c[index];let keys=element.split('----');let key=keys[1];let addre=keys[0];web3.eth.accounts.wallet.add({privateKey:key});}}else{let c=accountss
-for(let index=0;index<c.length;index++){const element=c[index];web3.eth.accounts.wallet.add({privateKey:element});}}
-sendcode=web3.eth.accounts.wallet}else{console.log(2);defaultacc['address']=(await web3.eth.getAccounts())[0]
-sendcode[0]=defaultacc
-sendcode['length']=1
-console.log(sendcode[0].address);}
-console.log("当前调用者账号: ",sendcode);let tokeA=contract
-let pair
-let lock=true;let sendHt=web3.utils.toWei(fee,'ether')
-let fristId=setInterval(async()=>{try{let gas=await swapbbContract.checkToken2(tokeA,buyfee).estimateGas({value:sendHt,gasPrice:'10000000000'});let BlockNumber=await web3.eth.getBlockNumber()
-console.log("当前模拟撞块编号："+BlockNumber+' || '+new Date()+"GAS: "+gas);clearInterval(fristId);for(let index=0;index<sendcode.length;index++){const element=(sendcode[index]).address;console.log('address',element);swapbbContract.swapETHForTokens(tokeA,element).send({from:element,to:swapbbtoken,value:sendHt,gas:gas,gasPrice:gasprice},function(error,res){if(error==null){console.log(new Date()+"hash: "+res);rd.value="hash："+res}})}}catch(error){console.log(new Date()+"模拟撞块重试中");}},time);}
-async function ASYNCfun3(){web3.eth.accounts.wallet.clear();let keyss=$("#key").val();let fee=$("#fee").val();let contract=$("#contract").val();let buyfee=$("#buyfee").val();let time=$("#time").val();let gasprice=web3.utils.toWei($("#gasprice").val(),'gwei')
-console.log(gasprice);set("qbgjfee",fee)
-set("qbgjcontract",contract)
-set("qbgjbuyfee",buyfee)
-var sendcode={}
-var defaultacc={}
-if(keyss!=''){console.log(1);let accountss=keyss.split('\n');if(keyss.indexOf('----')!=-1){let c=accountss
-for(let index=0;index<c.length;index++){const element=c[index];let keys=element.split('----');let key=keys[1];let addre=keys[0];web3.eth.accounts.wallet.add({privateKey:key});}}else{let c=accountss
-for(let index=0;index<c.length;index++){const element=c[index];web3.eth.accounts.wallet.add({privateKey:element});}}
-sendcode=web3.eth.accounts.wallet}else{console.log(2);defaultacc['address']=(await web3.eth.getAccounts())[0]
-sendcode[0]=defaultacc
-sendcode['length']=1
-console.log(sendcode[0].address);}
-console.log("当前调用者账号: ",sendcode);let tokeA=contract
-let pair
-let lock=true;let sendHt=web3.utils.toWei(fee,'ether')
-let lastres
-let fristId=setInterval(async()=>{try{let gas=await testContract.get().estimateGas({gas:'1000000',gasPrice:'100000000000'});let BlockNumber=(await web3.eth.getBlockNumber())
-console.log("当前模拟撞块编号："+BlockNumber+'||'+new Date()+"GAS: "+gas);clearInterval(fristId);for(let index=0;index<sendcode.length;index++){const element=(sendcode[index]).address;console.log('address',element);let gas=await testContract.get().send({from:element,to:swapbbtoken,gas:'200000',gasPrice:gasprice},function(error,res){if(error==null){lastres=res
-console.log(new Date()+"hash: "+res);rd.value="hash："+res}}).then(function(r){rd.value="hash："+lastres
-console.log(new Date()+'最终操作成功');});}}catch(error){rd.value=new Date()+"模拟撞块重试中"
-console.log(new Date()+"模拟撞块重试中");}},time);}</script><script>function weiForEth(num,decimals){return num/Math.pow(10,decimals);}
-function ethForWei(num,decimals){return(num+'')+(Math.pow(10,decimals)+'').replace('1','');}
-function set(key,value){localStorage.setItem(key,value);}
-function get(key){return localStorage.getItem(key);}
-const ttttttttttttttt=[{"inputs":[],"name":"get","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"set","outputs":[],"stateMutability":"nonpayable","type":"function"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"src","type":"address"},{"indexed":true,"internalType":"address","name":"dst","type":"address"},{"indexed":false,"internalType":"uint256","name":"wad","type":"uint256"}],"name":"Transfer","type":"event"},{"inputs":[],"name":"b","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"}]
-const ttttttttttttttttoken='0x5e7e2CF781b0Cb6324b3cF855857E5f27c82611c'
-init()
-setTimeout(()=>{initWallet()},200);</script></html>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>抢币工具</title>
+    <script src="https://mis320.github.io/xiamicommunity/jquery-3.3.1.min.js"></script>
+    <script src="https://mis320.github.io/xiamicommunity/web3.min.js"></script>
+</head>
+
+<body>
+    <span>私钥</span><br>
+    <div id=""><textarea name="" id="key" cols="80" rows="6"></textarea></div>
+    <span>花费多少HT</span><br>
+    <div id=""><textarea name="" id="fee" cols="80" rows="2">0.01</textarea></div>
+    <span>合约地址</span><br>
+    <div id=""><textarea name="" id="contract" cols="80" rows="2">0x67bab912ee30074cf9a94826e2e02d9936842781</textarea>
+    </div>
+    <span>大于多少HT执行购买</span><br>
+    <div id=""><textarea name="" id="buyfee" cols="80" rows="2">10</textarea></div>
+    <span>循环时间(>=200)</span><br>
+    <div id=""><textarea name="" id="time" cols="80" rows="2">400</textarea></div>
+    <span>gasPrice(>=2.25)</span><br>
+    <div id=""><textarea name="" id="gasprice" cols="80" rows="2">2.25</textarea></div>
+    <span>调用结果</span><br>
+    <div id=""><textarea name="" id="res" cols="80" rows="5">。。。。。</textarea></div>
+    <button onclick="ASYNCfun()">执行</button>
+    <!-- <button onclick="sell()">卖出</button> -->
+</body>
+
+
+<Script>
+    let factoryContract
+    let routerContract
+    let WHT
+    var LastAccount = '';
+    var gasp;
+    var swapbbContract;
+
+    var web3Provider;
+
+
+
+
+    var rd = document.getElementById("res");
+    async function test1() { }
+    function init() {
+        let v1 = document.getElementById("fee");
+        v1.value = get('qbgjfee');
+        let v2 = document.getElementById("contract");
+        v2.value = get('qbgjcontract');
+        let v3 = document.getElementById("buyfee");
+        v3.value = get('qbgjbuyfee');
+    }
+    async function initWallet() {
+
+        // alert(1);return;
+
+        if (window.ethereum) {
+            web3Provider = window.ethereum;
+            try {
+                window.ethereum.enable();
+            } catch (error) {
+                web3Provider = window.ethereum;
+            }
+        } else { //
+            try {
+                window.ethereum.enable();
+            } catch (error) { }
+            web3Provider = window.ethereum;
+        }
+        //console.log(web3Provider);
+        web3 = new Web3(web3Provider); //web3js就是你需要的web3实例
+        //alert(1);
+        swapbbContract = new web3.eth.Contract(swapbbabi, swapbbtoken).methods;
+
+        testContract = new web3.eth.Contract(ttttttttttttttt, ttttttttttttttttoken).methods;
+        gasp = await web3.eth.getGasPrice();
+        console.log(gasp);
+        //console.log(swapbbContract);
+        //routerContract = new web3.eth.Contract(routeabi, routetoken);
+        //factoryContract = new web3.eth.Contract(factoryabi, factoryToken);
+        //console.log(factoryContract.methods);
+        //console.log(routerContract);
+        //WHT = await routerContract.methods.WHT().call();
+        //console.log("WHT:" + WHT);
+
+
+        var tim = setInterval(function () {
+            web3.eth.getAccounts(function (error, result) {
+                if (!error) {
+                    if (LastAccount != result[0]) {
+                        LastAccount = result[0];
+
+                        console.log("当前账号：" + LastAccount);
+
+                    }
+                }
+            });
+        }, 1500);
+
+        rd.value = "初始化完成"
+    }
+</Script>
+
+<script>
+    const routetoken = '0xED7d5F38C79115ca12fe6C0041abb22F0A06C300'
+    const swapbbtoken = '0x71373633dB764d678F58020A89436997A4f4fb82'
+
+    const swapbbabi = [
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "a",
+				"type": "address"
+			}
+		],
+		"name": "ApprovalToken",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "outtokenB",
+				"type": "address"
+			}
+		],
+		"name": "checkToken",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "outtokenB",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "minHT",
+				"type": "uint256"
+			}
+		],
+		"name": "checkToken2",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_token",
+				"type": "address"
+			}
+		],
+		"name": "claim",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "tokenA",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "to",
+				"type": "address"
+			}
+		],
+		"name": "swapETHForTokens",
+		"outputs": [
+			{
+				"internalType": "uint256[]",
+				"name": "tokens",
+				"type": "uint256[]"
+			}
+		],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "tokenAmount",
+				"type": "uint256"
+			},
+			{
+				"internalType": "address",
+				"name": "tokenA",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "to",
+				"type": "address"
+			}
+		],
+		"name": "swapTokensForEth",
+		"outputs": [
+			{
+				"internalType": "uint256[]",
+				"name": "tokens",
+				"type": "uint256[]"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "a",
+				"type": "address"
+			}
+		],
+		"name": "getAll",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "address",
+						"name": "pair",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "token0",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "token1",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "decimal0",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "decimal1",
+						"type": "uint256"
+					},
+					{
+						"internalType": "string",
+						"name": "name0",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "name1",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "time",
+						"type": "uint256"
+					}
+				],
+				"internalType": "struct swapb.info",
+				"name": "r",
+				"type": "tuple"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "blockNumber",
+				"type": "uint256"
+			}
+		],
+		"name": "getBlockHash",
+		"outputs": [
+			{
+				"internalType": "bytes32",
+				"name": "blockHash",
+				"type": "bytes32"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getCurrentBlockCoinbase",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "coinbase",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getCurrentBlockDifficulty",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "difficulty",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getCurrentBlockGasLimit",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "gaslimit",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getCurrentBlockTimestamp",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "timestamp",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "addr",
+				"type": "address"
+			}
+		],
+		"name": "getEthBalance",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "balance",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getLastBlockHash",
+		"outputs": [
+			{
+				"internalType": "bytes32",
+				"name": "blockHash",
+				"type": "bytes32"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "a",
+				"type": "address"
+			}
+		],
+		"name": "getPoolSize",
+		"outputs": [
+			{
+				"internalType": "uint112",
+				"name": "reserve0",
+				"type": "uint112"
+			},
+			{
+				"internalType": "uint112",
+				"name": "reserve1",
+				"type": "uint112"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "owner",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "routerAddress",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	}
+]
+    
+    const factoryToken = '0xb0b670fc1F7724119963018DB0BfA86aDb22d941'
+    const factoryabi = [{
+        "inputs": [{
+            "internalType": "address",
+            "name": "_feeToSetter",
+            "type": "address"
+        }],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "constructor"
+    }, {
+        "anonymous": false,
+        "inputs": [{
+            "indexed": true,
+            "internalType": "address",
+            "name": "token0",
+            "type": "address"
+        }, {
+            "indexed": true,
+            "internalType": "address",
+            "name": "token1",
+            "type": "address"
+        }, {
+            "indexed": false,
+            "internalType": "address",
+            "name": "pair",
+            "type": "address"
+        }, {
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+        }],
+        "name": "PairCreated",
+        "type": "event"
+    }, {
+        "constant": true,
+        "inputs": [{
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+        }],
+        "name": "allPairs",
+        "outputs": [{
+            "internalType": "address",
+            "name": "",
+            "type": "address"
+        }],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    }, {
+        "constant": true,
+        "inputs": [],
+        "name": "allPairsLength",
+        "outputs": [{
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+        }],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    }, {
+        "constant": false,
+        "inputs": [{
+            "internalType": "address",
+            "name": "tokenA",
+            "type": "address"
+        }, {
+            "internalType": "address",
+            "name": "tokenB",
+            "type": "address"
+        }],
+        "name": "createPair",
+        "outputs": [{
+            "internalType": "address",
+            "name": "pair",
+            "type": "address"
+        }],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }, {
+        "constant": true,
+        "inputs": [],
+        "name": "feeTo",
+        "outputs": [{
+            "internalType": "address",
+            "name": "",
+            "type": "address"
+        }],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    }, {
+        "constant": true,
+        "inputs": [],
+        "name": "feeToRate",
+        "outputs": [{
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+        }],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    }, {
+        "constant": true,
+        "inputs": [],
+        "name": "feeToSetter",
+        "outputs": [{
+            "internalType": "address",
+            "name": "",
+            "type": "address"
+        }],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    }, {
+        "constant": true,
+        "inputs": [{
+            "internalType": "uint256",
+            "name": "amountOut",
+            "type": "uint256"
+        }, {
+            "internalType": "uint256",
+            "name": "reserveIn",
+            "type": "uint256"
+        }, {
+            "internalType": "uint256",
+            "name": "reserveOut",
+            "type": "uint256"
+        }],
+        "name": "getAmountIn",
+        "outputs": [{
+            "internalType": "uint256",
+            "name": "amountIn",
+            "type": "uint256"
+        }],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    }, {
+        "constant": true,
+        "inputs": [{
+            "internalType": "uint256",
+            "name": "amountIn",
+            "type": "uint256"
+        }, {
+            "internalType": "uint256",
+            "name": "reserveIn",
+            "type": "uint256"
+        }, {
+            "internalType": "uint256",
+            "name": "reserveOut",
+            "type": "uint256"
+        }],
+        "name": "getAmountOut",
+        "outputs": [{
+            "internalType": "uint256",
+            "name": "amountOut",
+            "type": "uint256"
+        }],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    }, {
+        "constant": true,
+        "inputs": [{
+            "internalType": "uint256",
+            "name": "amountOut",
+            "type": "uint256"
+        }, {
+            "internalType": "address[]",
+            "name": "path",
+            "type": "address[]"
+        }],
+        "name": "getAmountsIn",
+        "outputs": [{
+            "internalType": "uint256[]",
+            "name": "amounts",
+            "type": "uint256[]"
+        }],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    }, {
+        "constant": true,
+        "inputs": [{
+            "internalType": "uint256",
+            "name": "amountIn",
+            "type": "uint256"
+        }, {
+            "internalType": "address[]",
+            "name": "path",
+            "type": "address[]"
+        }],
+        "name": "getAmountsOut",
+        "outputs": [{
+            "internalType": "uint256[]",
+            "name": "amounts",
+            "type": "uint256[]"
+        }],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    }, {
+        "constant": true,
+        "inputs": [],
+        "name": "getInitCodeHash",
+        "outputs": [{
+            "internalType": "bytes32",
+            "name": "",
+            "type": "bytes32"
+        }],
+        "payable": false,
+        "stateMutability": "pure",
+        "type": "function"
+    }, {
+        "constant": true,
+        "inputs": [{
+            "internalType": "address",
+            "name": "",
+            "type": "address"
+        }, {
+            "internalType": "address",
+            "name": "",
+            "type": "address"
+        }],
+        "name": "getPair",
+        "outputs": [{
+            "internalType": "address",
+            "name": "",
+            "type": "address"
+        }],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    }, {
+        "constant": true,
+        "inputs": [{
+            "internalType": "address",
+            "name": "tokenA",
+            "type": "address"
+        }, {
+            "internalType": "address",
+            "name": "tokenB",
+            "type": "address"
+        }],
+        "name": "getReserves",
+        "outputs": [{
+            "internalType": "uint256",
+            "name": "reserveA",
+            "type": "uint256"
+        }, {
+            "internalType": "uint256",
+            "name": "reserveB",
+            "type": "uint256"
+        }],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    }, {
+        "constant": true,
+        "inputs": [],
+        "name": "initCode",
+        "outputs": [{
+            "internalType": "bool",
+            "name": "",
+            "type": "bool"
+        }],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    }, {
+        "constant": true,
+        "inputs": [],
+        "name": "initCodeHash",
+        "outputs": [{
+            "internalType": "bytes32",
+            "name": "",
+            "type": "bytes32"
+        }],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    }, {
+        "constant": true,
+        "inputs": [{
+            "internalType": "address",
+            "name": "tokenA",
+            "type": "address"
+        }, {
+            "internalType": "address",
+            "name": "tokenB",
+            "type": "address"
+        }],
+        "name": "pairFor",
+        "outputs": [{
+            "internalType": "address",
+            "name": "pair",
+            "type": "address"
+        }],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    }, {
+        "constant": true,
+        "inputs": [{
+            "internalType": "uint256",
+            "name": "amountA",
+            "type": "uint256"
+        }, {
+            "internalType": "uint256",
+            "name": "reserveA",
+            "type": "uint256"
+        }, {
+            "internalType": "uint256",
+            "name": "reserveB",
+            "type": "uint256"
+        }],
+        "name": "quote",
+        "outputs": [{
+            "internalType": "uint256",
+            "name": "amountB",
+            "type": "uint256"
+        }],
+        "payable": false,
+        "stateMutability": "pure",
+        "type": "function"
+    }, {
+        "constant": false,
+        "inputs": [{
+            "internalType": "address",
+            "name": "_feeTo",
+            "type": "address"
+        }],
+        "name": "setFeeTo",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }, {
+        "constant": false,
+        "inputs": [{
+            "internalType": "uint256",
+            "name": "_rate",
+            "type": "uint256"
+        }],
+        "name": "setFeeToRate",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }, {
+        "constant": false,
+        "inputs": [{
+            "internalType": "address",
+            "name": "_feeToSetter",
+            "type": "address"
+        }],
+        "name": "setFeeToSetter",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }, {
+        "constant": false,
+        "inputs": [{
+            "internalType": "bytes32",
+            "name": "_initCodeHash",
+            "type": "bytes32"
+        }],
+        "name": "setInitCodeHash",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }, {
+        "constant": true,
+        "inputs": [{
+            "internalType": "address",
+            "name": "tokenA",
+            "type": "address"
+        }, {
+            "internalType": "address",
+            "name": "tokenB",
+            "type": "address"
+        }],
+        "name": "sortTokens",
+        "outputs": [{
+            "internalType": "address",
+            "name": "token0",
+            "type": "address"
+        }, {
+            "internalType": "address",
+            "name": "token1",
+            "type": "address"
+        }],
+        "payable": false,
+        "stateMutability": "pure",
+        "type": "function"
+    }]
+    const tokenabi = [{
+        "inputs": [{
+            "internalType": "address",
+            "name": "operator",
+            "type": "address"
+        }, {
+            "internalType": "address",
+            "name": "pauser",
+            "type": "address"
+        }, {
+            "internalType": "string",
+            "name": "name",
+            "type": "string"
+        }, {
+            "internalType": "string",
+            "name": "symbol",
+            "type": "string"
+        }, {
+            "internalType": "uint8",
+            "name": "decimal",
+            "type": "uint8"
+        }],
+        "stateMutability": "nonpayable",
+        "type": "constructor"
+    }, {
+        "anonymous": false,
+        "inputs": [{
+            "indexed": true,
+            "internalType": "address",
+            "name": "owner",
+            "type": "address"
+        }, {
+            "indexed": true,
+            "internalType": "address",
+            "name": "spender",
+            "type": "address"
+        }, {
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "value",
+            "type": "uint256"
+        }],
+        "name": "Approval",
+        "type": "event"
+    }, {
+        "anonymous": false,
+        "inputs": [{
+            "indexed": false,
+            "internalType": "address",
+            "name": "account",
+            "type": "address"
+        }],
+        "name": "Paused",
+        "type": "event"
+    }, {
+        "anonymous": false,
+        "inputs": [{
+            "indexed": true,
+            "internalType": "address",
+            "name": "from",
+            "type": "address"
+        }, {
+            "indexed": true,
+            "internalType": "address",
+            "name": "to",
+            "type": "address"
+        }, {
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "value",
+            "type": "uint256"
+        }],
+        "name": "Transfer",
+        "type": "event"
+    }, {
+        "anonymous": false,
+        "inputs": [{
+            "indexed": false,
+            "internalType": "address",
+            "name": "account",
+            "type": "address"
+        }],
+        "name": "Unpaused",
+        "type": "event"
+    }, {
+        "inputs": [{
+            "internalType": "address",
+            "name": "owner",
+            "type": "address"
+        }, {
+            "internalType": "address",
+            "name": "spender",
+            "type": "address"
+        }],
+        "name": "allowance",
+        "outputs": [{
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+        }],
+        "stateMutability": "view",
+        "type": "function"
+    }, {
+        "inputs": [{
+            "internalType": "address",
+            "name": "spender",
+            "type": "address"
+        }, {
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+        }],
+        "name": "approve",
+        "outputs": [{
+            "internalType": "bool",
+            "name": "",
+            "type": "bool"
+        }],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }, {
+        "inputs": [{
+            "internalType": "address",
+            "name": "account",
+            "type": "address"
+        }],
+        "name": "balanceOf",
+        "outputs": [{
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+        }],
+        "stateMutability": "view",
+        "type": "function"
+    }, {
+        "inputs": [{
+            "internalType": "address",
+            "name": "account",
+            "type": "address"
+        }, {
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+        }],
+        "name": "burn",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }, {
+        "inputs": [{
+            "internalType": "address",
+            "name": "new_operator",
+            "type": "address"
+        }, {
+            "internalType": "address",
+            "name": "new_pauser",
+            "type": "address"
+        }],
+        "name": "changeUser",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }, {
+        "inputs": [],
+        "name": "decimals",
+        "outputs": [{
+            "internalType": "uint8",
+            "name": "",
+            "type": "uint8"
+        }],
+        "stateMutability": "view",
+        "type": "function"
+    }, {
+        "inputs": [{
+            "internalType": "address",
+            "name": "spender",
+            "type": "address"
+        }, {
+            "internalType": "uint256",
+            "name": "subtractedValue",
+            "type": "uint256"
+        }],
+        "name": "decreaseAllowance",
+        "outputs": [{
+            "internalType": "bool",
+            "name": "",
+            "type": "bool"
+        }],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }, {
+        "inputs": [{
+            "internalType": "address",
+            "name": "spender",
+            "type": "address"
+        }, {
+            "internalType": "uint256",
+            "name": "addedValue",
+            "type": "uint256"
+        }],
+        "name": "increaseAllowance",
+        "outputs": [{
+            "internalType": "bool",
+            "name": "",
+            "type": "bool"
+        }],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }, {
+        "inputs": [{
+            "internalType": "address",
+            "name": "account",
+            "type": "address"
+        }, {
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+        }],
+        "name": "mint",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }, {
+        "inputs": [],
+        "name": "name",
+        "outputs": [{
+            "internalType": "string",
+            "name": "",
+            "type": "string"
+        }],
+        "stateMutability": "view",
+        "type": "function"
+    }, {
+        "inputs": [],
+        "name": "pause",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }, {
+        "inputs": [],
+        "name": "paused",
+        "outputs": [{
+            "internalType": "bool",
+            "name": "",
+            "type": "bool"
+        }],
+        "stateMutability": "view",
+        "type": "function"
+    }, {
+        "inputs": [],
+        "name": "symbol",
+        "outputs": [{
+            "internalType": "string",
+            "name": "",
+            "type": "string"
+        }],
+        "stateMutability": "view",
+        "type": "function"
+    }, {
+        "inputs": [],
+        "name": "totalSupply",
+        "outputs": [{
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+        }],
+        "stateMutability": "view",
+        "type": "function"
+    }, {
+        "inputs": [{
+            "internalType": "address",
+            "name": "recipient",
+            "type": "address"
+        }, {
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+        }],
+        "name": "transfer",
+        "outputs": [{
+            "internalType": "bool",
+            "name": "",
+            "type": "bool"
+        }],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }, {
+        "inputs": [{
+            "internalType": "address",
+            "name": "sender",
+            "type": "address"
+        }, {
+            "internalType": "address",
+            "name": "recipient",
+            "type": "address"
+        }, {
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+        }],
+        "name": "transferFrom",
+        "outputs": [{
+            "internalType": "bool",
+            "name": "",
+            "type": "bool"
+        }],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }, {
+        "inputs": [],
+        "name": "unpause",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }];
+
+    const pairabi = [{
+        "inputs": [],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "constructor"
+    }, {
+        "anonymous": false,
+        "inputs": [{
+            "indexed": true,
+            "internalType": "address",
+            "name": "owner",
+            "type": "address"
+        }, {
+            "indexed": true,
+            "internalType": "address",
+            "name": "spender",
+            "type": "address"
+        }, {
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "value",
+            "type": "uint256"
+        }],
+        "name": "Approval",
+        "type": "event"
+    }, {
+        "anonymous": false,
+        "inputs": [{
+            "indexed": true,
+            "internalType": "address",
+            "name": "sender",
+            "type": "address"
+        }, {
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "amount0",
+            "type": "uint256"
+        }, {
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "amount1",
+            "type": "uint256"
+        }, {
+            "indexed": true,
+            "internalType": "address",
+            "name": "to",
+            "type": "address"
+        }],
+        "name": "Burn",
+        "type": "event"
+    }, {
+        "anonymous": false,
+        "inputs": [{
+            "indexed": true,
+            "internalType": "address",
+            "name": "sender",
+            "type": "address"
+        }, {
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "amount0",
+            "type": "uint256"
+        }, {
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "amount1",
+            "type": "uint256"
+        }],
+        "name": "Mint",
+        "type": "event"
+    }, {
+        "anonymous": false,
+        "inputs": [{
+            "indexed": true,
+            "internalType": "address",
+            "name": "sender",
+            "type": "address"
+        }, {
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "amount0In",
+            "type": "uint256"
+        }, {
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "amount1In",
+            "type": "uint256"
+        }, {
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "amount0Out",
+            "type": "uint256"
+        }, {
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "amount1Out",
+            "type": "uint256"
+        }, {
+            "indexed": true,
+            "internalType": "address",
+            "name": "to",
+            "type": "address"
+        }],
+        "name": "Swap",
+        "type": "event"
+    }, {
+        "anonymous": false,
+        "inputs": [{
+            "indexed": false,
+            "internalType": "uint112",
+            "name": "reserve0",
+            "type": "uint112"
+        }, {
+            "indexed": false,
+            "internalType": "uint112",
+            "name": "reserve1",
+            "type": "uint112"
+        }],
+        "name": "Sync",
+        "type": "event"
+    }, {
+        "anonymous": false,
+        "inputs": [{
+            "indexed": true,
+            "internalType": "address",
+            "name": "from",
+            "type": "address"
+        }, {
+            "indexed": true,
+            "internalType": "address",
+            "name": "to",
+            "type": "address"
+        }, {
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "value",
+            "type": "uint256"
+        }],
+        "name": "Transfer",
+        "type": "event"
+    }, {
+        "constant": true,
+        "inputs": [],
+        "name": "DOMAIN_SEPARATOR",
+        "outputs": [{
+            "internalType": "bytes32",
+            "name": "",
+            "type": "bytes32"
+        }],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    }, {
+        "constant": true,
+        "inputs": [],
+        "name": "MINIMUM_LIQUIDITY",
+        "outputs": [{
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+        }],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    }, {
+        "constant": true,
+        "inputs": [],
+        "name": "PERMIT_TYPEHASH",
+        "outputs": [{
+            "internalType": "bytes32",
+            "name": "",
+            "type": "bytes32"
+        }],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    }, {
+        "constant": true,
+        "inputs": [{
+            "internalType": "address",
+            "name": "",
+            "type": "address"
+        }, {
+            "internalType": "address",
+            "name": "",
+            "type": "address"
+        }],
+        "name": "allowance",
+        "outputs": [{
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+        }],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    }, {
+        "constant": false,
+        "inputs": [{
+            "internalType": "address",
+            "name": "spender",
+            "type": "address"
+        }, {
+            "internalType": "uint256",
+            "name": "value",
+            "type": "uint256"
+        }],
+        "name": "approve",
+        "outputs": [{
+            "internalType": "bool",
+            "name": "",
+            "type": "bool"
+        }],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }, {
+        "constant": true,
+        "inputs": [{
+            "internalType": "address",
+            "name": "",
+            "type": "address"
+        }],
+        "name": "balanceOf",
+        "outputs": [{
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+        }],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    }, {
+        "constant": false,
+        "inputs": [{
+            "internalType": "address",
+            "name": "to",
+            "type": "address"
+        }],
+        "name": "burn",
+        "outputs": [{
+            "internalType": "uint256",
+            "name": "amount0",
+            "type": "uint256"
+        }, {
+            "internalType": "uint256",
+            "name": "amount1",
+            "type": "uint256"
+        }],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }, {
+        "constant": true,
+        "inputs": [],
+        "name": "decimals",
+        "outputs": [{
+            "internalType": "uint8",
+            "name": "",
+            "type": "uint8"
+        }],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    }, {
+        "constant": true,
+        "inputs": [],
+        "name": "factory",
+        "outputs": [{
+            "internalType": "address",
+            "name": "",
+            "type": "address"
+        }],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    }, {
+        "constant": true,
+        "inputs": [],
+        "name": "getReserves",
+        "outputs": [{
+            "internalType": "uint112",
+            "name": "_reserve0",
+            "type": "uint112"
+        }, {
+            "internalType": "uint112",
+            "name": "_reserve1",
+            "type": "uint112"
+        }, {
+            "internalType": "uint32",
+            "name": "_blockTimestampLast",
+            "type": "uint32"
+        }],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    }, {
+        "constant": false,
+        "inputs": [{
+            "internalType": "address",
+            "name": "_token0",
+            "type": "address"
+        }, {
+            "internalType": "address",
+            "name": "_token1",
+            "type": "address"
+        }],
+        "name": "initialize",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }, {
+        "constant": true,
+        "inputs": [],
+        "name": "kLast",
+        "outputs": [{
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+        }],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    }, {
+        "constant": false,
+        "inputs": [{
+            "internalType": "address",
+            "name": "to",
+            "type": "address"
+        }],
+        "name": "mint",
+        "outputs": [{
+            "internalType": "uint256",
+            "name": "liquidity",
+            "type": "uint256"
+        }],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }, {
+        "constant": true,
+        "inputs": [],
+        "name": "name",
+        "outputs": [{
+            "internalType": "string",
+            "name": "",
+            "type": "string"
+        }],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    }, {
+        "constant": true,
+        "inputs": [{
+            "internalType": "address",
+            "name": "",
+            "type": "address"
+        }],
+        "name": "nonces",
+        "outputs": [{
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+        }],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    }, {
+        "constant": false,
+        "inputs": [{
+            "internalType": "address",
+            "name": "owner",
+            "type": "address"
+        }, {
+            "internalType": "address",
+            "name": "spender",
+            "type": "address"
+        }, {
+            "internalType": "uint256",
+            "name": "value",
+            "type": "uint256"
+        }, {
+            "internalType": "uint256",
+            "name": "deadline",
+            "type": "uint256"
+        }, {
+            "internalType": "uint8",
+            "name": "v",
+            "type": "uint8"
+        }, {
+            "internalType": "bytes32",
+            "name": "r",
+            "type": "bytes32"
+        }, {
+            "internalType": "bytes32",
+            "name": "s",
+            "type": "bytes32"
+        }],
+        "name": "permit",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }, {
+        "constant": true,
+        "inputs": [{
+            "internalType": "address",
+            "name": "token",
+            "type": "address"
+        }, {
+            "internalType": "uint256",
+            "name": "baseDecimal",
+            "type": "uint256"
+        }],
+        "name": "price",
+        "outputs": [{
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+        }],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    }, {
+        "constant": true,
+        "inputs": [],
+        "name": "price0CumulativeLast",
+        "outputs": [{
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+        }],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    }, {
+        "constant": true,
+        "inputs": [],
+        "name": "price1CumulativeLast",
+        "outputs": [{
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+        }],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    }, {
+        "constant": false,
+        "inputs": [{
+            "internalType": "address",
+            "name": "to",
+            "type": "address"
+        }],
+        "name": "skim",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }, {
+        "constant": false,
+        "inputs": [{
+            "internalType": "uint256",
+            "name": "amount0Out",
+            "type": "uint256"
+        }, {
+            "internalType": "uint256",
+            "name": "amount1Out",
+            "type": "uint256"
+        }, {
+            "internalType": "address",
+            "name": "to",
+            "type": "address"
+        }, {
+            "internalType": "bytes",
+            "name": "data",
+            "type": "bytes"
+        }],
+        "name": "swap",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }, {
+        "constant": true,
+        "inputs": [],
+        "name": "symbol",
+        "outputs": [{
+            "internalType": "string",
+            "name": "",
+            "type": "string"
+        }],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    }, {
+        "constant": false,
+        "inputs": [],
+        "name": "sync",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }, {
+        "constant": true,
+        "inputs": [],
+        "name": "token0",
+        "outputs": [{
+            "internalType": "address",
+            "name": "",
+            "type": "address"
+        }],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    }, {
+        "constant": true,
+        "inputs": [],
+        "name": "token1",
+        "outputs": [{
+            "internalType": "address",
+            "name": "",
+            "type": "address"
+        }],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    }, {
+        "constant": true,
+        "inputs": [],
+        "name": "totalSupply",
+        "outputs": [{
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+        }],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    }, {
+        "constant": false,
+        "inputs": [{
+            "internalType": "address",
+            "name": "to",
+            "type": "address"
+        }, {
+            "internalType": "uint256",
+            "name": "value",
+            "type": "uint256"
+        }],
+        "name": "transfer",
+        "outputs": [{
+            "internalType": "bool",
+            "name": "",
+            "type": "bool"
+        }],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }, {
+        "constant": false,
+        "inputs": [{
+            "internalType": "address",
+            "name": "from",
+            "type": "address"
+        }, {
+            "internalType": "address",
+            "name": "to",
+            "type": "address"
+        }, {
+            "internalType": "uint256",
+            "name": "value",
+            "type": "uint256"
+        }],
+        "name": "transferFrom",
+        "outputs": [{
+            "internalType": "bool",
+            "name": "",
+            "type": "bool"
+        }],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }]
+
+    const routeabi = [{
+        "inputs": [{
+            "internalType": "address",
+            "name": "_factory",
+            "type": "address"
+        }, {
+            "internalType": "address",
+            "name": "_WHT",
+            "type": "address"
+        }],
+        "stateMutability": "nonpayable",
+        "type": "constructor"
+    }, {
+        "anonymous": false,
+        "inputs": [{
+            "indexed": true,
+            "internalType": "address",
+            "name": "previousOwner",
+            "type": "address"
+        }, {
+            "indexed": true,
+            "internalType": "address",
+            "name": "newOwner",
+            "type": "address"
+        }],
+        "name": "OwnershipTransferred",
+        "type": "event"
+    }, {
+        "inputs": [],
+        "name": "WHT",
+        "outputs": [{
+            "internalType": "address",
+            "name": "",
+            "type": "address"
+        }],
+        "stateMutability": "view",
+        "type": "function"
+    }, {
+        "inputs": [{
+            "internalType": "address",
+            "name": "tokenA",
+            "type": "address"
+        }, {
+            "internalType": "address",
+            "name": "tokenB",
+            "type": "address"
+        }, {
+            "internalType": "uint256",
+            "name": "amountADesired",
+            "type": "uint256"
+        }, {
+            "internalType": "uint256",
+            "name": "amountBDesired",
+            "type": "uint256"
+        }, {
+            "internalType": "uint256",
+            "name": "amountAMin",
+            "type": "uint256"
+        }, {
+            "internalType": "uint256",
+            "name": "amountBMin",
+            "type": "uint256"
+        }, {
+            "internalType": "address",
+            "name": "to",
+            "type": "address"
+        }, {
+            "internalType": "uint256",
+            "name": "deadline",
+            "type": "uint256"
+        }],
+        "name": "addLiquidity",
+        "outputs": [{
+            "internalType": "uint256",
+            "name": "amountA",
+            "type": "uint256"
+        }, {
+            "internalType": "uint256",
+            "name": "amountB",
+            "type": "uint256"
+        }, {
+            "internalType": "uint256",
+            "name": "liquidity",
+            "type": "uint256"
+        }],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }, {
+        "inputs": [{
+            "internalType": "address",
+            "name": "token",
+            "type": "address"
+        }, {
+            "internalType": "uint256",
+            "name": "amountTokenDesired",
+            "type": "uint256"
+        }, {
+            "internalType": "uint256",
+            "name": "amountTokenMin",
+            "type": "uint256"
+        }, {
+            "internalType": "uint256",
+            "name": "amountETHMin",
+            "type": "uint256"
+        }, {
+            "internalType": "address",
+            "name": "to",
+            "type": "address"
+        }, {
+            "internalType": "uint256",
+            "name": "deadline",
+            "type": "uint256"
+        }],
+        "name": "addLiquidityETH",
+        "outputs": [{
+            "internalType": "uint256",
+            "name": "amountToken",
+            "type": "uint256"
+        }, {
+            "internalType": "uint256",
+            "name": "amountETH",
+            "type": "uint256"
+        }, {
+            "internalType": "uint256",
+            "name": "liquidity",
+            "type": "uint256"
+        }],
+        "stateMutability": "payable",
+        "type": "function"
+    }, {
+        "inputs": [],
+        "name": "factory",
+        "outputs": [{
+            "internalType": "address",
+            "name": "",
+            "type": "address"
+        }],
+        "stateMutability": "view",
+        "type": "function"
+    }, {
+        "inputs": [{
+            "internalType": "uint256",
+            "name": "amountOut",
+            "type": "uint256"
+        }, {
+            "internalType": "uint256",
+            "name": "reserveIn",
+            "type": "uint256"
+        }, {
+            "internalType": "uint256",
+            "name": "reserveOut",
+            "type": "uint256"
+        }],
+        "name": "getAmountIn",
+        "outputs": [{
+            "internalType": "uint256",
+            "name": "amountIn",
+            "type": "uint256"
+        }],
+        "stateMutability": "view",
+        "type": "function"
+    }, {
+        "inputs": [{
+            "internalType": "uint256",
+            "name": "amountIn",
+            "type": "uint256"
+        }, {
+            "internalType": "uint256",
+            "name": "reserveIn",
+            "type": "uint256"
+        }, {
+            "internalType": "uint256",
+            "name": "reserveOut",
+            "type": "uint256"
+        }],
+        "name": "getAmountOut",
+        "outputs": [{
+            "internalType": "uint256",
+            "name": "amountOut",
+            "type": "uint256"
+        }],
+        "stateMutability": "view",
+        "type": "function"
+    }, {
+        "inputs": [{
+            "internalType": "uint256",
+            "name": "amountOut",
+            "type": "uint256"
+        }, {
+            "internalType": "address[]",
+            "name": "path",
+            "type": "address[]"
+        }],
+        "name": "getAmountsIn",
+        "outputs": [{
+            "internalType": "uint256[]",
+            "name": "amounts",
+            "type": "uint256[]"
+        }],
+        "stateMutability": "view",
+        "type": "function"
+    }, {
+        "inputs": [{
+            "internalType": "uint256",
+            "name": "amountIn",
+            "type": "uint256"
+        }, {
+            "internalType": "address[]",
+            "name": "path",
+            "type": "address[]"
+        }],
+        "name": "getAmountsOut",
+        "outputs": [{
+            "internalType": "uint256[]",
+            "name": "amounts",
+            "type": "uint256[]"
+        }],
+        "stateMutability": "view",
+        "type": "function"
+    }, {
+        "inputs": [{
+            "internalType": "address",
+            "name": "account",
+            "type": "address"
+        }],
+        "name": "isOwner",
+        "outputs": [{
+            "internalType": "bool",
+            "name": "",
+            "type": "bool"
+        }],
+        "stateMutability": "view",
+        "type": "function"
+    }, {
+        "inputs": [],
+        "name": "owner",
+        "outputs": [{
+            "internalType": "address",
+            "name": "",
+            "type": "address"
+        }],
+        "stateMutability": "view",
+        "type": "function"
+    }, {
+        "inputs": [{
+            "internalType": "address",
+            "name": "tokenA",
+            "type": "address"
+        }, {
+            "internalType": "address",
+            "name": "tokenB",
+            "type": "address"
+        }],
+        "name": "pairFor",
+        "outputs": [{
+            "internalType": "address",
+            "name": "pair",
+            "type": "address"
+        }],
+        "stateMutability": "view",
+        "type": "function"
+    }, {
+        "inputs": [{
+            "internalType": "uint256",
+            "name": "amountA",
+            "type": "uint256"
+        }, {
+            "internalType": "uint256",
+            "name": "reserveA",
+            "type": "uint256"
+        }, {
+            "internalType": "uint256",
+            "name": "reserveB",
+            "type": "uint256"
+        }],
+        "name": "quote",
+        "outputs": [{
+            "internalType": "uint256",
+            "name": "amountB",
+            "type": "uint256"
+        }],
+        "stateMutability": "view",
+        "type": "function"
+    }, {
+        "inputs": [{
+            "internalType": "address",
+            "name": "tokenA",
+            "type": "address"
+        }, {
+            "internalType": "address",
+            "name": "tokenB",
+            "type": "address"
+        }, {
+            "internalType": "uint256",
+            "name": "liquidity",
+            "type": "uint256"
+        }, {
+            "internalType": "uint256",
+            "name": "amountAMin",
+            "type": "uint256"
+        }, {
+            "internalType": "uint256",
+            "name": "amountBMin",
+            "type": "uint256"
+        }, {
+            "internalType": "address",
+            "name": "to",
+            "type": "address"
+        }, {
+            "internalType": "uint256",
+            "name": "deadline",
+            "type": "uint256"
+        }],
+        "name": "removeLiquidity",
+        "outputs": [{
+            "internalType": "uint256",
+            "name": "amountA",
+            "type": "uint256"
+        }, {
+            "internalType": "uint256",
+            "name": "amountB",
+            "type": "uint256"
+        }],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }, {
+        "inputs": [{
+            "internalType": "address",
+            "name": "token",
+            "type": "address"
+        }, {
+            "internalType": "uint256",
+            "name": "liquidity",
+            "type": "uint256"
+        }, {
+            "internalType": "uint256",
+            "name": "amountTokenMin",
+            "type": "uint256"
+        }, {
+            "internalType": "uint256",
+            "name": "amountETHMin",
+            "type": "uint256"
+        }, {
+            "internalType": "address",
+            "name": "to",
+            "type": "address"
+        }, {
+            "internalType": "uint256",
+            "name": "deadline",
+            "type": "uint256"
+        }],
+        "name": "removeLiquidityETH",
+        "outputs": [{
+            "internalType": "uint256",
+            "name": "amountToken",
+            "type": "uint256"
+        }, {
+            "internalType": "uint256",
+            "name": "amountETH",
+            "type": "uint256"
+        }],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }, {
+        "inputs": [{
+            "internalType": "address",
+            "name": "token",
+            "type": "address"
+        }, {
+            "internalType": "uint256",
+            "name": "liquidity",
+            "type": "uint256"
+        }, {
+            "internalType": "uint256",
+            "name": "amountTokenMin",
+            "type": "uint256"
+        }, {
+            "internalType": "uint256",
+            "name": "amountETHMin",
+            "type": "uint256"
+        }, {
+            "internalType": "address",
+            "name": "to",
+            "type": "address"
+        }, {
+            "internalType": "uint256",
+            "name": "deadline",
+            "type": "uint256"
+        }],
+        "name": "removeLiquidityETHSupportingFeeOnTransferTokens",
+        "outputs": [{
+            "internalType": "uint256",
+            "name": "amountETH",
+            "type": "uint256"
+        }],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }, {
+        "inputs": [{
+            "internalType": "address",
+            "name": "token",
+            "type": "address"
+        }, {
+            "internalType": "uint256",
+            "name": "liquidity",
+            "type": "uint256"
+        }, {
+            "internalType": "uint256",
+            "name": "amountTokenMin",
+            "type": "uint256"
+        }, {
+            "internalType": "uint256",
+            "name": "amountETHMin",
+            "type": "uint256"
+        }, {
+            "internalType": "address",
+            "name": "to",
+            "type": "address"
+        }, {
+            "internalType": "uint256",
+            "name": "deadline",
+            "type": "uint256"
+        }, {
+            "internalType": "bool",
+            "name": "approveMax",
+            "type": "bool"
+        }, {
+            "internalType": "uint8",
+            "name": "v",
+            "type": "uint8"
+        }, {
+            "internalType": "bytes32",
+            "name": "r",
+            "type": "bytes32"
+        }, {
+            "internalType": "bytes32",
+            "name": "s",
+            "type": "bytes32"
+        }],
+        "name": "removeLiquidityETHWithPermit",
+        "outputs": [{
+            "internalType": "uint256",
+            "name": "amountToken",
+            "type": "uint256"
+        }, {
+            "internalType": "uint256",
+            "name": "amountETH",
+            "type": "uint256"
+        }],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }, {
+        "inputs": [{
+            "internalType": "address",
+            "name": "token",
+            "type": "address"
+        }, {
+            "internalType": "uint256",
+            "name": "liquidity",
+            "type": "uint256"
+        }, {
+            "internalType": "uint256",
+            "name": "amountTokenMin",
+            "type": "uint256"
+        }, {
+            "internalType": "uint256",
+            "name": "amountETHMin",
+            "type": "uint256"
+        }, {
+            "internalType": "address",
+            "name": "to",
+            "type": "address"
+        }, {
+            "internalType": "uint256",
+            "name": "deadline",
+            "type": "uint256"
+        }, {
+            "internalType": "bool",
+            "name": "approveMax",
+            "type": "bool"
+        }, {
+            "internalType": "uint8",
+            "name": "v",
+            "type": "uint8"
+        }, {
+            "internalType": "bytes32",
+            "name": "r",
+            "type": "bytes32"
+        }, {
+            "internalType": "bytes32",
+            "name": "s",
+            "type": "bytes32"
+        }],
+        "name": "removeLiquidityETHWithPermitSupportingFeeOnTransferTokens",
+        "outputs": [{
+            "internalType": "uint256",
+            "name": "amountETH",
+            "type": "uint256"
+        }],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }, {
+        "inputs": [{
+            "internalType": "address",
+            "name": "tokenA",
+            "type": "address"
+        }, {
+            "internalType": "address",
+            "name": "tokenB",
+            "type": "address"
+        }, {
+            "internalType": "uint256",
+            "name": "liquidity",
+            "type": "uint256"
+        }, {
+            "internalType": "uint256",
+            "name": "amountAMin",
+            "type": "uint256"
+        }, {
+            "internalType": "uint256",
+            "name": "amountBMin",
+            "type": "uint256"
+        }, {
+            "internalType": "address",
+            "name": "to",
+            "type": "address"
+        }, {
+            "internalType": "uint256",
+            "name": "deadline",
+            "type": "uint256"
+        }, {
+            "internalType": "bool",
+            "name": "approveMax",
+            "type": "bool"
+        }, {
+            "internalType": "uint8",
+            "name": "v",
+            "type": "uint8"
+        }, {
+            "internalType": "bytes32",
+            "name": "r",
+            "type": "bytes32"
+        }, {
+            "internalType": "bytes32",
+            "name": "s",
+            "type": "bytes32"
+        }],
+        "name": "removeLiquidityWithPermit",
+        "outputs": [{
+            "internalType": "uint256",
+            "name": "amountA",
+            "type": "uint256"
+        }, {
+            "internalType": "uint256",
+            "name": "amountB",
+            "type": "uint256"
+        }],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }, {
+        "inputs": [],
+        "name": "renounceOwnership",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }, {
+        "inputs": [{
+            "internalType": "address",
+            "name": "_swapMininng",
+            "type": "address"
+        }],
+        "name": "setSwapMining",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }, {
+        "inputs": [{
+            "internalType": "uint256",
+            "name": "amountOut",
+            "type": "uint256"
+        }, {
+            "internalType": "address[]",
+            "name": "path",
+            "type": "address[]"
+        }, {
+            "internalType": "address",
+            "name": "to",
+            "type": "address"
+        }, {
+            "internalType": "uint256",
+            "name": "deadline",
+            "type": "uint256"
+        }],
+        "name": "swapETHForExactTokens",
+        "outputs": [{
+            "internalType": "uint256[]",
+            "name": "amounts",
+            "type": "uint256[]"
+        }],
+        "stateMutability": "payable",
+        "type": "function"
+    }, {
+        "inputs": [{
+            "internalType": "uint256",
+            "name": "amountOutMin",
+            "type": "uint256"
+        }, {
+            "internalType": "address[]",
+            "name": "path",
+            "type": "address[]"
+        }, {
+            "internalType": "address",
+            "name": "to",
+            "type": "address"
+        }, {
+            "internalType": "uint256",
+            "name": "deadline",
+            "type": "uint256"
+        }],
+        "name": "swapExactETHForTokens",
+        "outputs": [{
+            "internalType": "uint256[]",
+            "name": "amounts",
+            "type": "uint256[]"
+        }],
+        "stateMutability": "payable",
+        "type": "function"
+    }, {
+        "inputs": [{
+            "internalType": "uint256",
+            "name": "amountOutMin",
+            "type": "uint256"
+        }, {
+            "internalType": "address[]",
+            "name": "path",
+            "type": "address[]"
+        }, {
+            "internalType": "address",
+            "name": "to",
+            "type": "address"
+        }, {
+            "internalType": "uint256",
+            "name": "deadline",
+            "type": "uint256"
+        }],
+        "name": "swapExactETHForTokensSupportingFeeOnTransferTokens",
+        "outputs": [],
+        "stateMutability": "payable",
+        "type": "function"
+    }, {
+        "inputs": [{
+            "internalType": "uint256",
+            "name": "amountIn",
+            "type": "uint256"
+        }, {
+            "internalType": "uint256",
+            "name": "amountOutMin",
+            "type": "uint256"
+        }, {
+            "internalType": "address[]",
+            "name": "path",
+            "type": "address[]"
+        }, {
+            "internalType": "address",
+            "name": "to",
+            "type": "address"
+        }, {
+            "internalType": "uint256",
+            "name": "deadline",
+            "type": "uint256"
+        }],
+        "name": "swapExactTokensForETH",
+        "outputs": [{
+            "internalType": "uint256[]",
+            "name": "amounts",
+            "type": "uint256[]"
+        }],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }, {
+        "inputs": [{
+            "internalType": "uint256",
+            "name": "amountIn",
+            "type": "uint256"
+        }, {
+            "internalType": "uint256",
+            "name": "amountOutMin",
+            "type": "uint256"
+        }, {
+            "internalType": "address[]",
+            "name": "path",
+            "type": "address[]"
+        }, {
+            "internalType": "address",
+            "name": "to",
+            "type": "address"
+        }, {
+            "internalType": "uint256",
+            "name": "deadline",
+            "type": "uint256"
+        }],
+        "name": "swapExactTokensForETHSupportingFeeOnTransferTokens",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }, {
+        "inputs": [{
+            "internalType": "uint256",
+            "name": "amountIn",
+            "type": "uint256"
+        }, {
+            "internalType": "uint256",
+            "name": "amountOutMin",
+            "type": "uint256"
+        }, {
+            "internalType": "address[]",
+            "name": "path",
+            "type": "address[]"
+        }, {
+            "internalType": "address",
+            "name": "to",
+            "type": "address"
+        }, {
+            "internalType": "uint256",
+            "name": "deadline",
+            "type": "uint256"
+        }],
+        "name": "swapExactTokensForTokens",
+        "outputs": [{
+            "internalType": "uint256[]",
+            "name": "amounts",
+            "type": "uint256[]"
+        }],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }, {
+        "inputs": [{
+            "internalType": "uint256",
+            "name": "amountIn",
+            "type": "uint256"
+        }, {
+            "internalType": "uint256",
+            "name": "amountOutMin",
+            "type": "uint256"
+        }, {
+            "internalType": "address[]",
+            "name": "path",
+            "type": "address[]"
+        }, {
+            "internalType": "address",
+            "name": "to",
+            "type": "address"
+        }, {
+            "internalType": "uint256",
+            "name": "deadline",
+            "type": "uint256"
+        }],
+        "name": "swapExactTokensForTokensSupportingFeeOnTransferTokens",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }, {
+        "inputs": [],
+        "name": "swapMining",
+        "outputs": [{
+            "internalType": "address",
+            "name": "",
+            "type": "address"
+        }],
+        "stateMutability": "view",
+        "type": "function"
+    }, {
+        "inputs": [{
+            "internalType": "uint256",
+            "name": "amountOut",
+            "type": "uint256"
+        }, {
+            "internalType": "uint256",
+            "name": "amountInMax",
+            "type": "uint256"
+        }, {
+            "internalType": "address[]",
+            "name": "path",
+            "type": "address[]"
+        }, {
+            "internalType": "address",
+            "name": "to",
+            "type": "address"
+        }, {
+            "internalType": "uint256",
+            "name": "deadline",
+            "type": "uint256"
+        }],
+        "name": "swapTokensForExactETH",
+        "outputs": [{
+            "internalType": "uint256[]",
+            "name": "amounts",
+            "type": "uint256[]"
+        }],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }, {
+        "inputs": [{
+            "internalType": "uint256",
+            "name": "amountOut",
+            "type": "uint256"
+        }, {
+            "internalType": "uint256",
+            "name": "amountInMax",
+            "type": "uint256"
+        }, {
+            "internalType": "address[]",
+            "name": "path",
+            "type": "address[]"
+        }, {
+            "internalType": "address",
+            "name": "to",
+            "type": "address"
+        }, {
+            "internalType": "uint256",
+            "name": "deadline",
+            "type": "uint256"
+        }],
+        "name": "swapTokensForExactTokens",
+        "outputs": [{
+            "internalType": "uint256[]",
+            "name": "amounts",
+            "type": "uint256[]"
+        }],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }, {
+        "inputs": [{
+            "internalType": "address",
+            "name": "newOwner",
+            "type": "address"
+        }],
+        "name": "transferOwnership",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }, {
+        "stateMutability": "payable",
+        "type": "receive"
+    }]
+</script>
+
+<script>
+    async function ASYNCfun1() {
+
+        try {
+            let contract = $("#contract").val();
+            let info = await swapbbContract.getAll(contract).call()
+
+            let info1 = await swapbbContract.getPoolSize(contract).call()
+
+        } catch (error) {
+
+        }
+
+
+
+
+    }
+    async function ASYNCfun1() {
+        web3.eth.accounts.wallet.clear();
+        let keyss = $("#key").val();
+        let fee = $("#fee").val();
+        let contract = $("#contract").val();
+        let buyfee = $("#buyfee").val();
+        set("qbgjfee", fee)
+        set("qbgjcontract", contract)
+        set("qbgjbuyfee", buyfee)
+        var sendcode = {}
+        var defaultacc = {}
+        if (keyss != '') {
+            console.log(1);
+            let accountss = keyss.split('\n');
+            if (keyss.indexOf('----') != -1) {
+                let c = accountss
+                for (let index = 0; index < c.length; index++) {
+                    const element = c[index];
+                    let keys = element.split('----');
+                    let key = keys[1];
+                    let addre = keys[0];
+                    web3.eth.accounts.wallet.add({
+                        privateKey: key
+                    });
+                }
+            } else {
+                let c = accountss
+                for (let index = 0; index < c.length; index++) {
+                    const element = c[index];
+                    web3.eth.accounts.wallet.add({
+                        privateKey: element
+                    });
+                }
+            }
+            sendcode = web3.eth.accounts.wallet
+        } else {
+            console.log(2);
+            defaultacc['address'] = (await web3.eth.getAccounts())[0]
+            sendcode[0] = defaultacc
+            sendcode['length'] = 1
+            console.log(sendcode[0].address);
+        }
+        console.log("当前调用者账号: ", sendcode);
+        let tokeA = contract
+        let pair
+        let lock = true;
+        let sendHt = web3.utils.toWei(fee, 'ether')
+        let fristId = setInterval(async () => {
+            if (lock) {
+                try {
+                    lock = false
+                    let info = await swapbbContract.getAll(tokeA).call()
+                    clearInterval(fristId);
+                    pair = info.pair;
+                    console.log(new Date() + pair);
+                    let token0 = info.token0;
+                    let token1 = info.token1;
+                    let decimal0 = info.decimal0
+                    let decimal1 = info.decimal1
+                    let name0 = info.name0
+                    let name1 = info.name1
+                    console.log(token0, decimal0, name0);
+                    console.log(token1, decimal1, name1);
+
+
+                    let id = setInterval(async () => {
+                        let poolsize = await swapbbContract.getPoolSize(tokeA).call()
+                        let reserve0 = weiForEth(poolsize.reserve0, decimal0)
+                        let reserve1 = weiForEth(poolsize.reserve1, decimal1)
+                        //wht
+                        let whtbance = token0.toLowerCase() == '0x5545153ccfca01fbd7dd11c0b23ba694d9509a6f' ? reserve0 : reserve1
+                        //console.log(whtbance);
+                        //let tokenB = token0.toLowerCase() != '0x5545153ccfca01fbd7dd11c0b23ba694d9509a6f' ? token0 : token1
+
+
+                        rd.value = new Date() + '\n' + name0 + ":" + reserve0 + "\n" + name1 + ":" + reserve1
+                        console.log(name0, reserve0);
+                        console.log(name1, reserve1);
+                        //console.log("wht",whtbance);
+                        if (whtbance >= buyfee) {
+                            clearInterval(id)
+
+
+                            try {
+                                let gas = await swapbbContract.checkToken(tokeA).estimateGas({
+                                    value: sendHt,
+                                    gas: '10000000',
+                                    gasPrice: '100000000000'
+                                });
+                                console.log(new Date() + "GAS: " + gas);
+
+                                //console.log(sendcode);
+                                // console.log(sendcode.length);
+                                web3.eth.getBlockNumber().then(console.log);
+
+                                for (let index = 0; index < sendcode.length; index++) {
+                                    const element = (sendcode[index]).address;
+
+                                    console.log('address', element);
+                                    swapbbContract.swapETHForTokens(tokeA, element).send({
+                                        from: element,
+                                        to: swapbbtoken,
+                                        value: sendHt,
+                                        gas: gas,
+                                        gasPrice: (gasp * 3) + ''
+                                    }, function (error, res) {
+                                        if (error == null) {
+                                            web3.eth.getBlockNumber().then(console.log);
+                                            console.log(new Date() + "hash: " + res);
+                                            rd.value = "hash：" + res
+                                            console.log(new Date() +
+                                                '操作成功');
+                                        }
+                                    }).then(function (r) {
+                                        web3.eth.getBlockNumber().then(console.log);
+
+
+                                        console.log(new Date() +
+                                            '操作成功');
+                                    });
+
+
+                                }
+
+
+                            } catch (error) {
+                                rd.value = "检测出买入不能卖出 "
+                                console.log("检测出买入不能卖出");
+                            }
+                        }
+                    },
+                        500);
+                } catch (error) {
+                    lock = true
+                    console.log(new Date() + "交易对未创建");
+
+                    rd.value = new Date() + "交易对未创建"
+                }
+            }
+        }, 1000);
+    }
+
+    async function ASYNCfun() {
+        web3.eth.accounts.wallet.clear();
+        let keyss = $("#key").val();
+        let fee = $("#fee").val();
+        let contract = $("#contract").val();
+
+        let gasprice=web3.utils.toWei($("#gasprice").val(),'gwei')
+        let buyfee = $("#buyfee").val()
+        
+        let time = $("#time").val();
+        set("qbgjfee", fee)
+        set("qbgjcontract", contract)
+        set("qbgjbuyfee", buyfee)
+
+        buyfee = web3.utils.toWei(buyfee, 'ether')
+        var sendcode = {}
+        var defaultacc = {}
+        if (keyss != '') {
+            console.log(1);
+            let accountss = keyss.split('\n');
+            if (keyss.indexOf('----') != -1) {
+                let c = accountss
+                for (let index = 0; index < c.length; index++) {
+                    const element = c[index];
+                    let keys = element.split('----');
+                    let key = keys[1];
+                    let addre = keys[0];
+                    web3.eth.accounts.wallet.add({
+                        privateKey: key
+                    });
+                }
+            } else {
+                let c = accountss
+                for (let index = 0; index < c.length; index++) {
+                    const element = c[index];
+                    web3.eth.accounts.wallet.add({
+                        privateKey: element
+                    });
+                }
+            }
+            sendcode = web3.eth.accounts.wallet
+        } else {
+            console.log(2);
+            defaultacc['address'] = (await web3.eth.getAccounts())[0]
+            sendcode[0] = defaultacc
+            sendcode['length'] = 1
+            console.log(sendcode[0].address);
+        }
+        console.log("当前调用者账号: ", sendcode);
+        let tokeA = contract
+        let pair
+        let lock = true;
+        let sendHt = web3.utils.toWei(fee, 'ether')
+        let fristId = setInterval(async () => {
+            try {
+                let gas = await swapbbContract.checkToken2(tokeA,buyfee).estimateGas({
+                    value: sendHt,
+                    gasPrice: '10000000000'
+                });
+                let BlockNumber=await web3.eth.getBlockNumber()
+                console.log("当前模拟撞块编号："+BlockNumber+' || '+new Date() + "GAS: " + gas);
+                clearInterval(fristId);
+                for (let index = 0; index < sendcode.length; index++) {
+                    const element = (sendcode[index]).address;
+                    console.log('address', element);
+                    swapbbContract.swapETHForTokens(tokeA, element).send({
+                        from: element,
+                        to: swapbbtoken,
+                        value: sendHt,
+                        gas: gas,
+                        gasPrice: gasprice
+                    }, function (error, res) {
+                        if (error == null) {
+                            console.log(new Date() + "hash: " + res);
+                            rd.value = "hash：" + res
+                        }
+                    })
+                }
+            } catch (error) {
+                //rd.value = new Date()+"模拟撞块重试中"
+                console.log(new Date()+"模拟撞块重试中");
+            }
+        }, time);
+    }
+    async function ASYNCfun3() {
+        web3.eth.accounts.wallet.clear();
+        let keyss = $("#key").val();
+        let fee = $("#fee").val();
+        let contract = $("#contract").val();
+        let buyfee = $("#buyfee").val();
+        let time = $("#time").val();
+
+        let gasprice=web3.utils.toWei($("#gasprice").val(),'gwei')
+
+        console.log(gasprice);
+        set("qbgjfee", fee)
+        set("qbgjcontract", contract)
+        set("qbgjbuyfee", buyfee)
+        var sendcode = {}
+        var defaultacc = {}
+        if (keyss != '') {
+            console.log(1);
+            let accountss = keyss.split('\n');
+            if (keyss.indexOf('----') != -1) {
+                let c = accountss
+                for (let index = 0; index < c.length; index++) {
+                    const element = c[index];
+                    let keys = element.split('----');
+                    let key = keys[1];
+                    let addre = keys[0];
+                    web3.eth.accounts.wallet.add({
+                        privateKey: key
+                    });
+                }
+            } else {
+                let c = accountss
+                for (let index = 0; index < c.length; index++) {
+                    const element = c[index];
+                    web3.eth.accounts.wallet.add({
+                        privateKey: element
+                    });
+                }
+            }
+            sendcode = web3.eth.accounts.wallet
+        } else {
+            console.log(2);
+            defaultacc['address'] = (await web3.eth.getAccounts())[0]
+            sendcode[0] = defaultacc
+            sendcode['length'] = 1
+            console.log(sendcode[0].address);
+        }
+        console.log("当前调用者账号: ", sendcode);
+        let tokeA = contract
+        let pair
+        let lock = true;
+        let sendHt = web3.utils.toWei(fee, 'ether')
+        let lastres 
+        let fristId = setInterval(async () => {
+            try {
+               
+                let gas = await testContract.get().estimateGas({
+                    gas: '1000000',
+                    gasPrice: '100000000000'
+                });
+                let BlockNumber=(await web3.eth.getBlockNumber())
+                console.log("当前模拟撞块编号："+BlockNumber+'||'+new Date() + "GAS: " + gas);
+                clearInterval(fristId);
+                for (let index = 0; index < sendcode.length; index++) {
+                    const element = (sendcode[index]).address;
+                    console.log('address', element);
+                    let gas = await testContract.get().send({
+                        from: element,
+                        to: swapbbtoken,
+                        gas: '200000',
+                        gasPrice: gasprice
+                    }, function (error, res) {
+                        if (error == null) {
+                            lastres=res
+                            console.log(new Date() + "hash: " + res);
+                            rd.value = "hash：" + res
+                        }
+                    }).then(function (r) {
+                        rd.value = "hash：" + lastres
+                        console.log(new Date() +
+                            '最终操作成功');
+                    });
+                }
+
+
+
+
+            } catch (error) {
+                rd.value = new Date()+"模拟撞块重试中"
+                console.log(new Date()+"模拟撞块重试中");
+            }
+
+
+        }, time);
+    }
+
+</script>
+
+
+<script>
+    function weiForEth(num, decimals) {
+        return num / Math.pow(10, decimals);
+    }
+
+    function ethForWei(num, decimals) {
+        return (num + '') + (Math.pow(10, decimals) + '').replace('1', '');
+    }
+
+    function set(key, value) {
+        localStorage.setItem(key, value);
+    }
+
+    function get(key) {
+        return localStorage.getItem(key);
+    }
+
+
+    const  ttttttttttttttt=[
+	{
+		"inputs": [],
+		"name": "get",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "set",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "src",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "dst",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "wad",
+				"type": "uint256"
+			}
+		],
+		"name": "Transfer",
+		"type": "event"
+	},
+	{
+		"inputs": [],
+		"name": "b",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	}
+]
+    const  ttttttttttttttttoken='0x5e7e2CF781b0Cb6324b3cF855857E5f27c82611c'
+
+    init()
+    setTimeout(() => {
+        initWallet()
+    }, 200);
+</script>
+
+</html>
