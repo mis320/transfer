@@ -22,12 +22,14 @@
     <div id=""><textarea name="" id="buyfee" cols="80" rows="2">10</textarea></div>
     <span>循环时间(>=200)</span><br>
     <div id=""><textarea name="" id="time" cols="80" rows="2">400</textarea></div>
-    <span>gasPrice(>=2.25)</span><br>
-    <div id=""><textarea name="" id="gasprice" cols="80" rows="2">2.25</textarea></div>
+    <span>gasPrice(0:默认)</span><br>
+    <div id=""><textarea name="" id="gasprice" cols="80" rows="2">0</textarea></div>
     <span>调用结果</span><br>
     <div id=""><textarea name="" id="res" cols="80" rows="5">。。。。。</textarea></div>
     <button onclick="ASYNCfun()">执行</button>
     <!-- <button onclick="sell()">卖出</button> -->
+
+    <!-- <button onclick="test()">test</button> -->
 </body>
 
 
@@ -40,7 +42,9 @@
     var swapbbContract;
 
     var web3Provider;
+    let web3x
 
+    let falg = false
 
 
 
@@ -54,6 +58,60 @@
         let v3 = document.getElementById("buyfee");
         v3.value = get('qbgjbuyfee');
     }
+   
+   
+    async function getWeb3() {
+        let intervalID
+        clearInterval(intervalID)
+        let web3x = ({
+            web3: null,
+            gasPrice: null,
+        })
+        let web3Provider;
+        if (window.ethereum) {
+            web3Provider = window.ethereum;
+            try {
+                window.ethereum.enable();
+            } catch (error) {
+                window.ethereum.enable();
+                web3Provider = window.web3.currentProvider;
+            }
+        } else {
+            window.ethereum.enable();
+            web3Provider = window.web3.currentProvider;
+        }
+        web3x.web3 = new Web3(web3Provider); //web3js就是你需要的web3实例
+        web3x.gasPrice = await web3x.web3.eth.getGasPrice();
+        let network = web3x.web3.currentProvider.networkVersion
+            intervalID =  setInterval(async () => {
+            let networktemp = web3x.web3.currentProvider.networkVersion
+           
+            if (network != networktemp) {
+                network = networktemp
+                web3x.gasPrice = await web3x.web3.eth.getGasPrice();
+            }
+        }, 1500);
+
+        return web3x
+    }
+    async function web3init() {
+
+        
+        
+        try {
+            web3x = await getWeb3();
+            console.log(web3x.web3, web3x.gasPrice);
+            swapbbContract = new web3x.web3.eth.Contract(swapbbabi, swapbbtoken).methods;
+            rd.value = "初始化完成"
+        } catch (error) {
+            setTimeout(() => {
+                web3init()
+           }, 300);
+        }
+    }
+
+
+   
     async function initWallet() {
 
         // alert(1);return;
@@ -86,8 +144,6 @@
         //console.log(routerContract);
         //WHT = await routerContract.methods.WHT().call();
         //console.log("WHT:" + WHT);
-
-
         var tim = setInterval(function () {
             web3.eth.getAccounts(function (error, result) {
                 if (!error) {
@@ -102,6 +158,8 @@
         }, 1500);
 
         rd.value = "初始化完成"
+
+        
     }
 </Script>
 
@@ -110,6 +168,11 @@
     const swapbbtoken = '0x71373633dB764d678F58020A89436997A4f4fb82'
 
     const swapbbabi = [
+	{
+		"inputs": [],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
 	{
 		"inputs": [
 			{
@@ -121,6 +184,25 @@
 		"name": "ApprovalToken",
 		"outputs": [],
 		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"name": "WETHMap",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{
@@ -166,64 +248,6 @@
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "tokenA",
-				"type": "address"
-			},
-			{
-				"internalType": "address",
-				"name": "to",
-				"type": "address"
-			}
-		],
-		"name": "swapETHForTokens",
-		"outputs": [
-			{
-				"internalType": "uint256[]",
-				"name": "tokens",
-				"type": "uint256[]"
-			}
-		],
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "tokenAmount",
-				"type": "uint256"
-			},
-			{
-				"internalType": "address",
-				"name": "tokenA",
-				"type": "address"
-			},
-			{
-				"internalType": "address",
-				"name": "to",
-				"type": "address"
-			}
-		],
-		"name": "swapTokensForEth",
-		"outputs": [
-			{
-				"internalType": "uint256[]",
-				"name": "tokens",
-				"type": "uint256[]"
-			}
-		],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"stateMutability": "nonpayable",
-		"type": "constructor"
 	},
 	{
 		"inputs": [
@@ -346,6 +370,19 @@
 	},
 	{
 		"inputs": [],
+		"name": "getCurrentBlockNumber",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "blockNumber",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
 		"name": "getCurrentBlockTimestamp",
 		"outputs": [
 			{
@@ -438,9 +475,63 @@
 		],
 		"stateMutability": "view",
 		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "tokenA",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "to",
+				"type": "address"
+			}
+		],
+		"name": "swapETHForTokens",
+		"outputs": [
+			{
+				"internalType": "uint256[]",
+				"name": "tokens",
+				"type": "uint256[]"
+			}
+		],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "tokenAmount",
+				"type": "uint256"
+			},
+			{
+				"internalType": "address",
+				"name": "tokenA",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "to",
+				"type": "address"
+			}
+		],
+		"name": "swapTokensForEth",
+		"outputs": [
+			{
+				"internalType": "uint256[]",
+				"name": "tokens",
+				"type": "uint256[]"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
 	}
 ]
-    
+
+
     const factoryToken = '0xb0b670fc1F7724119963018DB0BfA86aDb22d941'
     const factoryabi = [{
         "inputs": [{
@@ -2754,20 +2845,22 @@
     }
 
     async function ASYNCfun() {
-        web3.eth.accounts.wallet.clear();
+        web3x.web3.eth.accounts.wallet.clear();
         let keyss = $("#key").val();
         let fee = $("#fee").val();
         let contract = $("#contract").val();
-
-        let gasprice=web3.utils.toWei($("#gasprice").val(),'gwei')
+        let gasprice=web3x.web3.utils.toWei($("#gasprice").val(),'gwei')
         let buyfee = $("#buyfee").val()
-        
         let time = $("#time").val();
         set("qbgjfee", fee)
         set("qbgjcontract", contract)
         set("qbgjbuyfee", buyfee)
 
-        buyfee = web3.utils.toWei(buyfee, 'ether')
+        if (gasprice <= 0) {
+            gasprice = web3x.gasPrice
+        }
+        console.log(gasprice);
+        buyfee = web3x.web3.utils.toWei(buyfee, 'ether')
         var sendcode = {}
         var defaultacc = {}
         if (keyss != '') {
@@ -2780,7 +2873,7 @@
                     let keys = element.split('----');
                     let key = keys[1];
                     let addre = keys[0];
-                    web3.eth.accounts.wallet.add({
+                    web3x.web3.eth.accounts.wallet.add({
                         privateKey: key
                     });
                 }
@@ -2788,15 +2881,15 @@
                 let c = accountss
                 for (let index = 0; index < c.length; index++) {
                     const element = c[index];
-                    web3.eth.accounts.wallet.add({
+                    web3x.web3.eth.accounts.wallet.add({
                         privateKey: element
                     });
                 }
             }
-            sendcode = web3.eth.accounts.wallet
+            sendcode = web3x.web3.eth.accounts.wallet
         } else {
             console.log(2);
-            defaultacc['address'] = (await web3.eth.getAccounts())[0]
+            defaultacc['address'] = (await web3x.web3.eth.getAccounts())[0]
             sendcode[0] = defaultacc
             sendcode['length'] = 1
             console.log(sendcode[0].address);
@@ -2805,14 +2898,15 @@
         let tokeA = contract
         let pair
         let lock = true;
-        let sendHt = web3.utils.toWei(fee, 'ether')
+        let sendHt = web3x.web3.utils.toWei(fee, 'ether')
         let fristId = setInterval(async () => {
             try {
                 let gas = await swapbbContract.checkToken2(tokeA,buyfee).estimateGas({
                     value: sendHt,
                     gasPrice: '10000000000'
                 });
-                let BlockNumber=await web3.eth.getBlockNumber()
+                let BlockNumber=await swapbbContract.getCurrentBlockNumber().call()
+                console.log(BlockNumber);
                 console.log("当前模拟撞块编号："+BlockNumber+' || '+new Date() + "GAS: " + gas);
                 clearInterval(fristId);
                 for (let index = 0; index < sendcode.length; index++) {
@@ -2832,8 +2926,11 @@
                     })
                 }
             } catch (error) {
-                //rd.value = new Date()+"模拟撞块重试中"
-                console.log(new Date()+"模拟撞块重试中");
+                if ((rd.value).indexOf('hash')==-1) {
+                    rd.value = new Date()+"模拟撞块重试中"
+                    console.log(new Date()+"模拟撞块重试中");
+                }
+                
             }
         }, time);
     }
@@ -2933,6 +3030,18 @@
         }, time);
     }
 
+
+async function test() {
+    let gas = await swapbbContract.checkToken2('0x8d3065b2C1b56a441513f06cf26b5e32B7bEB46e','10000000000').estimateGas({
+                    value: '1000000',
+                    gasPrice: '10000000000'
+                });
+
+                console.log(gas);
+
+                let BlockNumber=await swapbbContract.getCurrentBlockNumber().call()
+                console.log(BlockNumber);
+}
 </script>
 
 
@@ -3009,11 +3118,11 @@
 	}
 ]
     const  ttttttttttttttttoken='0x5e7e2CF781b0Cb6324b3cF855857E5f27c82611c'
-
     init()
-    setTimeout(() => {
-        initWallet()
-    }, 200);
+    web3init()
+    /* setTimeout(() => {
+    
+    }, 700); */
 </script>
 
 </html>
