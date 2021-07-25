@@ -45,7 +45,7 @@
     let web3x
 
     let falg = false
-
+    let intervalID
 
 
     var rd = document.getElementById("res");
@@ -61,7 +61,6 @@
    
    
     async function getWeb3() {
-        let intervalID
         clearInterval(intervalID)
         let web3x = ({
             web3: null,
@@ -95,9 +94,6 @@
         return web3x
     }
     async function web3init() {
-
-        
-        
         try {
             web3x = await getWeb3();
             console.log(web3x.web3, web3x.gasPrice);
