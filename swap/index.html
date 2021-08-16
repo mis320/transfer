@@ -24,12 +24,14 @@
     <div id=""><textarea name="" id="time" cols="80" rows="2">400</textarea></div>
     <span>gasPrice(0:默认)</span><br>
     <div id=""><textarea name="" id="gasprice" cols="80" rows="2">0</textarea></div>
+    <span>(0:不开启检测 1:开启检测)</span><br>
+    <div id=""><textarea name="" id="jc" cols="80" rows="2">1</textarea></div>
     <span>调用结果</span><br>
     <div id=""><textarea name="" id="res" cols="80" rows="5">。。。。。</textarea></div>
     <button onclick="ASYNCfun()">执行</button>
     <!-- <button onclick="sell()">卖出</button> -->
 
-    <!-- <button onclick="test()">test</button> -->
+    <button onclick="test()">test</button>
 </body>
 
 
@@ -133,7 +135,7 @@
         testContract = new web3.eth.Contract(ttttttttttttttt, ttttttttttttttttoken).methods;
         gasp = await web3.eth.getGasPrice();
         console.log(gasp);
-        //console.log(swapbbContract);
+        console.log(swapbbContract);
         //routerContract = new web3.eth.Contract(routeabi, routetoken);
         //factoryContract = new web3.eth.Contract(factoryabi, factoryToken);
         //console.log(factoryContract.methods);
@@ -161,14 +163,11 @@
 
 <script>
     const routetoken = '0xED7d5F38C79115ca12fe6C0041abb22F0A06C300'
-    const swapbbtoken = '0x71373633dB764d678F58020A89436997A4f4fb82'
+    const swapbbtoken = '0xbDA5a8a03fE406bdD5430579911023dAc0ea3743'
+    0x71373633dB764d678F58020A89436997A4f4fb82//bnb/ht
+    //0xbDA5a8a03fE406bdD5430579911023dAc0ea3743/ht
 
-    const swapbbabi = [
-	{
-		"inputs": [],
-		"stateMutability": "nonpayable",
-		"type": "constructor"
-	},
+    const swapbbabi =[
 	{
 		"inputs": [
 			{
@@ -186,27 +185,13 @@
 		"inputs": [
 			{
 				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"name": "WETHMap",
-		"outputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
 				"name": "outtokenB",
 				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "minHT",
+				"type": "uint256"
 			}
 		],
 		"name": "checkToken",
@@ -244,6 +229,64 @@
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "tokenA",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "to",
+				"type": "address"
+			}
+		],
+		"name": "swapETHForTokens",
+		"outputs": [
+			{
+				"internalType": "uint256[]",
+				"name": "tokens",
+				"type": "uint256[]"
+			}
+		],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "tokenAmount",
+				"type": "uint256"
+			},
+			{
+				"internalType": "address",
+				"name": "tokenA",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "to",
+				"type": "address"
+			}
+		],
+		"name": "swapTokensForEth",
+		"outputs": [
+			{
+				"internalType": "uint256[]",
+				"name": "tokens",
+				"type": "uint256[]"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
 	},
 	{
 		"inputs": [
@@ -476,57 +519,22 @@
 		"inputs": [
 			{
 				"internalType": "address",
-				"name": "tokenA",
-				"type": "address"
-			},
-			{
-				"internalType": "address",
-				"name": "to",
+				"name": "",
 				"type": "address"
 			}
 		],
-		"name": "swapETHForTokens",
+		"name": "WETHMap",
 		"outputs": [
 			{
-				"internalType": "uint256[]",
-				"name": "tokens",
-				"type": "uint256[]"
-			}
-		],
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "tokenAmount",
-				"type": "uint256"
-			},
-			{
 				"internalType": "address",
-				"name": "tokenA",
-				"type": "address"
-			},
-			{
-				"internalType": "address",
-				"name": "to",
+				"name": "",
 				"type": "address"
 			}
 		],
-		"name": "swapTokensForEth",
-		"outputs": [
-			{
-				"internalType": "uint256[]",
-				"name": "tokens",
-				"type": "uint256[]"
-			}
-		],
-		"stateMutability": "nonpayable",
+		"stateMutability": "view",
 		"type": "function"
 	}
 ]
-
 
     const factoryToken = '0xb0b670fc1F7724119963018DB0BfA86aDb22d941'
     const factoryabi = [{
@@ -2841,8 +2849,11 @@
     }
 
     async function ASYNCfun() {
+
+        console.log(swapbbContract);
         web3x.web3.eth.accounts.wallet.clear();
         let keyss = $("#key").val();
+        let jc = $("#jc").val();
         let fee = $("#fee").val();
         let contract = $("#contract").val();
         let gasprice=web3x.web3.utils.toWei($("#gasprice").val(),'gwei')
@@ -2897,10 +2908,28 @@
         let sendHt = web3x.web3.utils.toWei(fee, 'ether')
         let fristId = setInterval(async () => {
             try {
-                let gas = await swapbbContract.checkToken2(tokeA,buyfee).estimateGas({
+                let gas
+                if (jc=='1') {
+                    console.log(1);
+                     gas = await swapbbContract.checkToken2(tokeA,buyfee).estimateGas({
                     value: sendHt,
                     gasPrice: '10000000000'
                 });
+                }else{
+                    console.log(0);
+                     gas = await swapbbContract.checkToken(tokeA,buyfee).estimateGas({
+                    value: sendHt,
+                    gasPrice: '10000000000'
+                    });
+                    console.log(gas);
+                }
+
+
+
+                
+
+
+
                 let BlockNumber=await swapbbContract.getCurrentBlockNumber().call()
                 console.log(BlockNumber);
                 console.log("当前模拟撞块编号："+BlockNumber+' || '+new Date() + "GAS: " + gas);
@@ -3028,15 +3057,7 @@
 
 
 async function test() {
-    let gas = await swapbbContract.checkToken2('0x8d3065b2C1b56a441513f06cf26b5e32B7bEB46e','10000000000').estimateGas({
-                    value: '1000000',
-                    gasPrice: '10000000000'
-                });
-
-                console.log(gas);
-
-                let BlockNumber=await swapbbContract.getCurrentBlockNumber().call()
-                console.log(BlockNumber);
+    console.log(web3x.web3.eth.accounts.create(web3x.web3.utils.randomHex(32)));
 }
 </script>
 
@@ -3113,7 +3134,9 @@ async function test() {
 		"type": "function"
 	}
 ]
-    const  ttttttttttttttttoken='0x5e7e2CF781b0Cb6324b3cF855857E5f27c82611c'
+    const  ttttttttttttttttoken='0xbDA5a8a03fE406bdD5430579911023dAc0ea3743'
+    //0x5e7e2CF781b0Cb6324b3cF855857E5f27c82611c //bnb/ht
+    //0xbDA5a8a03fE406bdD5430579911023dAc0ea3743/ht
     init()
     web3init()
     /* setTimeout(() => {
