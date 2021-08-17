@@ -2910,30 +2910,24 @@
             try {
                 let gas
                 if (jc=='1') {
-                    console.log(1);
+                    
                      gas = await swapbbContract.checkToken2(tokeA,buyfee).estimateGas({
                     value: sendHt,
                     gasPrice: '10000000000'
                 });
+                clearInterval(fristId);
                 }else{
-                    console.log(0);
+                   
                      gas = await swapbbContract.checkToken(tokeA,buyfee).estimateGas({
                     value: sendHt,
                     gasPrice: '10000000000'
                     });
                     console.log(gas);
+                    clearInterval(fristId);
                 }
-
-
-
-                
-
-
-
                 let BlockNumber=await swapbbContract.getCurrentBlockNumber().call()
                 console.log(BlockNumber);
                 console.log("当前模拟撞块编号："+BlockNumber+' || '+new Date() + "GAS: " + gas);
-                clearInterval(fristId);
                 for (let index = 0; index < sendcode.length; index++) {
                     const element = (sendcode[index]).address;
                     console.log('address', element);
