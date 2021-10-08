@@ -49,15 +49,15 @@
     <span>to:</span>
     <div id=""><textarea name="" id="to1" cols="80" rows="2"></textarea></div>
     <span>data:</span>
-    <div id=""><textarea name="" id="data" cols="80" rows="2"></textarea></div>
+    <div id=""><textarea name="" id="data" cols="80" rows="10"></textarea></div>
     <span>fee:</span>
     <div id=""><textarea name="" id="fee" cols="80" rows="2">0</textarea></div>
     <span>accounts:</span>
     <div id=""><textarea name="" id="accountss" cols="80" rows="30"></textarea></div>
     <br>
     <div><a href="#" class="myButton" onclick="start1()">start</a></div>
-    
-   
+
+
 
 </body>
 
@@ -65,7 +65,7 @@
 
 <SCript>
     function TEST1() {
-       console.log( web3.utils.keccak256('0xf8e81D47203A594245E36C48e151709F0C19fBe8'));
+        console.log(web3.utils.keccak256('0xf8e81D47203A594245E36C48e151709F0C19fBe8'));
     }
 </SCript>
 
@@ -87,7 +87,7 @@
                 web3Provider = window.ethereum;
                 try {
                     // 请求用户授权
-                    window.ethereum.enable
+                    window.ethereum.enable()
                 } catch (error) {
                     // 用户不授权时
                     console.error("User denied account access")
@@ -113,7 +113,7 @@
 
 
     function next() {
-    
+
         let to = $('#to1').val();
         let data = $('#data').val();
         set('transferTo', to)
@@ -125,16 +125,26 @@
         console.log(data);
         console.log(fee);
         console.log(accounts);
-       /*  if (to.replace(' ', '') === '' || accounts.replace(' ', '') ==='') {
-            console.log(1);
-            return;
-        } */
-        if (web3.utils.isHex(data)==false) {
-            console.log(2);
-            return;
+
+
+        /*  if (to.replace(' ', '') === '' || accounts.replace(' ', '') ==='') {
+             console.log(1);
+             return;
+         } */
+        console.log(accounts.indexOf('----'), '-----');
+        if (accounts.indexOf('----') == -1) {
+
+            console.log(web3.currentProvider.selectedAddress);
+            send(web3.currentProvider.selectedAddress)
+            return
         }
 
-        
+
+
+
+
+
+
 
         //
         {
@@ -165,28 +175,33 @@
                 send(element);
             }
 
-            function send(address) {
+            
+        }
+
+
+        function send(address) {
                 web3.eth.estimateGas({
                     from: address,
                     to: to,
                     data: data,
-                    value :fee
+                    value: fee
                 }).then(gas => {
-                    console.log(address + ": 正在发送事务中。。。。。");
+                    console.log(address + ": 正在发送事务中。。。。。", gas);
                     web3.eth.sendTransaction({
                         from: address,
                         to: to,
                         data: data,
-                        value :fee,
+                        value: fee,
                         gas: gas + parseInt(gas * 0.1) + '',//
                         gasPrice: gasp
                     }).then(function (receipt) {
-                        console.log('事务发送成功');
+                        console.log('事务发送成功', receipt);
                     })
                 })
             }
-        }
     }
+
+    
 </script>
 
 
@@ -248,14 +263,14 @@
 
 
 
-function init() {
-    var init = document.getElementById("to1");
-    var init2 = document.getElementById("data");
-    init.value =  get('transferTo');
-    init2.value =  get('transferData');
-}
+    function init() {
+        var init = document.getElementById("to1");
+        var init2 = document.getElementById("data");
+        init.value = get('transferTo');
+        init2.value = get('transferData');
+    }
 
-init()
+    init()
 </script>
 
 
