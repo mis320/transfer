@@ -17,9 +17,9 @@
     <span>私钥</span><br>
     <div id=""><textarea name="" id="key" cols="80" rows="6"></textarea></div>
     <span>花费多少HT</span><br>
-    <div id=""><textarea name="" id="fee" cols="80" rows="2">0.01</textarea></div>
+    <div id=""><textarea name="" id="fee" cols="80" rows="2">0.05</textarea></div>
     <span>合约地址</span><br>
-    <div id=""><textarea name="" id="contract" cols="80" rows="2">0x67bab912ee30074cf9a94826e2e02d9936842781</textarea>
+    <div id=""><textarea name="" id="contract" cols="80" rows="2"></textarea>
     </div>
     <span>循环时间(>=200)</span><br>
     <div id=""><textarea name="" id="time" cols="80" rows="2">400</textarea></div>
@@ -67,8 +67,8 @@
     function init() {
         let v1 = document.getElementById("fee");
         v1.value = get('qbgjfee');
-        let v2 = document.getElementById("contract");
-        v2.value = get('qbgjcontract');
+        /* let v2 = document.getElementById("contract");
+        v2.value = get('qbgjcontract'); */
         let v3 = document.getElementById("poolminfell");
         v3.value = get('qbgjbuyfee');
     }
