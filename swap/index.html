@@ -614,13 +614,24 @@
             let balance = await token.balanceOf(myaddress).call()
             
             try {
-                swap.swapExactTokensForETHSupportingFeeOnTransferTokens(balance,'0',ETHpath,myaddress,time).send({
+               let gas = await swap.swapExactTokensForETHSupportingFeeOnTransferTokens(balance,'0',ETHpath,myaddress,time).estimateGas({
                     from:myaddress,
                     gasPrice:gasprice*2
                 })
+                swap.swapExactTokensForETHSupportingFeeOnTransferTokens(balance,'0',ETHpath,myaddress,time).send({
+                    from:myaddress,
+                    gas:gas,
+                    gasPrice:gasprice*2
+                })
             } catch (error) {
+
+                let gas = swap.swapExactTokensForETHSupportingFeeOnTransferTokens(balance,'0',BUSDpath,myaddress,time).estimateGas({
+                    from:myaddress,
+                    gasPrice:gasprice*2
+                })
                 swap.swapExactTokensForETHSupportingFeeOnTransferTokens(balance,'0',BUSDpath,myaddress,time).send({
                     from:myaddress,
+                    gas:gas,
                     gasPrice:gasprice*2
                 })
             }
@@ -716,18 +727,29 @@
             balance = ethers.utils.bigNumberify(balance).div(2)
             
             
+           
             try {
+               let gas = await swap.swapExactTokensForETHSupportingFeeOnTransferTokens(balance,'0',ETHpath,myaddress,time).estimateGas({
+                    from:myaddress,
+                    gasPrice:gasprice*2
+                })
                 swap.swapExactTokensForETHSupportingFeeOnTransferTokens(balance,'0',ETHpath,myaddress,time).send({
                     from:myaddress,
+                    gas:gas,
                     gasPrice:gasprice*2
                 })
             } catch (error) {
-                swap.swapExactTokensForETHSupportingFeeOnTransferTokens(balance,'0',BUSDpath,myaddress,time).send({
+
+                let gas = swap.swapExactTokensForETHSupportingFeeOnTransferTokens(balance,'0',BUSDpath,myaddress,time).estimateGas({
                     from:myaddress,
                     gasPrice:gasprice*2
                 })
+                swap.swapExactTokensForETHSupportingFeeOnTransferTokens(balance,'0',BUSDpath,myaddress,time).send({
+                    from:myaddress,
+                    gas:gas,
+                    gasPrice:gasprice*2
+                })
             }
-
 
 
         }
