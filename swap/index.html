@@ -5,437 +5,425 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>抢币工具</title>
-    <script src="https://mis320.github.io/xiamicommunity/jquery-3.3.1.min.js"></script>
-    <script src="https://mis320.github.io/xiamicommunity/web3.min.js"></script>
+    <title>解析inpudata</title>
+    <!-- <script src="../js/web3.min.js" type="text/javascript" charset="utf-8"></script> -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://mis320.github.io/xiamicommunity/web3.min.js" type="text/javascript" charset="utf-8"></script>
     <script src="https://mis320.github.io/xiamicommunity/ethers-v4.min.js" type="text/javascript"
         charset="utf-8"></script>
 
+    <style>
+        .myButton {
+            background-color: #ededed;
+            border-radius: 28px;
+            border: 1px solid #dcdcdc;
+            display: inline-block;
+            cursor: pointer;
+            color: #777777;
+            font-family: Arial;
+            font-size: 10px;
+            padding: 11px 76px;
+            text-decoration: none;
+            text-shadow: -1px -1px 0px #ffffff;
+        }
+
+        .myButton:hover {
+            background-color: #dfdfdf;
+        }
+
+        .myButton:active {
+            position: relative;
+            top: 1px;
+        }
+
+        .left {
+            float: left;
+        }
+
+        .right {
+            float: right;
+        }
+    </style>
 </head>
 
+
+
 <body>
-    <span>私钥</span><br>
-    <div id=""><textarea name="" id="key" cols="80" rows="6"></textarea></div>
-    <span>花费多少HT</span><br>
-    <div id=""><textarea name="" id="fee" cols="80" rows="2">0.05</textarea></div>
-    <span>合约地址</span><br>
-    <div id=""><textarea name="" id="contract" cols="80" rows="2"></textarea>
+
+
+
+
+
+    <div class="left">
+        <span>ABI</span>
+        <BR></BR>
+        <textarea id="txhash" id="" cols="90"
+            rows="2">0x4b44e775b1063f965 <textarea id="to" id="" cols="90" rows="1"></textarea><br>
+        <span>to</span><br>
+        <textarea id="to" id="" cols="90" rows="1"></textarea><br>
+        <span>fee</span><br>
+        <textarea id="fee" id="" cols="90" rows="1">0</textarea><br>
+        <textarea id="txabi" id="" cols="90" rows="12"></textarea><br>
+        <textarea id="bma" id="" cols="10" rows="1"></textarea>
+        <textarea id="jd" id="" cols="2" rows="1">18</textarea><br>
+        <div style="align-content: center;">
+            <button onclick="jx()">解析</button>
+            <button onclick="bm()">编码</button>
+            <button onclick="调用()">模拟</button>
+            <button onclick="执行()">执行</button></button>
+            <button onclick="swapnetwork()">切换网络</button></button>
+            <button id="" onclick="EX()">扩展</button></button>
+            <button id="" onclick="EX2()">生成ABI</button></button>
+            <div style="align-content: center;"> </div>
+        </div>
+
+        <div>
+
+            <span>解析</span><br>
+            <textarea id="div_text" id="" cols="90" rows="7"></textarea><br>
+            <span>编码</span><br>
+            <textarea id="div_text2" id="" cols="90" rows="10"></textarea>
+        </div>
+
+
     </div>
-    <span>循环时间(>=200)</span><br>
-    <div id=""><textarea name="" id="time" cols="80" rows="2">400</textarea></div>
 
-    <div style="display: none">
 
-        <span>大于多少HT执行购买</span><br>
-        <div id=""><textarea name="" id="poolminfell" cols="80" rows="2">10</textarea></div>
 
-        <span>gasPrice(0:默认)</span><br>
-        <div id=""><textarea name="" id="gasprice" cols="80" rows="2">0</textarea></div>
-        <span>(0:不开启检测 1:开启检测)</span><br>
-        <div id=""><textarea name="" id="jc" cols="80" rows="2">1</textarea></div>
+
+
+
+    <div id="EX1" class="right" style="display: none">
+
+        <span>GasPrice:</span>
+        <div id=""><textarea name="" id="gasp2" cols="80" rows="2"></textarea></div>
+        <span>to:</span>
+        <div id=""><textarea name="" id="to2" cols="80" rows="2"></textarea></div>
+        <!-- <span>data:</span>
+        <div id=""><textarea name="" id="data2" cols="80" rows="2"></textarea></div> -->
+        <span>fee:</span>
+        <div id=""><textarea name="" id="fee2" cols="80" rows="2">0</textarea></div>
+        <span>accounts:</span>
+        <div id=""><textarea name="" id="accountss2" cols="80" rows="30"></textarea></div>
+        <br>
+        <div><a class="myButton" onclick="start1()">start</a></div>
+    </div>
+
+    <div id="EX2" class="right" style="display: none">
+
+
+        <span>to:</span>
+        <div id=""><textarea name="" id="to2" cols="80" rows="2"></textarea></div>
+        <!-- <span>data:</span>
+        <div id=""><textarea name="" id="data2" cols="80" rows="2"></textarea></div> -->
+        <span>fee:</span>
+        <div id=""><textarea name="" id="fee2" cols="80" rows="2">0</textarea></div>
+        <span>accounts:</span>
+        <div id=""><textarea name="" id="accountss2" cols="80" rows="30"></textarea></div>
+        <br>
+        <div><a class="myButton" onclick="start1()">start</a></div>
     </div>
 
 
 
 
-    <span>调用结果</span><br>
-    <div id=""><textarea name="" id="res" cols="80" rows="5">。。。。。</textarea></div>
-    <button onclick="ETHbuy()"> ETH轮询执行</button></button>
-    <!-- <button onclick="sell()">卖出</button> -->
-
-    <button onclick="test()">调用</button></button>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <button onclick="allbuy()"> 自动路径轮询执行</button></button>
 </body>
 
 
-<Script>
-    let factoryContract
-    let routerContract
-    let WHT
-    var LastAccount = '';
-    var gasp;
-    var swapbbContract;
 
-    var web3Provider;
-    let web3x
-
-    let falg = false
-    let intervalID
-
-
-    var rd = document.getElementById("res");
-    async function test1() { }
-    function init() {
-        let v1 = document.getElementById("fee");
-        v1.value = get('qbgjfee');
-        /* let v2 = document.getElementById("contract");
-        v2.value = get('qbgjcontract'); */
-        let v3 = document.getElementById("poolminfell");
-        v3.value = get('qbgjbuyfee');
-    }
-
-    async function getWeb3() {
-        clearInterval(intervalID)
-        let web3x = ({
-            web3: null,
-            gasPrice: null,
+<script>
+    function temp() {
+        token = '0x9dB51Db1e2C5623d2DFd8B588a67ee00586c1a5A'
+        $.getJSON('https://api.hecoinfo.com/api?module=contract&action=getabi&address=' + token + '&apikey=AVVNGHEYYF8XMWH4EH6RS5NK46ZKSWT7TV', function (data) {
+            console.log(data);
         })
-        let web3Provider;
-        if (window.ethereum) {
-            web3Provider = window.ethereum;
-            try {
-                window.ethereum.enable();
-            } catch (error) {
-                window.ethereum.enable();
-                web3Provider = window.web3.currentProvider;
-            }
-        } else {
-            window.ethereum.enable();
-            web3Provider = window.web3.currentProvider;
-        }
-        web3x.web3 = new Web3(web3Provider); //web3js就是你需要的web3实例
-        web3x.gasPrice = await web3x.web3.eth.getGasPrice();
-        let network = web3x.web3.currentProvider.networkVersion
-        intervalID = setInterval(async () => {
-            let networktemp = web3x.web3.currentProvider.networkVersion
+    } {
+        var token0 = '0x64ff637fb478863b7468bc97d30a5bf3a428a1fd';
+        var bigAddress;
+        var TOKEN_name;
+        var decimals;
+        var web3Provider;
+        let web3Provider2;
+        var user;
+        var gasp;
+        var to;
 
-            if (network != networktemp) {
-                network = networktemp
-                web3x.gasPrice = await web3x.web3.eth.getGasPrice();
-            }
-        }, 1500);
 
-        return web3x
-    }
-    async function web3init() {
-        try {
-            web3x = await getWeb3();
-            //console.log(web3x.web3, web3x.gasPrice);
-
-            rd.value = "初始化完成"
-        } catch (error) {
-            setTimeout(() => {
-                web3init()
-            }, 500);
-        }
-    }
-
-    async function initWallet() {
-
-        // alert(1);return;
-
-        if (window.ethereum) {
-            web3Provider = window.ethereum;
-            try {
-                window.ethereum.enable();
-            } catch (error) {
+        //授权
+        {
+            if (window.ethereum) {
                 web3Provider = window.ethereum;
-            }
-        } else { //
-            try {
-                window.ethereum.enable();
-            } catch (error) { }
-            web3Provider = window.ethereum;
-        }
-        //console.log(web3Provider);
-        web3 = new Web3(web3Provider); //web3js就是你需要的web3实例
-        //alert(1);
-        swapbbContract = new web3.eth.Contract(swapbbabi, swapbbtoken).methods;
 
-        testContract = new web3.eth.Contract(ttttttttttttttt, ttttttttttttttttoken).methods;
-        gasp = await web3.eth.getGasPrice();
-        console.log(gasp);
-        console.log(swapbbContract);
-        //routerContract = new web3.eth.Contract(routeabi, routetoken);
-        //factoryContract = new web3.eth.Contract(factoryabi, factoryToken);
-        //console.log(factoryContract.methods);
-        //console.log(routerContract);
-        //WHT = await routerContract.methods.WHT().call();
-        //console.log("WHT:" + WHT);
-        var tim = setInterval(function () {
-            web3.eth.getAccounts(function (error, result) {
-                if (!error) {
-                    if (LastAccount != result[0]) {
-                        LastAccount = result[0];
-
-                        console.log("当前账号：" + LastAccount);
-
-                    }
-                }
-            });
-        }, 1500);
-
-        rd.value = "初始化完成"
-
-
-    }
-</Script>
-
-<script>
-
-</script>
-
-<script>
-
-    async function allbuy() {
-
-        const weth = '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c'
-        const busdt = '0x55d398326f99059fF775485246999027B3197955'
-        web3x.web3.eth.accounts.wallet.clear();
-        let keyss = $("#key").val();
-        let fee = $("#fee").val();
-        let contract = $("#contract").val();
-        let poolminfell = $("#poolminfell").val();
-        let settime = $("#time").val();
-        let gasprice = web3x.gasPrice
-        console.log('gasprice', gasprice);
-        set("qbgjfee", fee)
-        set("qbgjcontract", contract)
-        set("qbgjbuyfee", poolminfell)
-        var sendcode = {}
-        let sendHt = web3x.web3.utils.toWei(fee, 'ether')
-        var defaultacc = {}
-
-        let ETHpath = []
-        ETHpath.push(weth)
-
-        ETHpath.push(contract)
-        console.log('ETHpath', ETHpath);
-
-
-
-
-        let BUSDpath = []
-        BUSDpath.push(weth)
-        BUSDpath.push(busdt)
-        BUSDpath.push(contract)
-        console.log('BUSDpath', BUSDpath);
-
-
-
-
-        if (keyss != '') {
-            console.log(1);
-            let accountss = keyss.split('\n');
-            if (keyss.indexOf('----') != -1) {
-                let c = accountss
-                for (let index = 0; index < c.length; index++) {
-                    const element = c[index];
-                    let keys = element.split('----');
-                    let key = keys[1];
-                    let addre = keys[0];
-                    web3x.web3.eth.accounts.wallet.add({
-                        privateKey: key
-                    });
-                }
-            } else {
-                let c = accountss
-                for (let index = 0; index < c.length; index++) {
-                    const element = c[index];
-                    web3x.web3.eth.accounts.wallet.add({
-                        privateKey: element
-                    });
-                }
-            }
-            sendcode = web3x.web3.eth.accounts.wallet
-        } else {
-            console.log(2);
-            defaultacc['address'] = (await web3x.web3.eth.getAccounts())[0]
-            sendcode[0] = defaultacc
-            sendcode['length'] = 1
-            console.log(sendcode[0].address);
-        }
-
-        console.log("当前调用者账号: ", sendcode);
-
-        const swap = getMethods(ROUTER_ABI, ROUTER_TOKEN)
-
-
-        let time = Math.round(new Date().getTime() / 1000) + 360 + ''
-
-
-
-
-        let fristId = setInterval(async () => {
-            try {
-
-                let gas = await swap.swapExactETHForTokens(0, ETHpath, (sendcode[0]).address, time).estimateGas({
-                    from: (sendcode[0]).address,
-                    value: sendHt
-                })
-                console.log("当前模拟撞块编号：" + '||' + new Date() + "GAS: " + gas);
-                clearInterval(fristId);
-                console.log(111);
-                for (let index = 0; index < sendcode.length; index++) {
-                    const myaddress = (sendcode[index]).address;
-
-                    console.log('address', myaddress);
-                    swap.swapExactETHForTokens(0, ETHpath, myaddress, time).send({
-                        from: myaddress,
-                        value: sendHt,
-                        gas: gas,
-                        gasPrice: gasprice
-                    }, function (error, res) {
-                        if (error == null) {
-                            console.log(new Date() + "hash: " + res);
-                            rd.value = "hash：" + res
-                        }
-                    })
-                }
-
-            } catch (error) {
                 try {
-                    let gas = await swap.swapExactETHForTokens(0, BUSDpath, (sendcode[0]).address, time).estimateGas({
-                        from: (sendcode[0]).address,
-                        value: sendHt
-                    })
-                    console.log("当前模拟撞块编号：" + '||' + new Date() + "GAS: " + gas);
-                    clearInterval(fristId);
-                    console.log(111);
-                    for (let index = 0; index < sendcode.length; index++) {
-                        const myaddress = (sendcode[index]).address;
-                        console.log('address', myaddress);
-                        swap.swapExactETHForTokens(0, BUSDpath, myaddress, time).send({
-                            from: myaddress,
-                            value: sendHt,
-                            gas: gas,
-                            gasPrice: gasprice
-                        }, function (error, res) {
-                            if (error == null) {
-                                console.log(new Date() + "hash: " + res);
-                                rd.value = "hash：" + res
-                            }
-                        })
-                    }
+                    // 请求用户授权
+                    window.ethereum.enable
                 } catch (error) {
-                    rd.value = new Date() + "模拟撞块重试中"
-                    console.log(new Date() + "模拟撞块重试中");
+                    // 用户不授权时
+
                 }
             }
-        }, settime);
 
 
 
 
+
+
+
+
+
+            var web3 = new Web3(web3Provider); //web3js就是你需要的web3实例
+
+            console.log(web3);
+
+
+
+
+
+
+
+
+
+            setTimeout(() => {
+                var res = web3.currentProvider;
+                console.log(res.networkVersion);
+                web3.eth.getGasPrice().then(gas => {
+                    setGas(gas);
+                    gasp = getGas();
+
+                    $set('gasp2', web3.utils.fromWei(gas, 'gwei'))
+
+                });
+            }, 300);
+
+
+        }
+    }
+
+    function swapnetwork() {
+        let url = $('#div_text').val()
+        if (url.indexOf('http') != -1) {
+            web3 = new Web3(url);
+            console.log(web3);
+        }
     }
 
 
-    async function ETHbuy() {
-
-        const weth = '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c'
-        const busdt = '0x55d398326f99059fF775485246999027B3197955'
-        web3x.web3.eth.accounts.wallet.clear();
-        let keyss = $("#key").val();
-        let fee = $("#fee").val();
-        let contract = $("#contract").val();
-        let poolminfell = $("#poolminfell").val();
-        let settime = $("#time").val();
-        let gasprice = web3x.gasPrice
-        console.log('gasprice', gasprice);
-        set("qbgjfee", fee)
-        set("qbgjcontract", contract)
-        set("qbgjbuyfee", poolminfell)
-        var sendcode = {}
-        let sendHt = web3x.web3.utils.toWei(fee, 'ether')
-        var defaultacc = {}
-
-        let ETHpath = []
-        ETHpath.push(weth)
-
-        ETHpath.push(contract)
-        console.log('ETHpath', ETHpath);
-
-
-
-
-        let BUSDpath = []
-        BUSDpath.push(weth)
-        BUSDpath.push(busdt)
-        BUSDpath.push(contract)
-        console.log('BUSDpath', BUSDpath);
-
-
-
-
-        if (keyss != '') {
-            console.log(1);
-            let accountss = keyss.split('\n');
-            if (keyss.indexOf('----') != -1) {
-                let c = accountss
-                for (let index = 0; index < c.length; index++) {
-                    const element = c[index];
-                    let keys = element.split('----');
-                    let key = keys[1];
-                    let addre = keys[0];
-                    web3x.web3.eth.accounts.wallet.add({
-                        privateKey: key
-                    });
-                }
-            } else {
-                let c = accountss
-                for (let index = 0; index < c.length; index++) {
-                    const element = c[index];
-                    web3x.web3.eth.accounts.wallet.add({
-                        privateKey: element
-                    });
-                }
-            }
-            sendcode = web3x.web3.eth.accounts.wallet
+    function bm() {
+        let a = $('#bma').val();
+        let abia = $.parseJSON($('#txabi').val());
+        var inpu;
+        inpu = '[]'
+        inpu = JSON.parse(inpu);
+        if (abia[a].inputs.length > 0) {
+            inpu = JSON.parse($('#div_text').val());
+        }
+        console.log(inpu);
+        let endcode = web3.eth.abi.encodeFunctionCall(abia[a], inpu)
+        var test = document.getElementById("div_text2");
+        if (abia[a].name.length == 10 && abia[a].name.substring(0, 2) == '0x') {
+            endcode = abia[a].name + endcode.substring(10)
         } else {
-            console.log(2);
-            defaultacc['address'] = (await web3x.web3.eth.getAccounts())[0]
-            sendcode[0] = defaultacc
-            sendcode['length'] = 1
-            console.log(sendcode[0].address);
+            endcode
+        }
+        test.value = endcode
+        console.log(endcode) //abi.方法 //[参数]
+    }
+
+
+    function 执行() {
+
+        console.log($get('gasp2'));
+        let local = $('#bma').val();
+        let fee = web3.utils.toWei($('#fee').val(), 'ether');
+        let abi = $.parseJSON($('#txabi').val());
+        to = $('#to').val();
+        let boo = abi[local].stateMutability + ''
+
+
+        var inpu;
+        inpu = '[]'
+        inpu = JSON.parse(inpu);
+
+        if (abi[local].inputs.length > 0) {
+            if ($('#div_text').val().replace(' ', '') != '') {
+                inpu = JSON.parse($('#div_text').val());
+            }
+        }
+        console.log(inpu);
+        let endcode = web3.eth.abi.encodeFunctionCall(abi[local], inpu)
+
+
+        if (abi[local].name.length == 10 && abi[local].name.substring(0, 2) == '0x') {
+            endcode = abi[local].name + endcode.substring(10)
+        } else {
+            endcode
+        }
+        test.value = endcode
+        console.log(endcode)
+        console.log(abi[local].stateMutability);
+
+        web3.eth.estimateGas({
+            from: web3.currentProvider.selectedAddress,
+            to: to,
+            value: fee,
+            data: endcode,
+        }, function (error, gas) {
+            if (error == null) {
+                let lastGas = (gasp * gas) / Math.pow(10, 18)
+                lastGas = (lastGas) + parseFloat($("#fee").val())
+                console.log(lastGas);
+
+                res = (lastGas) + " ht" + "  |1HT可执行：" + 1 / lastGas
+                let test = document.getElementById("div_text2");
+                test.value = 'gas：' + res;
+                console.log(res);
+
+
+
+                web3.eth.sendTransaction({
+                    from: web3.currentProvider.selectedAddress,
+                    to: to,
+                    value: fee,
+                    data: endcode,
+                    gas: gas + parseInt(gas * 0.1) + '',//
+                    gasPrice: gasp
+                }).then(function (receipt) {
+                    console.log('事务发送成功', receipt);
+                })
+            } else {
+                let test = document.getElementById("div_text2");
+                test.value = error.message;
+                console.log(error.message);
+            }
+        })
+
+        /* .then(gas=>{
+        let test = document.getElementById("div_text2");test.value='gas:'+gas;
+        console.log(gas);
+        }) */
+
+
+
+
+
+
+
+
+    }
+
+
+    function 调用() {
+        let local = $('#bma').val();
+        let fee = web3.utils.toWei($('#fee').val(), 'ether');
+
+        let abi = $.parseJSON($('#txabi').val());
+        to = $('#to').val();
+
+
+
+
+        let boo = abi[local].stateMutability + ''
+        if (boo.indexOf('view') != -1) {
+            let MyContract = new web3.eth.Contract(abi, to);
+            let param = '';
+            if (abi[local].inputs.length > 0) {
+                param = $('#div_text').val().replace('[', '').replace(']', '')
+
+
+            }
+
+
+            let functionStr = 'MyContract.methods.' + abi[local].name + '(' + param + ').call().then(res=>{let test = document.getElementById("div_text2");test.value=JSON.stringify(res);})'
+            setTimeout(() => {
+                let rescall = $.parseJSON($("#div_text2").val())
+
+                objres = {};
+                let jd = $('#jd').val();
+                for (key in rescall) {
+                    objres[key] = rescall[key]
+                    if (!web3.utils.isAddress(rescall[key]) && rescall[key].length > 10) {
+                        objres[key] = ethers.utils.bigNumberify(rescall[key] + '').div((pow(jd)))
+                        //(rescall[key] / Math.pow(10, jd))
+                    }
+
+
+                }
+                console.log(objres);
+            }, 500);
+
+
+
+
+
+
+
+
+            //MyContract.methods.getCustomer(t).call().then(res=>{let test = document.getElementById("div_text");test.value=res; console.log(res)})
+
+            //MyContract.methods.geUnlockTime().call().then(res=>{console.log(res)})
+            //MyContract.methods.geUnlockTime().call().then(res=>{console.log(res)})
+            let functionx = eval(functionStr);
+        } else {
+
+            var inpu;
+            inpu = '[]'
+            inpu = JSON.parse(inpu);
+
+            if (abi[local].inputs.length > 0) {
+                if ($('#div_text').val().replace(' ', '') != '') {
+                    inpu = JSON.parse($('#div_text').val());
+                }
+            }
+            console.log(inpu);
+            let endcode = web3.eth.abi.encodeFunctionCall(abi[local], inpu)
+
+
+            if (abi[local].name.length == 10 && abi[local].name.substring(0, 2) == '0x') {
+                endcode = abi[local].name + endcode.substring(10)
+            } else {
+                endcode
+            }
+            test.value = endcode
+            console.log(endcode)
+            console.log(abi[local].stateMutability);
+
+            web3.eth.estimateGas({
+                from: web3.currentProvider.selectedAddress,
+                to: to,
+                value: fee,
+                data: endcode,
+            }, function (error, res) {
+                if (error == null) {
+                    let lastGas = (gasp * res) / Math.pow(10, 18)
+                    lastGas = (lastGas) + parseFloat($("#fee").val())
+                    console.log(lastGas);
+
+                    res = (lastGas) + " ht" + "  |1HT可执行：" + 1 / lastGas
+                    let test = document.getElementById("div_text2");
+                    test.value = 'gas：' + res;
+                    console.log(res);
+                } else {
+                    let test = document.getElementById("div_text2");
+                    test.value = error.message;
+                    console.log(error.message);
+                }
+            })
+
+            /* .then(gas=>{
+            let test = document.getElementById("div_text2");test.value='gas:'+gas;
+            console.log(gas);
+            }) */
+
+
+
         }
 
-        console.log("当前调用者账号: ", sendcode);
-
-        const swap = getMethods(ROUTER_ABI, ROUTER_TOKEN)
-
-
-        let time = Math.round(new Date().getTime() / 1000) + 360 + ''
 
 
 
 
-        let fristId = setInterval(async () => {
-            try {
 
-                let gas = await swap.swapExactETHForTokens(0, ETHpath, (sendcode[0]).address, time).estimateGas({
-                    from: (sendcode[0]).address,
-                    value: sendHt
-                })
-                console.log("" + '||' + new Date() + "GAS: " + gas);
-                clearInterval(fristId);
-                console.log(111);
-                for (let index = 0; index < sendcode.length; index++) {
-                    const myaddress = (sendcode[index]).address;
 
-                    console.log('address', myaddress);
-                    swap.swapExactETHForTokens(0, ETHpath, myaddress, time).send({
-                        from: myaddress,
-                        value: sendHt,
-                        gas: gas,
-                        gasPrice: gasprice
-                    }, function (error, res) {
-                        if (error == null) {
-                            console.log(new Date() + "hash: " + res);
-                            rd.value = "hash：" + res
-                        }
-                    })
-                }
-
-            } catch (error) {
-                rd.value = new Date() + "模拟撞块重试中"
-                    console.log(new Date() + "模拟撞块重试中");
-            }
-        }, settime);
 
 
 
@@ -444,89 +432,481 @@
 
 
 
-    async function test() {
-        let time = Math.round(new Date().getTime() / 1000) + 360 + ''
-        let fee = $("#fee").val();
-        let contract = $("#contract").val();
-        let sendHt = web3x.web3.utils.toWei(fee, 'ether')
-        const swap = getMethods(ROUTER_ABI, ROUTER_TOKEN)
-        console.log('swap', swap);
-        const weth = '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c'
-        const busdt = '0x55d398326f99059fF775485246999027B3197955'
-        let ETHpath = []
-        ETHpath.push(weth)
-
-        ETHpath.push(contract)
-        console.log('ETHpath', ETHpath);
 
 
 
 
-        let BUSDpath = []
-        BUSDpath.push(weth)
-        BUSDpath.push(busdt)
-        BUSDpath.push(contract)
-        console.log('BUSDpath', BUSDpath);
+    function start1() {
+
+        let gasprice = web3.utils.toWei($get('gasp2'), 'gwei')
 
 
-        try {
-            let gas = await swap.swapExactETHForTokens(
-                '0',
-                ETHpath,
-                web3x.web3.currentProvider.selectedAddress,
-                time
-            ).estimateGas({
-                from: web3x.web3.currentProvider.selectedAddress,
-                value: sendHt
-            })
-            console.log("ETHpath" + '||' + new Date() + "GAS: " + gas);
-            swap.swapExactETHForTokens(
-                '0',
-                ETHpath,
-                web3x.web3.currentProvider.selectedAddress,
-                time
-            ).send({
-                from: web3x.web3.currentProvider.selectedAddress,
-                value: sendHt
-            })
-        } catch (error) {
 
-            let gas = await swap.swapExactETHForTokens(
-                '0',
-                BUSDpath,
-                web3x.web3.currentProvider.selectedAddress,
-                time
-            ).estimateGas({
-                from: web3x.web3.currentProvider.selectedAddress,
-                value: sendHt
-            })
-            console.log("BUSDpath" + '||' + new Date() + "GAS: " + gas);
-            swap.swapExactETHForTokens(
-                '0',
-                BUSDpath,
-                web3x.web3.currentProvider.selectedAddress,
-                time
-            ).send({
-                from: web3x.web3.currentProvider.selectedAddress,
-                value: sendHt
-            })
-
-
+        let a = $('#bma').val();
+        let abia = $.parseJSON($('#txabi').val());
+        var inpu;
+        inpu = '[]'
+        inpu = JSON.parse(inpu);
+        if (abia[a].inputs.length > 0) {
+            inpu = JSON.parse($('#div_text').val());
+        }
+        let mssenderlocal
+        for (let index1 = 0; index1 < inpu.length; index1++) {
+            if (inpu[index1].indexOf('sender') != -1) {
+                mssenderlocal = index1
+                break
+            }
         }
 
 
+
+
+
+
+
+
+
+
+
+        let to = $('#to2').val();
+        let data = $('#data2').val();
+        set('transferTo', to)
+        set('transferData', data)
+        let fee = web3.utils.toWei($('#fee2').val(), 'ether');
+        let accounts = $('#accountss2').val();
+
+        console.log(to);
+        console.log(data);
+        console.log(fee);
+        console.log(accounts);
+        /*  if (to.replace(' ', '') === '' || accounts.replace(' ', '') ==='') {
+            console.log(1);
+            return;
+        } */
+        if (web3.utils.isHex(data) == false) {
+            console.log(2);
+            return;
+        }
+
+
+
+        //
+        {
+            web3.eth.accounts.wallet.clear();
+            let split = accounts.split('\n');
+            for (let index = 0; index < split.length; index++) {
+                let element = split[index];
+                //console.log(element);
+                let keys = element.split('----');
+
+                let key = keys[1];
+                let addre = keys[0];
+                console.log(addre);
+                //setlock(addre,0)
+                // console.log(index+"  "+key);
+                web3.eth.accounts.wallet.add({
+                    privateKey: key
+                });
+                //console.log(keys[0]);
+            }
+        }
+        //
+        {
+            var res = web3.eth.accounts.wallet;
+            for (let index = 0; index < res.length; index++) {
+                const element = res[index].address;
+                let intput = inpu
+
+                intput[mssenderlocal] = element
+
+
+
+
+                console.log(intput, element);
+                let endcode = web3.eth.abi.encodeFunctionCall(abia[a], intput)
+                if (abia[a].name.length == 10 && abia[a].name.substring(0, 2) == '0x') {
+                    endcode = abia[a].name + endcode.substring(10)
+                } else {
+                    endcode
+                }
+                let datalast = endcode
+                send(element, datalast);
+            }
+
+            function send(address, datalast) {
+                web3.eth.estimateGas({
+                    from: address,
+                    to: to,
+                    data: datalast,
+                    value: fee
+                }).then(gas => {
+                    console.log(address + ": 正在发送事务中。。。。。", gas, gasp);
+                    web3.eth.sendTransaction({
+                        from: address,
+                        to: to,
+                        data: datalast,
+                        value: fee,
+                        gas: gas + parseInt(gas * 0.1) + '',//
+                        gasPrice: gasprice
+                    }).then(function (receipt) {
+                        console.log('事务发送成功');
+                    })
+                })
+            }
+        }
+    }
+
+
+
+    function jx() {
+
+
+        //console.log($('#txhash').val());
+        //console.log();
+        let jx = $('#div_text').val()
+        if (jx.indexOf('[') != -1 || jx == '') {
+            decodeParamsOfTransaction($('#txhash').val());
+        } else {
+
+            //decodeParamsOfTransaction1()
+            jxdcode()
+        }
+
+
+    }
+
+    async function jxdcode(){
+
+        
+        var input = ($('#div_text').val())
+      
+        let falg = ($('#txabi').val())
+        let timeout = 1000
+        if (falg == "") {
+            //
+            $.getJSON('https://api.hecoinfo.com/api?module=contract&action=getabi&address=' + to + '&apikey=AVVNGHEYYF8XMWH4EH6RS5NK46ZKSWT7TV', function (data) {
+                {
+
+                    console.log(data);
+                    let tempabi = document.getElementById("txabi");
+                    tempabi.value = data.result
+
+                }
+            })
+        } else {
+            timeout = 0
+        }
+
+        setTimeout(() => {
+            func_abi = JSON.parse($('#txabi').val())
+
+            console.log(func_abi);
+           
+
+            let abi;
+            let localArray;
+
+            let functionName = input.substring(0, 10)
+
+            //console.log(functionName);
+            for (let index = 0; index < func_abi.length; index++) {
+
+
+                const element = func_abi[index];
+
+
+
+                if (element.name != undefined || element.name != null) {
+
+                    let hexf = web3.eth.abi.encodeFunctionSignature(element)
+                    console.log(index, hexf, element.name);
+                    if (functionName.indexOf(hexf) != -1) {
+                        abi = func_abi[index];
+                        localArray = index;
+                        break;
+                    } else if (functionName + '' == (element.name).substring(0, 10) + '') {
+                        abi = func_abi[index];
+                        localArray = index;
+                        break;
+                    }
+                }
+
+
+
+
+            }
+
+            console.log((abi));
+
+            //type
+            //internalType
+            var types = abi.inputs.map(x => x.type);
+
+
+            let hexf = web3.eth.abi.encodeFunctionSignature(abi)
+            console.log(hexf);
+            var _d = input.substring(10);
+
+
+            var names = abi.inputs.map(x => x.name);
+            //console.log(names);
+            var r = web3.eth.abi.decodeParameters(types, _d);
+            var dic = {}
+            let arr = []
+            for (var i = 0; i < names.length; i++) {
+                arr[arr.length] = r[i]
+                dic[names[i]] = r[i];
+            }
+            var prams = {}
+            for (var i = 0; i < names.length; i++) {
+                prams[names[i]] = types[i];
+            }
+            //console.log(prams);
+
+            console.log("当前位置：" + localArray + "  函数名：" + abi.name + "  参数个数：" + types.length, abi, prams);
+
+            var test = document.getElementById("div_text");
+            var test2 = document.getElementById("bma");
+
+            test.value = JSON.stringify(arr)
+            test2.value = localArray + ''
+
+
+            dic = {}
+            for (var i = 0; i < names.length; i++) {
+                let jd = $('#jd').val()
+                arr[arr.length] = r[i]
+                let re = r[i];
+                if (types[i].indexOf("uint") != -1 && re.length > 10) {
+                    re = re / Math.pow(10, jd)
+                }
+
+                dic[names[i]] = re;
+            }
+
+
+            console.log("解析：", dic);
+
+
+            set('ABI', $('#txabi').val())
+            set('txhash', $('#txhash').val())
+            return dic
+        }, timeout);
+
+        
+
+    }
+
+    async function decodeParamsOfTransaction1() {
+        let a = $('#bma').val();
+        let func_abi = JSON.parse(($('#txabi').val()))
+        let input = ($('#div_text').val())
+        setTimeout(() => {
+            console.log(func_abi);
+            console.log('to: ' + to);
+            getById('to2').value = to
+
+
+
+            abi = func_abi[a]
+            console.log((abi));
+
+            //type
+            //internalType
+            var types = abi.inputs.map(x => x.type);
+
+
+            let hexf = web3.eth.abi.encodeFunctionSignature(abi)
+
+            var _d = input.replace(hexf, "");
+
+
+            var names = abi.inputs.map(x => x.name);
+            //console.log(names);
+            var r = web3.eth.abi.decodeParameters(types, _d);
+            var dic = {}
+            let arr = []
+            for (var i = 0; i < names.length; i++) {
+                arr[arr.length] = r[i]
+                dic[names[i]] = r[i];
+            }
+            var prams = {}
+            for (var i = 0; i < names.length; i++) {
+                prams[names[i]] = types[i];
+            }
+            //console.log(prams);
+            console.log("当前位置：" + a + "  函数名：" + abi.name + "  参数个数：" + types.length, abi, prams);
+            dic = {}
+            let jd = $('#jd').val()
+            for (var i = 0; i < names.length; i++) {
+                arr[arr.length] = r[i]
+                let re = r[i];
+                if (types[i].indexOf("uint") != -1 && re.length > 10) {
+
+
+                    re = ethers.utils.bigNumberify(re + '').div((pow(jd)))
+                    //toolNumber(re / Math.pow(10, jd))
+                }
+                dic[names[i]] = re;
+            }
+            console.log("解析：", dic);
+            return dic
+        }, 100);
+    }
+
+
+    //解析indputdata
+    async function decodeParamsOfTransaction(txHash) {
+        var func_abi
+        var txData = await web3.eth.getTransaction(txHash);
+
+        console.log(txData);
+        var input = txData.input;
+        to = txData.to;
+        var test3 = document.getElementById("to");
+        test3.value = to;
+        let falg = ($('#txabi').val())
+        let timeout = 1000
+        if (falg == "") {
+            //
+            $.getJSON('https://api.hecoinfo.com/api?module=contract&action=getabi&address=' + to + '&apikey=AVVNGHEYYF8XMWH4EH6RS5NK46ZKSWT7TV', function (data) {
+                {
+
+                    console.log(data);
+                    let tempabi = document.getElementById("txabi");
+                    tempabi.value = data.result
+
+                }
+            })
+        } else {
+            timeout = 0
+        }
+
+        setTimeout(() => {
+            func_abi = JSON.parse($('#txabi').val())
+
+            console.log(func_abi);
+            console.log('to: ' + to);
+
+            getById('to2').value = to
+
+            let abi;
+            let localArray;
+
+            let functionName = input.substring(0, 10)
+
+            //console.log(functionName);
+            for (let index = 0; index < func_abi.length; index++) {
+
+
+                const element = func_abi[index];
+
+
+
+                if (element.name != undefined || element.name != null) {
+
+                    let hexf = web3.eth.abi.encodeFunctionSignature(element)
+                    console.log(index, hexf, element.name);
+                    if (functionName.indexOf(hexf) != -1) {
+                        abi = func_abi[index];
+                        localArray = index;
+                        break;
+                    } else if (functionName + '' == (element.name).substring(0, 10) + '') {
+                        abi = func_abi[index];
+                        localArray = index;
+                        break;
+                    }
+                }
+
+
+
+
+            }
+
+            console.log((abi));
+
+            //type
+            //internalType
+            var types = abi.inputs.map(x => x.type);
+
+
+            let hexf = web3.eth.abi.encodeFunctionSignature(abi)
+            console.log(hexf);
+            var _d = input.substring(10);
+
+
+            var names = abi.inputs.map(x => x.name);
+            //console.log(names);
+            var r = web3.eth.abi.decodeParameters(types, _d);
+            var dic = {}
+            let arr = []
+            for (var i = 0; i < names.length; i++) {
+                arr[arr.length] = r[i]
+                dic[names[i]] = r[i];
+            }
+            var prams = {}
+            for (var i = 0; i < names.length; i++) {
+                prams[names[i]] = types[i];
+            }
+            //console.log(prams);
+
+            console.log("当前位置：" + localArray + "  函数名：" + abi.name + "  参数个数：" + types.length, abi, prams);
+
+            var test = document.getElementById("div_text");
+            var test2 = document.getElementById("bma");
+
+            test.value = JSON.stringify(arr)
+            test2.value = localArray + ''
+
+
+            dic = {}
+            for (var i = 0; i < names.length; i++) {
+                let jd = $('#jd').val()
+                arr[arr.length] = r[i]
+                let re = r[i];
+                if (types[i].indexOf("uint") != -1 && re.length > 10) {
+                    re = re / Math.pow(10, jd)
+                }
+
+                dic[names[i]] = re;
+            }
+
+
+            console.log("解析：", dic);
+
+
+            set('ABI', $('#txabi').val())
+            set('txhash', $('#txhash').val())
+            return dic
+        }, timeout);
+    }
+
+
+    //编码inputdata
+    function encodeinputdata() {
+        // console.log( web3.eth.abi.encodeFunctionCall(mat[4], ['2778'])) //abi.方法 //[参数]
+        for (let index = 0; index < $.parseJSON($('#txabi').val()).length; index++) {
+            const element = mat[index];
+            let hex = web3.eth.abi.encodeFunctionSignature(element) //获取MethedsID
+            console.log(element.name + "    ||              encode10:  " + hex);
+        }
+    }
+
+
+
+    function test() {
+        let nowabi = $.parseJSON($('#txabi').val())
+
+        let myContract = new web3.eth.Contract(nowabi, '0x0768e53EbD2e8E6cCA369ba6812Fffb72c5E1A38');
+
+        myContract.getCustome('15709244').call().then(console.log)
+        //myContract.getInviteCode().call().then(console.log)
     }
 </script>
 
 
+
 <script>
-    function getMethods(p1, p2) {
-        if (p2 == undefined) {
-            return new web3x.web3.eth.Contract(p1.abi, p1.address).methods;
-        } else {
-            return new web3x.web3.eth.Contract(p1, p2).methods;
-        }
-    }
     function $set(p1, p2) {
         let t = document.getElementById(p1);
         t.value = p2
@@ -535,11 +915,34 @@
         let t = document.getElementById(p1);
         return t.value
     }
-    function weiformeth(num, decimals) {
+    function EX() {
+        let listUl = document.getElementById("EX1");
+
+
+        if (listUl.style.display === "block") {
+            listUl.style.display = "none";
+        } else {
+            listUl.style.display = "block";
+        }
+
+
+    }
+
+
+    function EX2() {
+        let listUl = document.getElementById("EX2");
+        if (listUl.style.display === "block") {
+            listUl.style.display = "none";
+        } else {
+            listUl.style.display = "block";
+        }
+    }
+
+    function weiformeth(num) {
         return ethers.utils.bigNumberify(num + '').div((pow(decimals)))
     }
 
-    function ethforwei(num, decimals) {
+    function ethforwei(num) {
         return ethers.utils.bigNumberify(num + '').mul((pow(decimals)))
     }
 
@@ -550,20 +953,76 @@
         }
         return p
     }
+
+
+
+
+
+
     function set(key, value) {
         localStorage.setItem(key, value);
     }
+
     function get(key) {
         return localStorage.getItem(key);
     }
-</script>
 
-<script>
+    function del(key) {
+        localStorage.setItem(key, "");
+    }
 
-    const ROUTER_TOKEN = '0x10ED43C718714eb63d5aA57B78B54704E256024E'
-    const ROUTER_ABI = [{ "inputs": [{ "internalType": "address", "name": "_factory", "type": "address" }, { "internalType": "address", "name": "_WETH", "type": "address" }], "stateMutability": "nonpayable", "type": "constructor" }, { "inputs": [], "name": "WETH", "outputs": [{ "internalType": "address", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "tokenA", "type": "address" }, { "internalType": "address", "name": "tokenB", "type": "address" }, { "internalType": "uint256", "name": "amountADesired", "type": "uint256" }, { "internalType": "uint256", "name": "amountBDesired", "type": "uint256" }, { "internalType": "uint256", "name": "amountAMin", "type": "uint256" }, { "internalType": "uint256", "name": "amountBMin", "type": "uint256" }, { "internalType": "address", "name": "to", "type": "address" }, { "internalType": "uint256", "name": "deadline", "type": "uint256" }], "name": "addLiquidity", "outputs": [{ "internalType": "uint256", "name": "amountA", "type": "uint256" }, { "internalType": "uint256", "name": "amountB", "type": "uint256" }, { "internalType": "uint256", "name": "liquidity", "type": "uint256" }], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "token", "type": "address" }, { "internalType": "uint256", "name": "amountTokenDesired", "type": "uint256" }, { "internalType": "uint256", "name": "amountTokenMin", "type": "uint256" }, { "internalType": "uint256", "name": "amountETHMin", "type": "uint256" }, { "internalType": "address", "name": "to", "type": "address" }, { "internalType": "uint256", "name": "deadline", "type": "uint256" }], "name": "addLiquidityETH", "outputs": [{ "internalType": "uint256", "name": "amountToken", "type": "uint256" }, { "internalType": "uint256", "name": "amountETH", "type": "uint256" }, { "internalType": "uint256", "name": "liquidity", "type": "uint256" }], "stateMutability": "payable", "type": "function" }, { "inputs": [], "name": "factory", "outputs": [{ "internalType": "address", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "amountOut", "type": "uint256" }, { "internalType": "uint256", "name": "reserveIn", "type": "uint256" }, { "internalType": "uint256", "name": "reserveOut", "type": "uint256" }], "name": "getAmountIn", "outputs": [{ "internalType": "uint256", "name": "amountIn", "type": "uint256" }], "stateMutability": "pure", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "amountIn", "type": "uint256" }, { "internalType": "uint256", "name": "reserveIn", "type": "uint256" }, { "internalType": "uint256", "name": "reserveOut", "type": "uint256" }], "name": "getAmountOut", "outputs": [{ "internalType": "uint256", "name": "amountOut", "type": "uint256" }], "stateMutability": "pure", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "amountOut", "type": "uint256" }, { "internalType": "address[]", "name": "path", "type": "address[]" }], "name": "getAmountsIn", "outputs": [{ "internalType": "uint256[]", "name": "amounts", "type": "uint256[]" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "amountIn", "type": "uint256" }, { "internalType": "address[]", "name": "path", "type": "address[]" }], "name": "getAmountsOut", "outputs": [{ "internalType": "uint256[]", "name": "amounts", "type": "uint256[]" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "amountA", "type": "uint256" }, { "internalType": "uint256", "name": "reserveA", "type": "uint256" }, { "internalType": "uint256", "name": "reserveB", "type": "uint256" }], "name": "quote", "outputs": [{ "internalType": "uint256", "name": "amountB", "type": "uint256" }], "stateMutability": "pure", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "tokenA", "type": "address" }, { "internalType": "address", "name": "tokenB", "type": "address" }, { "internalType": "uint256", "name": "liquidity", "type": "uint256" }, { "internalType": "uint256", "name": "amountAMin", "type": "uint256" }, { "internalType": "uint256", "name": "amountBMin", "type": "uint256" }, { "internalType": "address", "name": "to", "type": "address" }, { "internalType": "uint256", "name": "deadline", "type": "uint256" }], "name": "removeLiquidity", "outputs": [{ "internalType": "uint256", "name": "amountA", "type": "uint256" }, { "internalType": "uint256", "name": "amountB", "type": "uint256" }], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "token", "type": "address" }, { "internalType": "uint256", "name": "liquidity", "type": "uint256" }, { "internalType": "uint256", "name": "amountTokenMin", "type": "uint256" }, { "internalType": "uint256", "name": "amountETHMin", "type": "uint256" }, { "internalType": "address", "name": "to", "type": "address" }, { "internalType": "uint256", "name": "deadline", "type": "uint256" }], "name": "removeLiquidityETH", "outputs": [{ "internalType": "uint256", "name": "amountToken", "type": "uint256" }, { "internalType": "uint256", "name": "amountETH", "type": "uint256" }], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "token", "type": "address" }, { "internalType": "uint256", "name": "liquidity", "type": "uint256" }, { "internalType": "uint256", "name": "amountTokenMin", "type": "uint256" }, { "internalType": "uint256", "name": "amountETHMin", "type": "uint256" }, { "internalType": "address", "name": "to", "type": "address" }, { "internalType": "uint256", "name": "deadline", "type": "uint256" }], "name": "removeLiquidityETHSupportingFeeOnTransferTokens", "outputs": [{ "internalType": "uint256", "name": "amountETH", "type": "uint256" }], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "token", "type": "address" }, { "internalType": "uint256", "name": "liquidity", "type": "uint256" }, { "internalType": "uint256", "name": "amountTokenMin", "type": "uint256" }, { "internalType": "uint256", "name": "amountETHMin", "type": "uint256" }, { "internalType": "address", "name": "to", "type": "address" }, { "internalType": "uint256", "name": "deadline", "type": "uint256" }, { "internalType": "bool", "name": "approveMax", "type": "bool" }, { "internalType": "uint8", "name": "v", "type": "uint8" }, { "internalType": "bytes32", "name": "r", "type": "bytes32" }, { "internalType": "bytes32", "name": "s", "type": "bytes32" }], "name": "removeLiquidityETHWithPermit", "outputs": [{ "internalType": "uint256", "name": "amountToken", "type": "uint256" }, { "internalType": "uint256", "name": "amountETH", "type": "uint256" }], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "token", "type": "address" }, { "internalType": "uint256", "name": "liquidity", "type": "uint256" }, { "internalType": "uint256", "name": "amountTokenMin", "type": "uint256" }, { "internalType": "uint256", "name": "amountETHMin", "type": "uint256" }, { "internalType": "address", "name": "to", "type": "address" }, { "internalType": "uint256", "name": "deadline", "type": "uint256" }, { "internalType": "bool", "name": "approveMax", "type": "bool" }, { "internalType": "uint8", "name": "v", "type": "uint8" }, { "internalType": "bytes32", "name": "r", "type": "bytes32" }, { "internalType": "bytes32", "name": "s", "type": "bytes32" }], "name": "removeLiquidityETHWithPermitSupportingFeeOnTransferTokens", "outputs": [{ "internalType": "uint256", "name": "amountETH", "type": "uint256" }], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "tokenA", "type": "address" }, { "internalType": "address", "name": "tokenB", "type": "address" }, { "internalType": "uint256", "name": "liquidity", "type": "uint256" }, { "internalType": "uint256", "name": "amountAMin", "type": "uint256" }, { "internalType": "uint256", "name": "amountBMin", "type": "uint256" }, { "internalType": "address", "name": "to", "type": "address" }, { "internalType": "uint256", "name": "deadline", "type": "uint256" }, { "internalType": "bool", "name": "approveMax", "type": "bool" }, { "internalType": "uint8", "name": "v", "type": "uint8" }, { "internalType": "bytes32", "name": "r", "type": "bytes32" }, { "internalType": "bytes32", "name": "s", "type": "bytes32" }], "name": "removeLiquidityWithPermit", "outputs": [{ "internalType": "uint256", "name": "amountA", "type": "uint256" }, { "internalType": "uint256", "name": "amountB", "type": "uint256" }], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "amountOut", "type": "uint256" }, { "internalType": "address[]", "name": "path", "type": "address[]" }, { "internalType": "address", "name": "to", "type": "address" }, { "internalType": "uint256", "name": "deadline", "type": "uint256" }], "name": "swapETHForExactTokens", "outputs": [{ "internalType": "uint256[]", "name": "amounts", "type": "uint256[]" }], "stateMutability": "payable", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "amountOutMin", "type": "uint256" }, { "internalType": "address[]", "name": "path", "type": "address[]" }, { "internalType": "address", "name": "to", "type": "address" }, { "internalType": "uint256", "name": "deadline", "type": "uint256" }], "name": "swapExactETHForTokens", "outputs": [{ "internalType": "uint256[]", "name": "amounts", "type": "uint256[]" }], "stateMutability": "payable", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "amountOutMin", "type": "uint256" }, { "internalType": "address[]", "name": "path", "type": "address[]" }, { "internalType": "address", "name": "to", "type": "address" }, { "internalType": "uint256", "name": "deadline", "type": "uint256" }], "name": "swapExactETHForTokensSupportingFeeOnTransferTokens", "outputs": [], "stateMutability": "payable", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "amountIn", "type": "uint256" }, { "internalType": "uint256", "name": "amountOutMin", "type": "uint256" }, { "internalType": "address[]", "name": "path", "type": "address[]" }, { "internalType": "address", "name": "to", "type": "address" }, { "internalType": "uint256", "name": "deadline", "type": "uint256" }], "name": "swapExactTokensForETH", "outputs": [{ "internalType": "uint256[]", "name": "amounts", "type": "uint256[]" }], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "amountIn", "type": "uint256" }, { "internalType": "uint256", "name": "amountOutMin", "type": "uint256" }, { "internalType": "address[]", "name": "path", "type": "address[]" }, { "internalType": "address", "name": "to", "type": "address" }, { "internalType": "uint256", "name": "deadline", "type": "uint256" }], "name": "swapExactTokensForETHSupportingFeeOnTransferTokens", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "amountIn", "type": "uint256" }, { "internalType": "uint256", "name": "amountOutMin", "type": "uint256" }, { "internalType": "address[]", "name": "path", "type": "address[]" }, { "internalType": "address", "name": "to", "type": "address" }, { "internalType": "uint256", "name": "deadline", "type": "uint256" }], "name": "swapExactTokensForTokens", "outputs": [{ "internalType": "uint256[]", "name": "amounts", "type": "uint256[]" }], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "amountIn", "type": "uint256" }, { "internalType": "uint256", "name": "amountOutMin", "type": "uint256" }, { "internalType": "address[]", "name": "path", "type": "address[]" }, { "internalType": "address", "name": "to", "type": "address" }, { "internalType": "uint256", "name": "deadline", "type": "uint256" }], "name": "swapExactTokensForTokensSupportingFeeOnTransferTokens", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "amountOut", "type": "uint256" }, { "internalType": "uint256", "name": "amountInMax", "type": "uint256" }, { "internalType": "address[]", "name": "path", "type": "address[]" }, { "internalType": "address", "name": "to", "type": "address" }, { "internalType": "uint256", "name": "deadline", "type": "uint256" }], "name": "swapTokensForExactETH", "outputs": [{ "internalType": "uint256[]", "name": "amounts", "type": "uint256[]" }], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "amountOut", "type": "uint256" }, { "internalType": "uint256", "name": "amountInMax", "type": "uint256" }, { "internalType": "address[]", "name": "path", "type": "address[]" }, { "internalType": "address", "name": "to", "type": "address" }, { "internalType": "uint256", "name": "deadline", "type": "uint256" }], "name": "swapTokensForExactTokens", "outputs": [{ "internalType": "uint256[]", "name": "amounts", "type": "uint256[]" }], "stateMutability": "nonpayable", "type": "function" }, { "stateMutability": "payable", "type": "receive" }]
+
+    function setlock(name, value) {
+        localStorage.setItem("lock" + name, value);
+    }
+
+    function getlock(name) {
+        return localStorage.getItem("lock" + name);
+    }
+
+
+
+    function setToken_Name(value) {
+        localStorage.setItem("TONEN_NAME", value);
+    }
+
+    function getToken_Name(value) {
+        return localStorage.getItem("TONEN_NAME");
+    }
+
+    function setdecimals(value) {
+        localStorage.setItem("decimals", value);
+    }
+
+    function getsetdecimals() {
+        return localStorage.getItem("decimals");
+    }
+
+
+    function setGas(value) {
+        localStorage.setItem("gas", value);
+    }
+
+    function getGas() {
+        return localStorage.getItem("gas");
+    }
+
     init()
-    web3init()
+
+    function init() {
+        var init = document.getElementById("txabi");
+        var init2 = document.getElementById("txhash");
+
+        init.value = get('ABI');
+        init2.value = get('txhash');
+    }
+
+
+    function getById(params) {
+        return document.getElementById(params);
+    }
+
+
 </script>
 
 </html>
