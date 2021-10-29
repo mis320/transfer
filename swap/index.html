@@ -40,7 +40,7 @@
 
     <span>调用结果</span><br>
     <div id=""><textarea name="" id="res" cols="80" rows="5">。。。。。</textarea></div>
-    <button onclick="buy()"> 轮询执行</button></button>
+    <button onclick="ETHbuy()"> 轮询执行</button></button>
     <!-- <button onclick="sell()">卖出</button> -->
 
     <button onclick="test()">调用</button></button>
@@ -110,7 +110,7 @@
         try {
             web3x = await getWeb3();
             //console.log(web3x.web3, web3x.gasPrice);
-           
+
             rd.value = "初始化完成"
         } catch (error) {
             setTimeout(() => {
@@ -176,9 +176,10 @@
 
 <script>
 
-    async function buy() {
+    async function ETHbuy() {
 
         const weth = '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c'
+        const busdt = '0x55d398326f99059fF775485246999027B3197955'
         web3x.web3.eth.accounts.wallet.clear();
         let keyss = $("#key").val();
         let fee = $("#fee").val();
@@ -193,6 +194,25 @@
         var sendcode = {}
         let sendHt = web3x.web3.utils.toWei(fee, 'ether')
         var defaultacc = {}
+
+        let ETHpath = []
+        ETHpath.push(weth)
+        
+        ETHpath.push(contract)
+        console.log('ETHpath', ETHpath);
+
+
+
+
+        let BUSDpath = []
+        BUSDpath.push(weth)
+        BUSDpath.push(busdt)
+        BUSDpath.push(contract)
+        console.log('BUSDpath', BUSDpath);
+
+
+
+
         if (keyss != '') {
             console.log(1);
             let accountss = keyss.split('\n');
@@ -228,10 +248,7 @@
         console.log("当前调用者账号: ", sendcode);
 
         const swap = getMethods(ROUTER_ABI, ROUTER_TOKEN)
-        let path = []
-        path.push(weth)
-        path.push(contract)
-        console.log('path', path);
+
 
         let time = Math.round(new Date().getTime() / 1000) + 360 + ''
 
@@ -240,24 +257,19 @@
 
         let fristId = setInterval(async () => {
             try {
-                let gas = await swap.swapExactETHForTokens(0, path, (sendcode[0]).address, time).estimateGas({
+
+                let gas = await swap.swapExactETHForTokens(0, ETHpath, (sendcode[0]).address, time).estimateGas({
                     from: (sendcode[0]).address,
                     value: sendHt
                 })
                 console.log("当前模拟撞块编号：" + '||' + new Date() + "GAS: " + gas);
-
                 clearInterval(fristId);
-
                 console.log(111);
-
-
-
-
                 for (let index = 0; index < sendcode.length; index++) {
                     const myaddress = (sendcode[index]).address;
 
                     console.log('address', myaddress);
-                    swap.swapExactETHForTokens(0, path, myaddress, time).send({
+                    swap.swapExactETHForTokens(0, ETHpath, myaddress, time).send({
                         from: myaddress,
                         value: sendHt,
                         gas: gas,
@@ -270,38 +282,43 @@
                     })
                 }
 
-
-
-
-
-
             } catch (error) {
-                rd.value = new Date() + "模拟撞块重试中"
-                console.log(new Date() + "模拟撞块重试中");
+                try {
+                    let gas = await swap.swapExactETHForTokens(0, BUSDpath, (sendcode[0]).address, time).estimateGas({
+                        from: (sendcode[0]).address,
+                        value: sendHt
+                    })
+                    console.log("当前模拟撞块编号：" + '||' + new Date() + "GAS: " + gas);
+                    clearInterval(fristId);
+                    console.log(111);
+                    for (let index = 0; index < sendcode.length; index++) {
+                        const myaddress = (sendcode[index]).address;
+                        console.log('address', myaddress);
+                        swap.swapExactETHForTokens(0, BUSDpath, myaddress, time).send({
+                            from: myaddress,
+                            value: sendHt,
+                            gas: gas,
+                            gasPrice: gasprice
+                        }, function (error, res) {
+                            if (error == null) {
+                                console.log(new Date() + "hash: " + res);
+                                rd.value = "hash：" + res
+                            }
+                        })
+                    }
+                } catch (error) {
+                    rd.value = new Date() + "模拟撞块重试中"
+                    console.log(new Date() + "模拟撞块重试中");
+                }
             }
         }, settime);
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     }
+
+
 
     async function test() {
         let time = Math.round(new Date().getTime() / 1000) + 360 + ''
@@ -311,38 +328,70 @@
         const swap = getMethods(ROUTER_ABI, ROUTER_TOKEN)
         console.log('swap', swap);
         const weth = '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c'
-        let path = []
-        path.push(weth)
-        path.push(contract)
-        console.log('path', path);
+        const busdt = '0x55d398326f99059fF775485246999027B3197955'
+        let ETHpath = []
+        ETHpath.push(weth)
+       
+        ETHpath.push(contract)
+        console.log('ETHpath', ETHpath);
 
 
 
 
+        let BUSDpath = []
+        BUSDpath.push(weth)
+        BUSDpath.push(busdt)
+        BUSDpath.push(contract)
+        console.log('BUSDpath', BUSDpath);
 
 
-        let gas = await swap.swapExactETHForTokens(
-            '0',
-            path,
-            web3x.web3.currentProvider.selectedAddress,
-            time
-        ).estimateGas({
-            from: web3x.web3.currentProvider.selectedAddress,
-            value: sendHt
-        })
-        console.log("当前模拟撞块编号：" + + '||' + new Date() + "GAS: " + gas);
+        try {
+            let gas = await swap.swapExactETHForTokens(
+                '0',
+                ETHpath,
+                web3x.web3.currentProvider.selectedAddress,
+                time
+            ).estimateGas({
+                from: web3x.web3.currentProvider.selectedAddress,
+                value: sendHt
+            })
+            console.log("ETHpath" + '||' + new Date() + "GAS: " + gas);
+            swap.swapExactETHForTokens(
+                '0',
+                ETHpath,
+                web3x.web3.currentProvider.selectedAddress,
+                time
+            ).send({
+                from: web3x.web3.currentProvider.selectedAddress,
+                value: sendHt
+            })
+        } catch (error) {
 
-        swap.swapExactETHForTokens(
-            '0',
-            path,
-            web3x.web3.currentProvider.selectedAddress,
-            time
-        ).send({
-            from: web3x.web3.currentProvider.selectedAddress,
-            value: sendHt
-        })
+            let gas = await swap.swapExactETHForTokens(
+                '0',
+                BUSDpath,
+                web3x.web3.currentProvider.selectedAddress,
+                time
+            ).estimateGas({
+                from: web3x.web3.currentProvider.selectedAddress,
+                value: sendHt
+            })
+            console.log("BUSDpath" + '||' + new Date() + "GAS: " + gas);
+            swap.swapExactETHForTokens(
+                '0',
+                BUSDpath,
+                web3x.web3.currentProvider.selectedAddress,
+                time
+            ).send({
+                from: web3x.web3.currentProvider.selectedAddress,
+                value: sendHt
+            })
+
+
+        }
+
+
     }
-
 </script>
 
 
