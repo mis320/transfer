@@ -40,10 +40,16 @@
 
     <span>调用结果</span><br>
     <div id=""><textarea name="" id="res" cols="80" rows="5">。。。。。</textarea></div>
-    <button onclick="ETHbuy()"> 轮询执行</button></button>
+    <button onclick="ETHbuy()"> ETH轮询执行</button></button>
     <!-- <button onclick="sell()">卖出</button> -->
 
     <button onclick="test()">调用</button></button>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <button onclick="allbuy()"> 自动路径轮询执行</button></button>
 </body>
 
 
@@ -176,7 +182,7 @@
 
 <script>
 
-    async function ETHbuy() {
+    async function allbuy() {
 
         const weth = '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c'
         const busdt = '0x55d398326f99059fF775485246999027B3197955'
@@ -197,7 +203,7 @@
 
         let ETHpath = []
         ETHpath.push(weth)
-        
+
         ETHpath.push(contract)
         console.log('ETHpath', ETHpath);
 
@@ -319,6 +325,124 @@
     }
 
 
+    async function ETHbuy() {
+
+        const weth = '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c'
+        const busdt = '0x55d398326f99059fF775485246999027B3197955'
+        web3x.web3.eth.accounts.wallet.clear();
+        let keyss = $("#key").val();
+        let fee = $("#fee").val();
+        let contract = $("#contract").val();
+        let poolminfell = $("#poolminfell").val();
+        let settime = $("#time").val();
+        let gasprice = web3x.gasPrice
+        console.log('gasprice', gasprice);
+        set("qbgjfee", fee)
+        set("qbgjcontract", contract)
+        set("qbgjbuyfee", poolminfell)
+        var sendcode = {}
+        let sendHt = web3x.web3.utils.toWei(fee, 'ether')
+        var defaultacc = {}
+
+        let ETHpath = []
+        ETHpath.push(weth)
+
+        ETHpath.push(contract)
+        console.log('ETHpath', ETHpath);
+
+
+
+
+        let BUSDpath = []
+        BUSDpath.push(weth)
+        BUSDpath.push(busdt)
+        BUSDpath.push(contract)
+        console.log('BUSDpath', BUSDpath);
+
+
+
+
+        if (keyss != '') {
+            console.log(1);
+            let accountss = keyss.split('\n');
+            if (keyss.indexOf('----') != -1) {
+                let c = accountss
+                for (let index = 0; index < c.length; index++) {
+                    const element = c[index];
+                    let keys = element.split('----');
+                    let key = keys[1];
+                    let addre = keys[0];
+                    web3x.web3.eth.accounts.wallet.add({
+                        privateKey: key
+                    });
+                }
+            } else {
+                let c = accountss
+                for (let index = 0; index < c.length; index++) {
+                    const element = c[index];
+                    web3x.web3.eth.accounts.wallet.add({
+                        privateKey: element
+                    });
+                }
+            }
+            sendcode = web3x.web3.eth.accounts.wallet
+        } else {
+            console.log(2);
+            defaultacc['address'] = (await web3x.web3.eth.getAccounts())[0]
+            sendcode[0] = defaultacc
+            sendcode['length'] = 1
+            console.log(sendcode[0].address);
+        }
+
+        console.log("当前调用者账号: ", sendcode);
+
+        const swap = getMethods(ROUTER_ABI, ROUTER_TOKEN)
+
+
+        let time = Math.round(new Date().getTime() / 1000) + 360 + ''
+
+
+
+
+        let fristId = setInterval(async () => {
+            try {
+
+                let gas = await swap.swapExactETHForTokens(0, ETHpath, (sendcode[0]).address, time).estimateGas({
+                    from: (sendcode[0]).address,
+                    value: sendHt
+                })
+                console.log("" + '||' + new Date() + "GAS: " + gas);
+                clearInterval(fristId);
+                console.log(111);
+                for (let index = 0; index < sendcode.length; index++) {
+                    const myaddress = (sendcode[index]).address;
+
+                    console.log('address', myaddress);
+                    swap.swapExactETHForTokens(0, ETHpath, myaddress, time).send({
+                        from: myaddress,
+                        value: sendHt,
+                        gas: gas,
+                        gasPrice: gasprice
+                    }, function (error, res) {
+                        if (error == null) {
+                            console.log(new Date() + "hash: " + res);
+                            rd.value = "hash：" + res
+                        }
+                    })
+                }
+
+            } catch (error) {
+                rd.value = new Date() + "模拟撞块重试中"
+                    console.log(new Date() + "模拟撞块重试中");
+            }
+        }, settime);
+
+
+
+
+    }
+
+
 
     async function test() {
         let time = Math.round(new Date().getTime() / 1000) + 360 + ''
@@ -331,7 +455,7 @@
         const busdt = '0x55d398326f99059fF775485246999027B3197955'
         let ETHpath = []
         ETHpath.push(weth)
-       
+
         ETHpath.push(contract)
         console.log('ETHpath', ETHpath);
 
