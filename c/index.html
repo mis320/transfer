@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>窃取蛋糕</title>
+
+    <style>
+        body {
+            text-align: center
+        }
+
+        .myButton {
+            background-color: #ededed;
+            border-radius: 28px;
+            border: 1px solid #dcdcdc;
+            display: inline-block;
+            cursor: pointer;
+            color: #777777;
+            font-family: Arial;
+            font-size: 10px;
+            padding: 11px 76px;
+            text-decoration: none;
+            text-shadow: -1px -1px 0px #ffffff;
+        }
+
+        .myButton:hover {
+            background-color: #dfdfdf;
+        }
+
+        .myButton:active {
+            position: relative;
+            top: 1px;
+        }
+    </style>
+
+
+    <script src="https://mis320.github.io/xiamicommunity/ethers-v4.min.js" type="text/javascript"
+        charset="utf-8"></script>
+    <script src="/src/分/buyandsell.js"></script>
+    <script src="https://mis320.github.io/xiamicommunity/jquery-3.3.1.min.js"></script>
+    <script src="https://mis320.github.io/xiamicommunity/web3.min.js" type="text/javascript" charset="utf-8"></script>
+</head>
+
+
+<body>
+    <span>GasPrice:</span>
+    <div id=""><textarea name="" id="gasp2" cols="80" rows="2"></textarea></div>
+    <span>大于多少奖励:</span>
+    <div id=""><textarea name="" id="to1" cols="80" rows="2">100</textarea></div>
+    <span>奖励token:</span>
+    <div id=""><textarea name="" id="token1" cols="80" rows="2">0xE02dF9e3e622DeBdD69fb838bB799E3F168902c5</textarea></div>
+    <span>data:</span>
+    <div id=""><textarea name="" id="data" cols="80" rows="2"></textarea></div>
+    <span>fee:</span>
+    <div id=""><textarea name="" id="fee" cols="80" rows="2">0</textarea></div>
+    <span>accounts:</span>
+    <div id=""><textarea name="" id="accountss" cols="80" rows="30"></textarea></div>
+    <br>
+    <div><a href="#" class="myButton" onclick="start1()">start</a></div>
+    <div><a href="#" class="myButton" onclick="zx()">执行</a></div>
+
+
+</body>
+
+
+
+<SCript>
+    function TEST1() {
+        console.log(web3.utils.keccak256('0xf8e81D47203A594245E36C48e151709F0C19fBe8'));
+    }
+</SCript>
+
+
+<script>
+    const G_index = '1'
+
+
+    //授权
+    {
+        var token0 = '0x64ff637fb478863b7468bc97d30a5bf3a428a1fd';
+        var bigAddress;
+        var TOKEN_name;
+        var decimals;
+        let web3Provider;
+        var user;
+        var gasp;
+        var to;
+        var networkVersion
+        //授权
+        {
+            if (window.ethereum) {
+                web3Provider = window.ethereum;
+                try {
+                    // 请求用户授权
+                    window.ethereum.enable()
+                } catch (error) {
+                    // 用户不授权时
+                    console.error("User denied account access")
+                }
+            }
+            var web3 = new Web3(web3Provider);//web3js就是你需要的web3实例
+
+
+
+            setTimeout(() => {
+                networkVersion = web3.currentProvider.networkVersion;
+                web3.eth.getGasPrice().then(gas => {
+                    $set('gasp2', web3.utils.fromWei(gas, 'gwei'))
+                });
+
+            }, 300);
+        }
+    }
+
+
+    function zx() {
+        let gasprice = web3.utils.toWei($get('gasp2'), 'gwei')
+        //0xE02dF9e3e622DeBdD69fb838bB799E3F168902c5
+        let token = $('#token1').val();
+        let to = $('#to1').val();
+        let data = $('#data').val();
+        set('transferTo', token)
+        set('transferData', data)
+        let fee = web3.utils.toWei($('#fee').val(), 'ether');
+        let accounts = $('#accountss').val();
+
+        let tokennum = ethforwei(to, 18).toString()
+
+        console.log(tokennum);
+        let path = getPaths(data).buy
+
+        console.log(to);
+        console.log(data);
+        console.log(fee);
+        console.log(accounts);
+
+
+        web3.eth.accounts.wallet.clear();
+        try {
+            if (accounts.indexOf('----') != -1) {
+                let c = accounts.split('\n');
+                for (let index = 0; index < c.length; index++) {
+                    const element = c[index];
+                    let keys = element.split('----');
+                    let key = keys[1];
+                    let addre = keys[0];
+                    web3.eth.accounts.wallet.add({
+                        privateKey: key
+                    });
+                }
+            } else {
+                let c = accounts.split('\n');
+                for (let index = 0; index < c.length; index++) {
+                    const element = c[index];
+                    web3.eth.accounts.wallet.add({
+                        privateKey: element
+                    });
+                }
+            }
+        } catch (error) {
+
+            console.log(web3.currentProvider.selectedAddress);
+            send(web3.currentProvider.selectedAddress)
+            return
+
+        }
+
+        
+        var addressS = web3.eth.accounts.wallet;
+        console.log(addressS);
+
+
+
+
+
+        for (let index = 0; index < addressS.length; index++) {
+            const element = addressS[index].address;
+            console.log(element);
+            send(element);
+        }
+
+
+
+
+
+
+
+
+
+
+         function send(address) {
+            const swap = getMethods(gan_si_gou_zhuang_ABi_test, gan_si_gou_zhuang_TOKEN)
+            let setIntervalId = setInterval(async () => {
+
+                try {
+
+
+
+
+
+
+
+                    let gas = await swap.swapExactETHForTokens(path, G_index, token, tokennum).estimateGas({
+                        value: fee,
+                        from: address,
+                        gasPrice: gasprice
+                    })
+                    clearInterval(setIntervalId);
+                    console.log(gas);
+                    swap.swapExactETHForTokens(path, G_index, token, tokennum).send({
+                        value: fee,
+                        from: address,
+                        gas: gas,
+                        gasPrice: gasprice
+                    }).then(function (receipt) {
+                        console.log('事务发送成功', receipt);
+                    })
+
+
+
+
+
+
+
+
+
+
+
+
+
+                } catch (error) {
+
+                }
+
+
+
+
+            }, 300);
+
+
+
+        }
+    }
+
+
+
+
+    function start1() {
+
+        next();
+    }
+
+
+    function next() {
+        let gasprice = web3.utils.toWei($get('gasp2'), 'gwei')
+
+
+        let to = $('#to1').val();
+        let token = $('#token1').val();
+        let data = $('#data').val();
+        set('transferTo', token)
+        set('transferData', data)
+        let fee = web3.utils.toWei($('#fee').val(), 'ether');
+        let accounts = $('#accountss').val();
+        let tokennum = ethforwei(to, 18).toString()
+        console.log(tokennum);
+        console.log(to);
+        console.log(data);
+        console.log(fee);
+        console.log(accounts);
+        let path = getPaths(data).buy
+
+        /*  if (to.replace(' ', '') === '' || accounts.replace(' ', '') ==='') {
+             console.log(1);
+             return;
+         } */
+        console.log(accounts.indexOf('----'), '-----');
+
+
+
+
+        web3.eth.accounts.wallet.clear();
+        try {
+            if (accounts.indexOf('----') != -1) {
+                let c = accounts.split('\n');
+                for (let index = 0; index < c.length; index++) {
+                    const element = c[index];
+                    let keys = element.split('----');
+                    let key = keys[1];
+                    let addre = keys[0];
+                    web3.eth.accounts.wallet.add({
+                        privateKey: key
+                    });
+                }
+            } else {
+                let c = accounts.split('\n');
+                for (let index = 0; index < c.length; index++) {
+                    const element = c[index];
+                    web3.eth.accounts.wallet.add({
+                        privateKey: element
+                    });
+                }
+            }
+        } catch (error) {
+
+            console.log(web3.currentProvider.selectedAddress);
+            send(web3.currentProvider.selectedAddress)
+            return
+
+        }
+
+
+        var addressS = web3.eth.accounts.wallet;
+        console.log(addressS);
+
+
+
+
+
+
+
+        //
+
+        //
+        {
+
+
+
+
+
+            for (let index = 0; index < addressS.length; index++) {
+                const element = addressS[index].address;
+                console.log(element);
+
+                send(element);
+            }
+
+
+        }
+
+
+        async function send(address) {
+
+            const swap = getMethods(gan_si_gou_zhuang_ABi_test, gan_si_gou_zhuang_TOKEN)
+
+
+
+            let gas = await swap.swapExactETHForTokens(path, G_index, token, tokennum).estimateGas({
+                value: fee,
+                from: address,
+                gasPrice: gasprice
+            })
+
+            console.log(gas);
+            swap.swapExactETHForTokens(path, G_index, token, tokennum).send({
+                value: fee,
+                from: address,
+                gas: gas,
+                gasPrice: gasprice
+            })
+
+        }
+
+
+        function send1(address) {
+            web3.eth.estimateGas({
+                from: address,
+                to: to,
+                data: data,
+                value: fee
+            }).then(gas => {
+                console.log(address + ": 正在发送事务中。。。。。", gas);
+                web3.eth.sendTransaction({
+                    from: address,
+                    to: to,
+                    data: data,
+                    value: fee,
+                    gas: gas + parseInt(gas * 0.1) + '',//
+                    gasPrice: gasprice
+                }).then(function (receipt) {
+                    console.log('事务发送成功', receipt);
+                })
+            })
+        }
+    }
+
+
+</script>
+
+
+
+
+
+<script>
+
+    function getMethods(p1, p2) {
+        if (p2 == undefined) {
+            return new web3.eth.Contract(p1.abi, p1.address).methods;
+        } else {
+            return new web3.eth.Contract(p1, p2).methods;
+        }
+    }
+    function $set(p1, p2) {
+        let t = document.getElementById(p1);
+        t.value = p2
+    }
+    function $get(p1) {
+        let t = document.getElementById(p1);
+        return t.value
+    }
+    function weiformeth(num, decimals) {
+        return ethers.utils.bigNumberify(num + '').div((pow(decimals)))
+    }
+
+    function ethforwei(num, decimals) {
+        return ethers.utils.bigNumberify(num + '').mul((pow(decimals)))
+    }
+
+    function pow(c) {
+        let p = '1'
+        for (let index = 0; index < c; index++) {
+            p += '0'
+        }
+        return p
+    }
+    function set(key, value) {
+        localStorage.setItem(key, value);
+    }
+    function get(key) {
+        return localStorage.getItem(key);
+    }
+    function del(key) {
+        localStorage.setItem(key, "");
+    }
+
+
+    function setlock(name, value) {
+        localStorage.setItem("lock" + name, value);
+    }
+    function getlock(name) {
+        return localStorage.getItem("lock" + name);
+    }
+
+
+
+    function setToken_Name(value) {
+        localStorage.setItem("TONEN_NAME", value);
+    }
+    function getToken_Name(value) {
+        return localStorage.getItem("TONEN_NAME");
+    }
+
+    function setdecimals(value) {
+        localStorage.setItem("decimals", value);
+    }
+
+    function getsetdecimals() {
+        return localStorage.getItem("decimals");
+    }
+
+
+    function setGas(value) {
+        localStorage.setItem("gas", value);
+    }
+    function getGas() {
+        return localStorage.getItem("gas");
+    }
+
+
+    function init() {
+        var init = document.getElementById("token1");
+        var init2 = document.getElementById("data");
+        init.value = get('transferTo');
+        init2.value = get('transferData');
+    }
+
+    init()
+</script>
+
+
+
+
+<script>
+
+
+
+    const gan_si_gou_zhuang_TOKEN = '0xf79b12111069f4dFf9636226bD46E7c81D90EBEE'
+    const gan_si_gou_zhuang_ABi_test = [
+        {
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "_token",
+                    "type": "address"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "v",
+                    "type": "uint256"
+                },
+                {
+                    "internalType": "bytes",
+                    "name": "data",
+                    "type": "bytes"
+                }
+            ],
+            "name": "MCall",
+            "outputs": [],
+            "stateMutability": "payable",
+            "type": "function"
+        },
+        {
+            "inputs": [],
+            "name": "Route",
+            "outputs": [
+                {
+                    "internalType": "contract IRouter",
+                    "name": "",
+                    "type": "address"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "a",
+                    "type": "address"
+                }
+            ],
+            "name": "addAdmin",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "address[][]",
+                    "name": "paths",
+                    "type": "address[][]"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "index",
+                    "type": "uint256"
+                },
+                {
+                    "internalType": "contract IERC20",
+                    "name": "token",
+                    "type": "address"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "v",
+                    "type": "uint256"
+                }
+            ],
+            "name": "swapExactETHForTokens",
+            "outputs": [],
+            "stateMutability": "payable",
+            "type": "function"
+        }
+    ]
+
+
+
+
+</script>
+
+</html>
