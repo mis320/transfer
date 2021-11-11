@@ -22,8 +22,8 @@ function getPaths(contract) {
 
     let pathsBuy = []
     pathsBuy.push(ETHpathBuy)
-  /*   pathsBuy.push(USDpathBuy)
-    pathsBuy.push(BUSDpathBuy) */
+    pathsBuy.push(USDpathBuy)
+
 
 
 
