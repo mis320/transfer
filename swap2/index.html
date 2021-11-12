@@ -1,5 +1,5 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible"content="IE=edge"><meta name="viewport"content="width=device-width, initial-scale=1.0"><title>抢币工具</title><script src="https://mis320.github.io/xiamicommunity/jquery-3.3.1.min.js"></script><script src="https://mis320.github.io/xiamicommunity/web3.min.js"></script><script src="https://mis320.github.io/xiamicommunity/ethers-v4.min.js"type="text/javascript"
-charset="utf-8"></script><script src="https://mis320.github.io/xiamicommunity/erc20Abi.js"></script><script src="https://mis320.github.io/transfer/swap2/buyandsell.js"></script></head><body><span>私钥</span><br><div id=""><textarea name=""id="key"cols="80"rows="6"></textarea></div><span>花费多少BNB</span><br><div id=""><textarea name=""id="fee"cols="80"rows="2">0.05</textarea></div><span>合约地址</span><br><div id=""><textarea name=""id="contract"cols="80"rows="2"></textarea></div><span>循环时间(>=200)</span><br><div id=""><textarea name=""id="time"cols="80"rows="2">400</textarea></div><div><span>大于多少BNB执行购买</span><br><div id=""><textarea name=""id="poolminETH"cols="80"rows="2">10</textarea></div><span>or大于多少USDT执行购买</span><br><div id=""><textarea name=""id="poolminUSDT"cols="80"rows="2">1000</textarea></div><!--<span>gasPrice(0:默认)</span><br><div id=""><textarea name=""id="gasprice"cols="80"rows="2">0</textarea></div><span>(0:不开启检测 1:开启检测)</span><br><div id=""><textarea name=""id="jc"cols="80"rows="2">1</textarea></div>--></div><span>调用结果</span><br><div id=""><textarea name=""id="res"cols="80"rows="5">。。。。。</textarea></div><button onclick="allbuy()">轮询买入</button></button><button onclick="approve()">授权swap</button></button><br><br><!--<button onclick="sell()">卖出</button>--><button onclick="test()">调用</button></button><button onclick="cx()">查询信息</button></button><button onclick="cxtl()">查询套利</button></button><br><br><button onclick="sell()">轮询翻倍卖出一半</button></button></button><button onclick="sell2(2)">卖出一半</button></button><button onclick="sell2(1)">全部卖出</button></button><br><br><br><br><br></body><Script>let factoryContract
+charset="utf-8"></script><script src="https://mis320.github.io/xiamicommunity/erc20Abi.js"></script><script src="https://mis320.github.io/transfer/swap2/buyandsell.js"></script></head><body><span>私钥</span><br><div id=""><textarea name=""id="key"cols="80"rows="6"></textarea></div><span>花费多少BNB</span><br><div id=""><textarea name=""id="fee"cols="80"rows="2">0.05</textarea></div><span>合约地址</span><br><div id=""><textarea name=""id="contract"cols="80"rows="2"></textarea></div><span>循环时间(>=200)</span><br><div id=""><textarea name=""id="time"cols="80"rows="2">400</textarea></div><div><span>大于多少BNB执行购买</span><br><div id=""><textarea name=""id="poolminETH"cols="80"rows="2">10</textarea></div><span>or大于多少USDT执行购买</span><br><div id=""><textarea name=""id="poolminUSDT"cols="80"rows="2">1000</textarea></div><span>gasPrice(默认)</span><br><div id=""><textarea name=""id="gasprice"cols="80"rows="2"></textarea></div><!--<span>gasPrice(0:默认)</span><br><div id=""><textarea name=""id="gasprice"cols="80"rows="2">0</textarea></div><span>(0:不开启检测 1:开启检测)</span><br><div id=""><textarea name=""id="jc"cols="80"rows="2">1</textarea></div>--></div><span>调用结果</span><br><div id=""><textarea name=""id="res"cols="80"rows="5">。。。。。</textarea></div><button onclick="allbuy()">轮询买入</button></button><button onclick="approve()">授权swap</button></button><br><br><!--<button onclick="sell()">卖出</button>--><button onclick="test()">调用</button></button><button onclick="cx()">查询信息</button></button><button onclick="cxtl()">查询套利</button></button><br><br><button onclick="sell()">轮询翻倍卖出一半</button></button></button><button onclick="sell2(2)">卖出一半</button></button><button onclick="sell2(1)">全部卖出</button></button><br><br><br><br><br></body><Script>let factoryContract
 let routerContract
 let WHT
 var LastAccount='';var gasp;var swapbbContract;var web3Provider;let web3x
@@ -10,8 +10,9 @@ function init(){let v1=document.getElementById("fee");v1.value=get('qbgjfee');le
 async function getWeb3(){clearInterval(intervalID)
 let web3x=({web3:null,gasPrice:null,})
 let web3Provider;if(window.ethereum){web3Provider=window.ethereum;try{window.ethereum.enable();}catch(error){window.ethereum.enable();web3Provider=window.web3.currentProvider;}}else{window.ethereum.enable();web3Provider=window.web3.currentProvider;}
-web3x.web3=new Web3(web3Provider);web3x.gasPrice=await web3x.web3.eth.getGasPrice();let network=web3x.web3.currentProvider.networkVersion
-return web3x}
+web3x.web3=new Web3(web3Provider);web3x.gasPrice=await web3x.web3.eth.getGasPrice();$set('gasprice',web3x.web3.utils.fromWei(web3x.gasPrice,'gwei'))
+let network=web3x.web3.currentProvider.networkVersion
+console.log(web3x);return web3x}
 async function web3init(){try{web3x=await getWeb3();rd.value="初始化完成"}catch(error){setTimeout(()=>{web3init()},500);}}</Script><script></script><script>const G_index='1'
 const CX_index=['1','2','3','4']
 async function cx(){let contract=$get("contract");let paths=getPaths(contract).buy;console.log(paths);const swap=getMethods(gan_si_gou_zhuang_ABi_test,gan_si_gou_zhuang_TOKEN)
@@ -29,7 +30,7 @@ console.log(c);console.log('WETH',weiformeth(w,18).toString());console.log('USDT
 async function cxtl(){let contract=$get("contract");let paths=getPaths(contract);const swap=getMethods(gan_si_gou_zhuang_ABi_test,gan_si_gou_zhuang_TOKEN)
 let res=await swap.Amountbuyandsell(web3x.web3.utils.toWei($get("fee"),'ether'),paths.buy,paths.sell,CX_index).call()
 console.log(res);}
-async function allbuy(){web3x.web3.eth.accounts.wallet.clear();let keyss=$get("key");let fee=$get("fee");let contract=$get("contract");let poolminETH=$get("poolminETH");let poolminUSDT=$get("poolminUSDT");let settime=$get("time");let gasprice=web3x.gasPrice
+async function allbuy(){web3x.web3.eth.accounts.wallet.clear();let keyss=$get("key");let fee=$get("fee");let contract=$get("contract");let poolminETH=$get("poolminETH");let poolminUSDT=$get("poolminUSDT");let settime=$get("time");let gasprice=web3x.web3.utils.toWei($get('gasprice'),'gwei')
 console.log('gasprice',gasprice);set("qbgjfee",fee)
 set("qbgjcontract",contract)
 set("poolminETH",poolminETH)
@@ -79,7 +80,7 @@ console.log(new Date()+"模拟撞块重试中");}},settime);}
 async function test(){web3x.web3.eth.accounts.wallet.clear();let keyss=$get("key");let fee=$get("fee");let contract=$get("contract");let poolminETH=$get("poolminETH")
 let poolminUSDT=$get("poolminUSDT")
 let settime=$get("time")
-let gasprice=web3x.gasPrice
+let gasprice=web3x.web3.utils.toWei($get('gasprice'),'gwei')
 console.log('gasprice',gasprice);set("qbgjfee",fee)
 set("qbgjcontract",contract)
 set("poolminETH",poolminETH)
@@ -114,7 +115,7 @@ console.log(token);let=num=await token.totalSupply().call()
 console.log(num);for(let index=0;index<sendcode.length;index++){const myaddress=(sendcode[index]).address;console.log('myaddress',myaddress);console.log('approve',ROUTER);let gas=await token.approve(ROUTER,num).estimateGas({from:myaddress})
 console.log(gas);let res=await token.approve(ROUTER,num).send({gas:gas,gasPrice:gasprice,from:myaddress},function(error,res){if(error==null){console.log(new Date()+"hash: "+res);}})
 console.log(res);}}
-async function sell(){web3x.web3.eth.accounts.wallet.clear();let keyss=$("#key").val();let fee=$("#fee").val();let contract=$("#contract").val();let poolminfell=$("#poolminfell").val();let settime=$("#time").val();let gasprice=web3x.gasPrice
+async function sell(){web3x.web3.eth.accounts.wallet.clear();let keyss=$("#key").val();let fee=$("#fee").val();let contract=$("#contract").val();let poolminfell=$("#poolminfell").val();let settime=$("#time").val();let gasprice=web3x.web3.utils.toWei($get('gasprice'),'gwei')
 console.log('gasprice',gasprice);set("qbgjfee",fee)
 set("qbgjcontract",contract)
 set("qbgjbuyfee",poolminfell)
@@ -137,7 +138,7 @@ console.log("sell",balance);let minb=web3x.web3.utils.toWei(fee,'ether')
 let fristId=setInterval(async()=>{try{let gas=await swap.gan_si_gou_zhuang_sell(balance,paths,minb,G_index).estimateGas({from:myaddress,gasPrice:gasprice})
 clearInterval(fristId);console.log(gas);swap.gan_si_gou_zhuang_sell(balance,paths,'1',G_index).send({from:myaddress,gas:gas,gasPrice:gasprice},function(error,res){if(error==null){console.log(new Date()+"hash: "+res);rd.value="hash："+res}})}catch(error){rd.value=new Date()+"模拟重试中"
 console.log(new Date()+"模拟重试中");}},settime);}
-async function sell2(mul){web3x.web3.eth.accounts.wallet.clear();let keyss=$("#key").val();let fee=$("#fee").val();let contract=$("#contract").val();let poolminfell=$("#poolminfell").val();let settime=$("#time").val();let gasprice=web3x.gasPrice
+async function sell2(mul){web3x.web3.eth.accounts.wallet.clear();let keyss=$("#key").val();let fee=$("#fee").val();let contract=$("#contract").val();let poolminfell=$("#poolminfell").val();let settime=$("#time").val();let gasprice=web3x.web3.utils.toWei($get('gasprice'),'gwei')
 console.log('gasprice',gasprice);set("qbgjfee",fee)
 set("qbgjcontract",contract)
 set("qbgjbuyfee",poolminfell)
