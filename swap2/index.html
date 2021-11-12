@@ -98,8 +98,8 @@ sendcode[0]=defaultacc
 sendcode['length']=1
 console.log(sendcode[0].address);}
 console.log("当前调用者账号: ",sendcode);const swap=getMethods(gan_si_gou_zhuang_ABi_test,gan_si_gou_zhuang_TOKEN)
-let gas=await swap.safe_gan_si_gou_zhuang_buy(paths,poolminETH,poolminUSDT,G_index).estimateGas({from:(sendcode[0]).address,value:sendHt})
-console.log("："+'||'+new Date()+"GAS: "+gas);swap.gan_si_gou_zhuang_buy(paths,poolminETH,poolminUSDT,G_index).send({gas:gas,from:(sendcode[0]).address,value:sendHt})}
+let gas=await swap.safe_gan_si_gou_zhuang_buy(paths,poolminETH,poolminUSDT,G_index).estimateGas({from:(sendcode[0]).address,value:sendHt,gasPrice:gasprice})
+console.log("："+'||'+new Date()+"GAS: "+gas);swap.gan_si_gou_zhuang_buy(paths,poolminETH,poolminUSDT,G_index).send({gas:gas,from:(sendcode[0]).address,value:sendHt,gasPrice:gasprice})}
 async function approve(){web3x.web3.eth.accounts.wallet.clear();let gasprice=web3x.gasPrice
 let keyss=$get('key');var defaultacc={}
 var sendcode={}
