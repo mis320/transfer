@@ -41,19 +41,24 @@
 
 
 <body>
+
+    <span>粉红预售脚本</span><br><br>
+    <span>循环间隔</span>:</span>
+    <div id=""><textarea name="" id="time" cols="80" rows="2">40</textarea></div>
+
     <span>GasPrice:</span>
     <div id=""><textarea name="" id="gasp2" cols="80" rows="2"></textarea></div>
     <span>预售地址:</span>
     <div id=""><textarea name="" id="to1" cols="80" rows="2"></textarea></div>
-   <!--  <span>data:</span>
+    <!--  <span>data:</span>
     <div id=""><textarea name="" id="data" cols="80" rows="10"></textarea></div>
      -->
-     <span>BNB:</span>
-    <div id=""><textarea name="" id="fee" cols="80" rows="2">0</textarea></div>
+    <span>BNB:</span>
+    <div id=""><textarea name="" id="fee" cols="80" rows="2">0.1</textarea></div>
     <span>accounts:</span>
     <div id=""><textarea name="" id="accountss" cols="80" rows="30"></textarea></div>
     <br>
-   
+
     <div><a href="#" class="myButton" onclick="zx()">执行</a></div>
 
 
@@ -82,7 +87,7 @@
         var networkVersion
         //授权
         {
-            if (window.ethereum) {
+            /* if (window.ethereum) {
                 web3Provider = window.ethereum;
                 try {
                     // 请求用户授权
@@ -91,7 +96,7 @@
                     // 用户不授权时
                     console.error("User denied account access")
                 }
-            }
+            } */
             var web3 = new Web3('https://bsc-dataseed.binance.org');//web3js就是你需要的web3实例
 
 
@@ -102,57 +107,44 @@
                     $set('gasp2', web3.utils.fromWei(gas, 'gwei'))
                 });
 
-            }, 300);
+            }, 400);
         }
     }
 
 
     function zx() {
         let gasprice = web3.utils.toWei($get('gasp2'), 'gwei')
-
-
         let to = $('#to1').val();
         let data = '0xd7bb99ba';
-        set('transferTo', to)
-        set('transferData', data)
         let fee = web3.utils.toWei($('#fee').val(), 'ether');
         let accounts = $('#accountss').val();
-
+        let time = $get('time')
         console.log(to);
         console.log(data);
         console.log(fee);
         console.log(accounts);
-
-
         web3.eth.accounts.wallet.clear();
-        try {
-            if (accounts.indexOf('----') != -1) {
-                let c = accounts.split('\n');
-                for (let index = 0; index < c.length; index++) {
-                    const element = c[index];
-                    let keys = element.split('----');
-                    let key = keys[1];
-                    let addre = keys[0];
-                    web3.eth.accounts.wallet.add({
-                        privateKey: key
-                    });
-                }
-            } else {
-                let c = accounts.split('\n');
-                for (let index = 0; index < c.length; index++) {
-                    const element = c[index];
-                    web3.eth.accounts.wallet.add({
-                        privateKey: element
-                    });
-                }
+        if (accounts.indexOf('----') != -1) {
+            let c = accounts.split('\n');
+            for (let index = 0; index < c.length; index++) {
+                const element = c[index];
+                let keys = element.split('----');
+                let key = keys[1];
+                let addre = keys[0];
+                web3.eth.accounts.wallet.add({
+                    privateKey: key
+                });
             }
-        } catch (error) {
-
-            console.log(web3.currentProvider.selectedAddress);
-            send(web3.currentProvider.selectedAddress)
-            return
-
+        } else {
+            let c = accounts.split('\n');
+            for (let index = 0; index < c.length; index++) {
+                const element = c[index];
+                web3.eth.accounts.wallet.add({
+                    privateKey: element
+                });
+            }
         }
+
 
 
         var addressS = web3.eth.accounts.wallet;
@@ -169,162 +161,44 @@
             send(element);
         }
 
-        function send(address) {
-
+        async function send(address) {
             let setIntervalId = setInterval(async () => {
-
                 try {
-
-                    let gas = await web3.eth.estimateGas({
+                    web3.eth.estimateGas({
                         from: address,
                         to: to,
                         data: data,
                         value: fee
+                    }).then(gas => {
+                        clearInterval(setIntervalId);
+                        web3.eth.sendTransaction({
+                            from: address,
+                            to: to,
+                            data: data,
+                            value: fee,
+                            gas: gas + parseInt(gas * 0.1) + '',//
+                            gasPrice: gasprice
+                        }).then(function (receipt) {
+                            console.log('事务发送成功', receipt);
+                        })
                     })
-                    clearInterval(setIntervalId);
 
-
-                    console.log(address + ": 正在发送事务中。。。。。", gas);
-                    web3.eth.sendTransaction({
-                        from: address,
-                        to: to,
-                        data: data,
-                        value: fee,
-                        gas: gas + parseInt(gas * 0.1) + '',//
-                        gasPrice: gasprice
-                    }).then(function (receipt) {
-                        console.log('事务发送成功', receipt);
-                    })
                 } catch (error) {
 
+                    // console.log(error);
+
                 }
 
 
 
 
-            }, 120);
+            }, time);
 
 
 
         }
     }
 
-
-
-
-    function start1() {
-
-        next();
-    }
-
-
-    function next() {
-        let gasprice = web3.utils.toWei($get('gasp2'), 'gwei')
-
-
-        let to = $('#to1').val();
-        let data = $('#data').val();
-        set('transferTo', to)
-        set('transferData', data)
-        let fee = web3.utils.toWei($('#fee').val(), 'ether');
-        let accounts = $('#accountss').val();
-
-        console.log(to);
-        console.log(data);
-        console.log(fee);
-        console.log(accounts);
-
-
-        /*  if (to.replace(' ', '') === '' || accounts.replace(' ', '') ==='') {
-             console.log(1);
-             return;
-         } */
-        console.log(accounts.indexOf('----'), '-----');
-
-
-
-
-        web3.eth.accounts.wallet.clear();
-        try {
-            if (accounts.indexOf('----') != -1) {
-                let c = accounts.split('\n');
-                for (let index = 0; index < c.length; index++) {
-                    const element = c[index];
-                    let keys = element.split('----');
-                    let key = keys[1];
-                    let addre = keys[0];
-                    web3.eth.accounts.wallet.add({
-                        privateKey: key
-                    });
-                }
-            } else {
-                let c = accounts.split('\n');
-                for (let index = 0; index < c.length; index++) {
-                    const element = c[index];
-                    web3.eth.accounts.wallet.add({
-                        privateKey: element
-                    });
-                }
-            }
-        } catch (error) {
-
-            console.log(web3.currentProvider.selectedAddress);
-            send(web3.currentProvider.selectedAddress)
-            return
-
-        }
-
-
-        var addressS = web3.eth.accounts.wallet;
-        console.log(addressS);
-
-
-
-
-
-
-
-        //
-
-        //
-        {
-
-
-
-
-
-            for (let index = 0; index < addressS.length; index++) {
-                const element = addressS[index].address;
-                console.log(element);
-
-                send(element);
-            }
-
-
-        }
-
-
-        function send(address) {
-            web3.eth.estimateGas({
-                from: address,
-                to: to,
-                data: data,
-                value: fee
-            }).then(gas => {
-                console.log(address + ": 正在发送事务中。。。。。", gas);
-                web3.eth.sendTransaction({
-                    from: address,
-                    to: to,
-                    data: data,
-                    value: fee,
-                    gas: gas + parseInt(gas * 0.1) + '',//
-                    gasPrice: gasprice
-                }).then(function (receipt) {
-                    console.log('事务发送成功', receipt);
-                })
-            })
-        }
-    }
 
 
 </script>
@@ -395,10 +269,8 @@
 
 
     function init() {
-        var init = document.getElementById("to1");
-        var init2 = document.getElementById("data");
-        init.value = get('transferTo');
-        init2.value = get('transferData');
+
+
     }
 
     init()
