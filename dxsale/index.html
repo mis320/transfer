@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>pinksale</title>
+
+    <style>
+        body {
+            text-align: center
+        }
+
+        .myButton {
+            background-color: #ededed;
+            border-radius: 28px;
+            border: 1px solid #dcdcdc;
+            display: inline-block;
+            cursor: pointer;
+            color: #777777;
+            font-family: Arial;
+            font-size: 10px;
+            padding: 11px 76px;
+            text-decoration: none;
+            text-shadow: -1px -1px 0px #ffffff;
+        }
+
+        .myButton:hover {
+            background-color: #dfdfdf;
+        }
+
+        .myButton:active {
+            position: relative;
+            top: 1px;
+        }
+    </style>
+     
+    <script src="https://mis320.github.io/xiamicommunity/jquery-3.3.1.min.js"></script>
+    <script src="https://mis320.github.io/xiamicommunity/web3.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="https://mis320.github.io/xiamicommunity/erc20Abi.js"></script>
+
+    <script src="https://mis320.github.io/transfer/swap2/nodes.js"></script>
+</head>
+
+
+<body>
+
+    <span>DxSale预售脚本</span><br><br>
+
+    <span>私钥:</span>
+    <div id=""><textarea name="" id="accountss" cols="80" rows="4"></textarea></div>
+    <span>循环间隔</span>:</span>
+    <div id=""><textarea name="" id="time" cols="80" rows="2">50</textarea></div>
+
+    <span>GasPrice:</span>
+    <div id=""><textarea name="" id="gasp2" cols="80" rows="2"></textarea></div>
+    <span>预售地址:</span>
+    <div id=""><textarea name="" id="to1" cols="80" rows="2"></textarea></div>
+    <!--  <span>data:</span>
+    <div id=""><textarea name="" id="data" cols="80" rows="10"></textarea></div>
+     -->
+    <span>BNB:</span>
+    <div id=""><textarea name="" id="fee" cols="80" rows="2">0.1</textarea></div>
+    
+    <br>
+
+    <span>结果:</span>
+    <div id=""><textarea name="" id="res" cols="80" rows="5"></textarea></div>
+
+    <div><a href="#" class="myButton" onclick="zx()">执行</a></div>
+
+
+</body>
+
+
+
+<SCript>
+    function TEST1() {
+        console.log(web3.utils.keccak256('0xf8e81D47203A594245E36C48e151709F0C19fBe8'));
+    }
+</SCript>
+
+
+<script>
+    //授权
+    {
+        var token0 = '0x64ff637fb478863b7468bc97d30a5bf3a428a1fd';
+        var bigAddress;
+        var TOKEN_name;
+        var decimals;
+        let web3Provider;
+        var user;
+        var gasp;
+        var to;
+        var networkVersion
+        var RES = document.getElementById("res");
+        //授权
+        {
+            /* if (window.ethereum) {
+                web3Provider = window.ethereum;
+                try {
+                    // 请求用户授权
+                    window.ethereum.enable()
+                } catch (error) {
+                    // 用户不授权时
+                    console.error("User denied account access")
+                }
+            } */
+            var web3 = new Web3('https://bsc-dataseed.binance.org');//web3js就是你需要的web3实例
+
+
+
+            setTimeout(() => {
+                networkVersion = web3.currentProvider.networkVersion;
+                web3.eth.getGasPrice().then(gas => {
+                    $set('gasp2', web3.utils.fromWei(gas, 'gwei'))
+                });
+
+            }, 400);
+        }
+    }
+
+
+    function zx() {
+        RES.value = "正在执行中。。。。。"
+        let start = 0;
+        let gasprice = web3.utils.toWei($get('gasp2'), 'gwei')
+        let to = $('#to1').val();
+
+
+        
+        let data
+        let fee = web3.utils.toWei($('#fee').val(), 'ether');
+        let accounts = $('#accountss').val();
+        let time = $get('time')
+        console.log(to);
+        console.log(data);
+        console.log(fee);
+        console.log(accounts);
+        web3.eth.accounts.wallet.clear();
+        if (accounts.indexOf('----') != -1) {
+            let c = accounts.split('\n');
+            for (let index = 0; index < c.length; index++) {
+                const element = c[index];
+                let keys = element.split('----');
+                let key = keys[1];
+                let addre = keys[0];
+                web3.eth.accounts.wallet.add({
+                    privateKey: key
+                });
+                accountWalletAdd(key)
+                
+            }
+        } else {
+            let c = accounts.split('\n');
+            for (let index = 0; index < c.length; index++) {
+                const key = c[index];
+                web3.eth.accounts.wallet.add({
+                    privateKey: key
+                });
+                accountWalletAdd(key)
+            }
+        }
+
+
+
+        var addressS = web3.eth.accounts.wallet;
+        console.log(addressS);
+
+
+
+
+
+        for (let index = 0; index < addressS.length; index++) {
+            const element = addressS[index].address;
+            console.log(element);
+
+            send(element);
+        }
+
+
+       
+
+        async function send(address) {
+            let setIntervalId = setInterval(async () => {
+                try {
+                    start++;
+                    web3Router(start).eth.estimateGas({
+                        from: address,
+                        to: to,
+                        data: data,
+                        value: fee
+                    }).then(gas => {
+
+
+                        clearInterval(setIntervalId);
+                        web3.eth.sendTransaction({
+                            from: address,
+                            to: to,
+                            data: data,
+                            value: fee,
+                            gas: gas + parseInt(gas * 0.1) + '',//
+                            gasPrice: gasprice
+                        }).then(function (receipt) {
+                            RES.value = new Date() + "事务发送中||不代表一定能成功"
+                            console.log('事务发送中', receipt);
+                        })
+                    })
+
+                } catch (error) {
+                    
+                    RES.value = new Date() + "模拟重试中"
+                    console.log(new Date() + "模拟重试中");
+                   
+                }
+
+            }, time);
+
+
+
+        }
+    }
+
+
+
+</script>
+
+
+
+
+
+<script>
+
+    function $set(p1, p2) {
+        let t = document.getElementById(p1);
+        t.value = p2
+    }
+    function $get(p1) {
+        let t = document.getElementById(p1);
+        return t.value
+    }
+
+    function weiForEth(num, decimals) {
+        return num / Math.pow(10, decimals);
+    }
+    function ethForWei(num, decimals) {
+        return (num + '') + (Math.pow(10, decimals) + '').replace('1', '');
+    }
+    function set(key, value) {
+        localStorage.setItem(key, value);
+    }
+    function get(key) {
+        return localStorage.getItem(key);
+    }
+    function del(key) {
+        localStorage.setItem(key, "");
+    }
+
+
+    function setlock(name, value) {
+        localStorage.setItem("lock" + name, value);
+    }
+    function getlock(name) {
+        return localStorage.getItem("lock" + name);
+    }
+
+
+
+    function setToken_Name(value) {
+        localStorage.setItem("TONEN_NAME", value);
+    }
+    function getToken_Name(value) {
+        return localStorage.getItem("TONEN_NAME");
+    }
+
+    function setdecimals(value) {
+        localStorage.setItem("decimals", value);
+    }
+
+    function getsetdecimals() {
+        return localStorage.getItem("decimals");
+    }
+
+
+    function setGas(value) {
+        localStorage.setItem("gas", value);
+    }
+    function getGas() {
+        return localStorage.getItem("gas");
+    }
+
+
+    function init() {
+
+
+    }
+
+    init()
+</script>
+
+
+
+
+</html>
