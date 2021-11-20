@@ -65,8 +65,8 @@ sendcode[0]=defaultacc
 sendcode['length']=1
 console.log(sendcode[0].address);}
 console.log("当前调用者账号: ",sendcode);const swap=getMethods(G_ABI,gan_si_gou_zhuang_TOKEN)
-if(keyss.length>21){let fristId=setInterval(async()=>{try{await web3NodeSwap(starts).safe_gan_si_gou_zhuang_buy(paths,poolminETH,poolminUSDT,G_index,G_sellRatio,'true').estimateGas({from:(sendcode[0]).address,value:sendHt,gasPrice:gasprice}).then(gas=>{clearInterval(fristId);swap.gan_si_gou_zhuang_buy(paths,poolminETH,poolminUSDT,G_index).send({gas:gas,from:(sendcode[0]).address,value:sendHt,gasPrice:gasprice},function(error,res){if(error==null){console.log(new Date()+"hash: "+res);rd.value="hash："+res}})})}catch(error){starts++;rd.value=new Date()+"模拟重试中"
-console.log(new Date()+"模拟重试中");}},settime);}else{let fristId=setInterval(async()=>{try{await swap.safe_gan_si_gou_zhuang_buy(paths,poolminETH,poolminUSDT,G_index,G_sellRatio,'true').estimateGas({from:(sendcode[0]).address,value:sendHt,gasPrice:gasprice}).then(gas=>{clearInterval(fristId);swap.gan_si_gou_zhuang_buy(paths,poolminETH,poolminUSDT,G_index).send({gas:gas,from:(sendcode[0]).address,value:sendHt,gasPrice:gasprice},function(error,res){if(error==null){console.log(new Date()+"hash: "+res);rd.value="hash："+res}})})}catch(error){rd.value=new Date()+"模拟重试中"
+if(keyss.length>21){let fristId=setInterval(async()=>{try{await web3NodeSwap(starts).safe_gan_si_gou_zhuang_buy(paths,poolminETH,poolminUSDT,G_index,G_sellRatio,true).estimateGas({from:(sendcode[0]).address,value:sendHt,gasPrice:gasprice}).then(gas=>{clearInterval(fristId);swap.gan_si_gou_zhuang_buy(paths,poolminETH,poolminUSDT,G_index).send({gas:gas,from:(sendcode[0]).address,value:sendHt,gasPrice:gasprice},function(error,res){if(error==null){console.log(new Date()+"hash: "+res);rd.value="hash："+res}})})}catch(error){starts++;rd.value=new Date()+"模拟重试中"
+console.log(new Date()+"模拟重试中");}},settime);}else{let fristId=setInterval(async()=>{try{await swap.safe_gan_si_gou_zhuang_buy(paths,poolminETH,poolminUSDT,G_index,G_sellRatio,true).estimateGas({from:(sendcode[0]).address,value:sendHt,gasPrice:gasprice}).then(gas=>{clearInterval(fristId);swap.gan_si_gou_zhuang_buy(paths,poolminETH,poolminUSDT,G_index).send({gas:gas,from:(sendcode[0]).address,value:sendHt,gasPrice:gasprice},function(error,res){if(error==null){console.log(new Date()+"hash: "+res);rd.value="hash："+res}})})}catch(error){rd.value=new Date()+"模拟重试中"
 console.log(new Date()+"模拟重试中");}},settime);}}
 async function test(){let G_sellRatio=$get("sellRatio")
 web3x.web3.eth.accounts.wallet.clear();let keyss=$get("key");let fee=$get("fee");let contract=$get("contract");contract=contract.replace(new RegExp(' ','g'),'')
@@ -91,7 +91,7 @@ sendcode[0]=defaultacc
 sendcode['length']=1
 console.log(sendcode[0].address);}
 console.log("当前调用者账号: ",sendcode);const swap=getMethods(G_ABI,gan_si_gou_zhuang_TOKEN)
-swap.safe_gan_si_gou_zhuang_buy(paths,poolminETH,poolminUSDT,G_index,G_sellRatio,'true').estimateGas({from:(sendcode[0]).address,value:sendHt,gasPrice:gasprice}).then(gas=>{swap.gan_si_gou_zhuang_buy(paths,poolminETH,poolminUSDT,G_index).send({gas:gas,from:(sendcode[0]).address,value:sendHt,gasPrice:gasprice},function(error,res){if(error==null){console.log(new Date()+"hash: "+res);rd.value="hash："+res}})})}
+swap.safe_gan_si_gou_zhuang_buy(paths,poolminETH,poolminUSDT,G_index,G_sellRatio,true).estimateGas({from:(sendcode[0]).address,value:sendHt,gasPrice:gasprice}).then(gas=>{swap.gan_si_gou_zhuang_buy(paths,poolminETH,poolminUSDT,G_index).send({gas:gas,from:(sendcode[0]).address,value:sendHt,gasPrice:gasprice},function(error,res){if(error==null){console.log(new Date()+"hash: "+res);rd.value="hash："+res}})})}
 async function approve(){web3x.web3.eth.accounts.wallet.clear();let gasprice=web3x.gasPrice
 let keyss=$get('key');var defaultacc={}
 var sendcode={}
