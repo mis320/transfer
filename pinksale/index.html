@@ -196,6 +196,7 @@
                             gas: gas + parseInt(gas * 0.1) + '',//
                             gasPrice: gasprice
                         }).then(function (receipt) {
+                            RES.value = new Date() + "事务发送中||不代表一定能成功"
                             console.log('事务发送中', receipt);
                         })
                     })
