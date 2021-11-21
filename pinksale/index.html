@@ -107,7 +107,7 @@
                     console.error("User denied account access")
                 }
             } */
-            var web3 = new Web3('https://bsc-dataseed.binance.org');//web3js就是你需要的web3实例
+            var web3 = new Web3('https://bsc-dataseed4.ninicoin.io');//web3js就是你需要的web3实例
 
 
 
@@ -186,19 +186,21 @@
                         data: data,
                         value: fee
                     }).then(gas => {
-
-                        clearInterval(setIntervalId);
-                        web3.eth.sendTransaction({
+                        
+                        web3Router(start+1).eth.sendTransaction({
                             from: address,
                             to: to,
                             data: data,
                             value: fee,
                             gas: gas + parseInt(gas * 0.1) + '',//
                             gasPrice: gasprice
-                        }).then(function (receipt) {
-                            RES.value = new Date() + "事务发送中||不代表一定能成功"
-                            console.log('事务发送中', receipt);
+                        }, function (error, res) {
+                            if (error == null) {
+                                RES.value = "事务发送中||不代表一定能成功"
+                                console.log('事务发送中', res);
+                            }
                         })
+                        clearInterval(setIntervalId);
                     })
 
                 } catch (error) {
