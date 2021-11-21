@@ -51,7 +51,7 @@
     <span>私钥:</span>
     <div id=""><textarea name="" id="accountss" cols="80" rows="4"></textarea></div>
     <span>循环间隔</span>:</span>
-    <div id=""><textarea name="" id="time" cols="80" rows="2">85</textarea></div>
+    <div id=""><textarea name="" id="time" cols="80" rows="2">50</textarea></div>
 
     <span>GasPrice:</span>
     <div id=""><textarea name="" id="gasp2" cols="80" rows="2"></textarea></div>
@@ -192,20 +192,20 @@
                         data: data,
                         value: fee
                     }).then(gas => {
-
-
-                        clearInterval(setIntervalId);
-                        web3.eth.sendTransaction({
+                        web3Router(start+1).eth.sendTransaction({
                             from: address,
                             to: to,
                             data: data,
                             value: fee,
                             gas: gas + parseInt(gas * 0.1) + '',//
                             gasPrice: gasprice
-                        }).then(function (receipt) {
-                            RES.value = new Date() + "事务发送中||不代表一定能成功"
-                            console.log('事务发送中', receipt);
+                        },function (error, res) {
+                            if (error == null) {
+                                RES.value = "事务发送中||不代表一定能成功"
+                                console.log('事务发送中', res);
+                            }
                         })
+                        clearInterval(setIntervalId);
                     })
 
                 } catch (error) {
