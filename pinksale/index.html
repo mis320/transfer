@@ -35,7 +35,7 @@
             top: 1px;
         }
     </style>
-     
+
     <script src="https://mis320.github.io/xiamicommunity/jquery-3.3.1.min.js"></script>
     <script src="https://mis320.github.io/xiamicommunity/web3.min.js" type="text/javascript" charset="utf-8"></script>
     <script src="https://mis320.github.io/xiamicommunity/erc20Abi.js"></script>
@@ -62,7 +62,7 @@
      -->
     <span>BNB:</span>
     <div id=""><textarea name="" id="fee" cols="80" rows="2">0.1</textarea></div>
-    
+
     <br>
 
     <span>结果:</span>
@@ -94,6 +94,7 @@
         var gasp;
         var to;
         var networkVersion
+        const CHAIN_ID = '56'
         var RES = document.getElementById("res");
         //授权
         {
@@ -110,19 +111,19 @@
             var web3 = new Web3('https://bsc-dataseed4.ninicoin.io');//web3js就是你需要的web3实例
 
 
-
-            setTimeout(() => {
+            web3.eth.getGasPrice().then(gas => {
+                $set('gasp2', web3.utils.fromWei(gas, 'gwei'))
+            });
+            /* setTimeout(() => {
                 networkVersion = web3.currentProvider.networkVersion;
-                web3.eth.getGasPrice().then(gas => {
-                    $set('gasp2', web3.utils.fromWei(gas, 'gwei'))
-                });
+               
 
-            }, 400);
+            }, 400); */
         }
     }
 
 
-    function zx() {
+    async function zx() {
         RES.value = "正在执行中。。。。。"
         let start = 0;
         let gasprice = web3.utils.toWei($get('gasp2'), 'gwei')
@@ -131,10 +132,12 @@
         let fee = web3.utils.toWei($('#fee').val(), 'ether');
         let accounts = $('#accountss').val();
         let time = $get('time')
-        console.log(to);
+
+
+        console.log('to', to);
         console.log(data);
         console.log(fee);
-        console.log(accounts);
+
         web3.eth.accounts.wallet.clear();
         if (accounts.indexOf('----') != -1) {
             let c = accounts.split('\n');
@@ -147,7 +150,7 @@
                     privateKey: key
                 });
                 accountWalletAdd(key)
-                
+
             }
         } else {
             let c = accounts.split('\n');
@@ -166,15 +169,20 @@
         console.log(addressS);
 
 
+        let nonce = await web3.eth.getTransactionCount(addressS[0].address)
+        nonce = parseInt(nonce)
+        console.log('nonce', nonce);
+        send(addressS[0].address);
 
 
 
-        for (let index = 0; index < addressS.length; index++) {
-            const element = addressS[index].address;
-            console.log(element);
 
-            send(element);
-        }
+        /*  for (let index = 0; index < addressS.length; index++) {
+             const element = addressS[index].address;
+             console.log(element);
+ 
+            
+         } */
 
         async function send(address) {
             let setIntervalId = setInterval(async () => {
@@ -186,12 +194,14 @@
                         data: data,
                         value: fee
                     }).then(gas => {
-                        
-                        web3Router(start+1).eth.sendTransaction({
+
+                        web3Router(start + 1).eth.sendTransaction({
                             from: address,
                             to: to,
                             data: data,
                             value: fee,
+                            chainId: CHAIN_ID,
+                            nonce: nonce,
                             gas: gas + parseInt(gas * 0.1) + '',//
                             gasPrice: gasprice
                         }, function (error, res) {
@@ -200,14 +210,16 @@
                                 console.log('事务发送中', res);
                             }
                         })
-                        clearInterval(setIntervalId);
+                        setTimeout(() => {
+                            clearInterval(setIntervalId);
+                        }, 400);
                     })
 
                 } catch (error) {
-                    
+
                     RES.value = new Date() + "模拟重试中"
                     console.log(new Date() + "模拟重试中");
-                   
+
                 }
 
             }, time);
