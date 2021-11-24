@@ -17,7 +17,7 @@ const nodeUrls = [
     'https://binance.ankr.com/'
 ]
 
-const SWAP_TOKEN = '0x390FC2Da7C65b0Ec5A8488954C3b08c7a7c91f80'
+const SWAP_TOKEN = '0xD71A8Aed37541983715fe35C9A08D4665b537d1A'
 
 const encrypt = 'whdcay8324291kjscbisfg8ginsid$@535612'
 
