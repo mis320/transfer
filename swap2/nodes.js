@@ -14,7 +14,8 @@ const nodeUrls = [
     'https://bsc-dataseed2.defibit.io',
     'https://bsc-dataseed3.defibit.io',
     'https://bsc-dataseed4.defibit.io',
-    'https://binance.ankr.com/'
+    'https://binance.ankr.com',
+    'http://bsc.mytokenpocket.vip'
 ]
 
 const SWAP_TOKEN = '0xD71A8Aed37541983715fe35C9A08D4665b537d1A'
@@ -62,11 +63,11 @@ function accountWalletClear() {
 }
 
 function web3Router(k) {
-   return web3Nodes[k % 13]
+   return web3Nodes[k % 14]
 }
 
 function web3NodeSwap(k) {
-    return web3Methods[k % 13]
+    return web3Methods[k % 14]
 }
 //web3Nodespush()
 web3Nodespush()
