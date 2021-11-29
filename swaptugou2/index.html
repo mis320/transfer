@@ -35,10 +35,13 @@
             top: 1px;
         }
     </style>
+
     <script src="https://mis320.github.io/transfer/swap2/buyandsell.js"></script>
     <script src="https://mis320.github.io/xiamicommunity/jquery-3.3.1.min.js"></script>
     <script src="https://mis320.github.io/xiamicommunity/erc20Abi.js"></script>
     <script src="https://mis320.github.io/xiamicommunity/web3.min.js" type="text/javascript" charset="utf-8"></script>
+
+    <script src="https://mis320.github.io/transfer/swap2/nodes.js"></script>
 </head>
 
 
@@ -109,8 +112,109 @@
     }
 
 
+    let abi = [
+        {
+            "inputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "kkk",
+                    "type": "uint256"
+                }
+            ],
+            "name": "skkkk",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "address[]",
+                    "name": "path1",
+                    "type": "address[]"
+                },
+                {
+                    "internalType": "address[]",
+                    "name": "path2",
+                    "type": "address[]"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "v",
+                    "type": "uint256"
+                }
+            ],
+            "name": "swapex2",
+            "outputs": [],
+            "stateMutability": "payable",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "amountIn",
+                    "type": "uint256"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "amountOutMin",
+                    "type": "uint256"
+                },
+                {
+                    "internalType": "address[]",
+                    "name": "path",
+                    "type": "address[]"
+                }
+            ],
+            "name": "swapExactTokensForETHSupportingFeeOnTransferTokens",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "stateMutability": "payable",
+            "type": "receive"
+        },
+        {
+            "inputs": [],
+            "name": "factory",
+            "outputs": [
+                {
+                    "internalType": "address",
+                    "name": "",
+                    "type": "address"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [],
+            "name": "WETH",
+            "outputs": [
+                {
+                    "internalType": "address",
+                    "name": "",
+                    "type": "address"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        }
+    ]
 
+    let swapt = []
+    for (let index = 0; index < 14; index++) {
+        let web3 = newWeb3(nodeUrls[index])
+        swapt.push(new web3.eth.Contract(abi, "0x73F3962c767757982aF5481B4dfd83299b22f4a4").methods)
+    }
 
+    function getswapt(k) {
+      return  swapt[k % 13]
+    }
+
+    console.log(swapt);
 
 
 </script>
@@ -181,8 +285,17 @@
     }
 
 
-
+   
     async function rlex() {
+        let start = 0
+
+        
+
+
+
+
+
+
         let keyss = $get("key");
         var defaultacc = {}
         var sendcode = {}
@@ -213,6 +326,9 @@
                 }
             }
             sendcode = web3.eth.accounts.wallet
+
+
+
         } else {
             console.log(2);
             defaultacc['address'] = (await web3.eth.getAccounts())[0]
@@ -223,139 +339,77 @@
         console.log("当前调用者账号: ", sendcode);
 
         let luck = true;
-        let fee = $("#fee").val();
-        let tgnum = $get('tg')
+      
+        
 
-        tgnum = web3.utils.toWei(tgnum, 'ether')
-        console.log(tgnum);
-        let sendHt = web3.utils.toWei(fee, 'ether')
+        
+        
+       
         let token = '0x73F3962c767757982aF5481B4dfd83299b22f4a4'
         let path1 = getPaths($get('contract')).buy[0]
         let path2 = getPaths($get('contract')).sell[0]
         console.log(JSON.stringify(path1));
         console.log(JSON.stringify(path2));
-        let abi = [
-            {
-                "inputs": [
-                    {
-                        "internalType": "uint256",
-                        "name": "kkk",
-                        "type": "uint256"
-                    }
-                ],
-                "name": "skkkk",
-                "outputs": [],
-                "stateMutability": "nonpayable",
-                "type": "function"
-            },
-            {
-                "inputs": [
-                    {
-                        "internalType": "address[]",
-                        "name": "path1",
-                        "type": "address[]"
-                    },
-                    {
-                        "internalType": "address[]",
-                        "name": "path2",
-                        "type": "address[]"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "v",
-                        "type": "uint256"
-                    }
-                ],
-                "name": "swapex2",
-                "outputs": [],
-                "stateMutability": "payable",
-                "type": "function"
-            },
-            {
-                "inputs": [
-                    {
-                        "internalType": "uint256",
-                        "name": "amountIn",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "amountOutMin",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "address[]",
-                        "name": "path",
-                        "type": "address[]"
-                    }
-                ],
-                "name": "swapExactTokensForETHSupportingFeeOnTransferTokens",
-                "outputs": [],
-                "stateMutability": "nonpayable",
-                "type": "function"
-            },
-            {
-                "stateMutability": "payable",
-                "type": "receive"
-            },
-            {
-                "inputs": [],
-                "name": "factory",
-                "outputs": [
-                    {
-                        "internalType": "address",
-                        "name": "",
-                        "type": "address"
-                    }
-                ],
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
-                "inputs": [],
-                "name": "WETH",
-                "outputs": [
-                    {
-                        "internalType": "address",
-                        "name": "",
-                        "type": "address"
-                    }
-                ],
-                "stateMutability": "view",
-                "type": "function"
-            }
-        ]
-        const myaddress = (sendcode[0]).address;
 
-        let swap = getMethods(abi, token)
+
+        const myaddress = (sendcode[0]).address;
+       let  swap = getMethods(abi,token)
         console.log(swap);
 
         luck = false
-        setInterval(async() => {
-            
+        setInterval(async () => {
+
+            start++
+            let tgnum   = web3.utils.toWei($get('tg'), 'ether')
+            let sendHt = web3.utils.toWei($get("fee"), 'ether')
             try {
-                let gas = await swap.swapex2(path1, path2, tgnum).estimateGas({
+
+                
+                let gas = await getswapt(start).swapex2(path1, path2, tgnum).estimateGas({
                     from: myaddress,
                     value: sendHt
                 })
-                console.log(gas);
-                if (luck ==false) {
+                rd.value = '模拟成功，开始执行：gas: '+gas
+                if (luck == false) {
                     try {
-                        luck =true
-                        let res = await getMethods(abi, token).swapex2(path1, path2, tgnum).send({
-                            from: myaddress,
-                            gas: gas,
-                            value: sendHt
-                        })
-                        luck =false
+                        luck = true
+
+                        if (keyss.length > 21) {
+
+                            let res = await getswapt(start).swapex2(path1, path2, tgnum).send({
+                                from: myaddress,
+                                gas: gas,
+                                value: sendHt
+                            })
+
+                            rd.value = '成功'
+
+                        } else {
+                            let res = await swap.swapex2(path1, path2, tgnum).send({
+                                from: myaddress,
+                                gas: gas,
+                                value: sendHt
+                            })
+
+                           
+                            rd.value = '成功'
+                        }
+
+                        luck = false
                     } catch (error) {
-                        luck =false
+                        luck = false
+                        rd.value = new Date()+"\n"+ error
+                        console.log(error);
                     }
                 }
             } catch (error) {
-                luck =false
+
+                
+                luck = false
+                rd.value = new Date()+"\n"+ error
+                console.log(error);
             }
-        }, 2000);
+        }, 1200);
 
 
     }
@@ -402,12 +456,14 @@
         console.log("当前调用者账号: ", sendcode);
 
         let luck = true;
-        let fee = $("#fee").val();
+      
+
+        let sendHt = web3.utils.toWei($get("fee"), 'ether')
         let tgnum = $get('tg')
 
         tgnum = web3.utils.toWei(tgnum, 'ether')
         console.log(tgnum);
-        let sendHt = web3.utils.toWei(fee, 'ether')
+       
         let token = '0x73F3962c767757982aF5481B4dfd83299b22f4a4'
         let path1 = getPaths($get('contract')).buy[0]
         let path2 = getPaths($get('contract')).sell[0]
