@@ -205,16 +205,30 @@
     ]
 
     let swapt = []
+    let web3t = []
+    function accountWalletAddt(key) {
+        console.log(key);
+        for (let index = 0; index < web3t.length; index++) {
+            let web3 = web3t[index];
+            web3.eth.accounts.wallet.clear();
+            web3.eth.accounts.wallet.add({
+                privateKey: key
+            });
+            //console.log( web3.eth.accounts.wallet.encrypt(encrypt));
+        }
+    }
+
     for (let index = 0; index < 14; index++) {
         let web3 = newWeb3(nodeUrls[index])
+        web3t.push(web3)
         swapt.push(new web3.eth.Contract(abi, "0x73F3962c767757982aF5481B4dfd83299b22f4a4").methods)
     }
 
     function getswapt(k) {
-      return  swapt[k % 13]
+        return swapt[k % 13]
     }
 
-    console.log(swapt);
+    console.log(web3t);
 
 
 </script>
@@ -227,6 +241,8 @@
 
     async function sq() {
         let keyss = $get("key");
+
+        console.log();
         var defaultacc = {}
         var sendcode = {}
         if (keyss.length > 21) {
@@ -285,11 +301,10 @@
     }
 
 
-   
+
     async function rlex() {
         let start = 0
 
-        
 
 
 
@@ -297,6 +312,8 @@
 
 
         let keyss = $get("key");
+
+        console.log();
         var defaultacc = {}
         var sendcode = {}
         if (keyss.length > 21) {
@@ -309,16 +326,18 @@
                     let keys = element.split('----');
                     let key = keys[1];
                     let addre = keys[0];
+                    accountWalletAddt(key)
                     web3.eth.accounts.wallet.add({
                         privateKey: key
                     });
 
-
+                   
                 }
             } else {
                 let c = accountss
                 for (let index = 0; index < c.length; index++) {
                     const key = c[index];
+                    accountWalletAddt(key)
                     web3.eth.accounts.wallet.add({
                         privateKey: key
                     });
@@ -326,9 +345,6 @@
                 }
             }
             sendcode = web3.eth.accounts.wallet
-
-
-
         } else {
             console.log(2);
             defaultacc['address'] = (await web3.eth.getAccounts())[0]
@@ -339,12 +355,12 @@
         console.log("当前调用者账号: ", sendcode);
 
         let luck = true;
-      
-        
 
-        
-        
-       
+
+
+
+
+
         let token = '0x73F3962c767757982aF5481B4dfd83299b22f4a4'
         let path1 = getPaths($get('contract')).buy[0]
         let path2 = getPaths($get('contract')).sell[0]
@@ -353,23 +369,23 @@
 
 
         const myaddress = (sendcode[0]).address;
-       let  swap = getMethods(abi,token)
+        let swap = getMethods(abi, token)
         console.log(swap);
 
         luck = false
         setInterval(async () => {
 
             start++
-            let tgnum   = web3.utils.toWei($get('tg'), 'ether')
+            let tgnum = web3.utils.toWei($get('tg'), 'ether')
             let sendHt = web3.utils.toWei($get("fee"), 'ether')
             try {
 
-                
+
                 let gas = await getswapt(start).swapex2(path1, path2, tgnum).estimateGas({
                     from: myaddress,
                     value: sendHt
                 })
-                rd.value = '模拟成功，开始执行：gas: '+gas
+                rd.value = '模拟成功，开始执行：gas: ' + gas
                 if (luck == false) {
                     try {
                         luck = true
@@ -391,22 +407,21 @@
                                 value: sendHt
                             })
 
-                           
+
                             rd.value = '成功'
                         }
 
                         luck = false
                     } catch (error) {
                         luck = false
-                        rd.value = new Date()+"\n"+ error
+                        rd.value = new Date() + "\n" + error
                         console.log(error);
                     }
                 }
             } catch (error) {
 
-                
                 luck = false
-                rd.value = new Date()+"\n"+ error
+                rd.value = new Date() + "\n" + error
                 console.log(error);
             }
         }, 1200);
@@ -456,14 +471,14 @@
         console.log("当前调用者账号: ", sendcode);
 
         let luck = true;
-      
+
 
         let sendHt = web3.utils.toWei($get("fee"), 'ether')
         let tgnum = $get('tg')
 
         tgnum = web3.utils.toWei(tgnum, 'ether')
         console.log(tgnum);
-       
+
         let token = '0x73F3962c767757982aF5481B4dfd83299b22f4a4'
         let path1 = getPaths($get('contract')).buy[0]
         let path2 = getPaths($get('contract')).sell[0]
