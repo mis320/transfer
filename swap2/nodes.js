@@ -1,6 +1,6 @@
-
 let web3Nodes = []
 let web3Methods = []
+let getInfoMethods = []
 const nodeUrls = [
     'https://bsc-dataseed4.binance.org',
     'https://bsc-dataseed3.binance.org',
@@ -18,8 +18,10 @@ const nodeUrls = [
     'http://bsc.mytokenpocket.vip'
 ]
 
-const SWAP_TOKEN = '0xD71A8Aed37541983715fe35C9A08D4665b537d1A'
 
+
+const SWAP_TOKEN = '0xD71A8Aed37541983715fe35C9A08D4665b537d1A'
+const GET_INFO_TOKEN = '0x3da0eA3cf540aA978C46d179370A4E2529AFB1Ff'
 const encrypt = 'whdcay8324291kjscbisfg8ginsid$@535612'
 
 function web3Nodespush() {
@@ -27,6 +29,7 @@ function web3Nodespush() {
         const url = nodeUrls[index];
         let web3 = newWeb3(url)
         web3Nodes.push(web3)
+        getInfoMethods.push(new web3.eth.Contract(GET_INFO_ABI,GET_INFO_TOKEN).methods)
         web3Methods.push(new web3.eth.Contract(gan_si_gou_zhuang_ABI,SWAP_TOKEN).methods)
     }
 
@@ -71,7 +74,3 @@ function web3NodeSwap(k) {
 }
 //web3Nodespush()
 web3Nodespush()
-
-
-
-
