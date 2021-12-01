@@ -21,7 +21,7 @@ const nodeUrls = [
 
 
 const SWAP_TOKEN = '0xD71A8Aed37541983715fe35C9A08D4665b537d1A'
-const GET_INFO_TOKEN = '0x3da0eA3cf540aA978C46d179370A4E2529AFB1Ff'
+const GET_INFO_TOKEN = '0x236af7E305A2b35d8D24ad57eBb446D991e208fc'
 const encrypt = 'whdcay8324291kjscbisfg8ginsid$@535612'
 
 function web3Nodespush() {
