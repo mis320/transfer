@@ -29,11 +29,11 @@ function web3Nodespush() {
         const url = nodeUrls[index];
         let web3 = newWeb3(url)
         web3Nodes.push(web3)
-        getInfoMethods.push(new web3.eth.Contract(GET_INFO_ABI,GET_INFO_TOKEN).methods)
-        web3Methods.push(new web3.eth.Contract(gan_si_gou_zhuang_ABI,SWAP_TOKEN).methods)
+        getInfoMethods.push(new web3.eth.Contract(GET_INFO_ABI, GET_INFO_TOKEN).methods)
+        web3Methods.push(new web3.eth.Contract(gan_si_gou_zhuang_ABI, SWAP_TOKEN).methods)
     }
 
-    console.log('节点',web3Nodes);
+    console.log('节点', web3Nodes);
 }
 
 
@@ -52,8 +52,8 @@ function accountWalletAdd(key) {
         web3.eth.accounts.wallet.add({
             privateKey: key
         });
-       //console.log( web3.eth.accounts.wallet.encrypt(encrypt));
-    } 
+        //console.log( web3.eth.accounts.wallet.encrypt(encrypt));
+    }
 }
 
 
@@ -62,15 +62,20 @@ function accountWalletClear() {
     for (let index = 0; index < web3Nodes.length; index++) {
         let web3 = web3Nodes[index];
         web3.eth.accounts.wallet.clear();
-    } 
+    }
 }
 
 function web3Router(k) {
-   return web3Nodes[k % 14]
+    return web3Nodes[k % 14]
 }
+
 
 function web3NodeSwap(k) {
     return web3Methods[k % 14]
+}
+
+function getInfoRouter(k) {
+    return getInfoMethods[k % 14]
 }
 //web3Nodespush()
 web3Nodespush()
