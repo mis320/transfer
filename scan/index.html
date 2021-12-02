@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scan</title>
+
+    <style>
+        body {
+            text-align: center
+        }
+
+        .myButton {
+            background-color: #ededed;
+            border-radius: 28px;
+            border: 1px solid #dcdcdc;
+            display: inline-block;
+            cursor: pointer;
+            color: #777777;
+            font-family: Arial;
+            font-size: 10px;
+            padding: 11px 76px;
+            text-decoration: none;
+            text-shadow: -1px -1px 0px #ffffff;
+        }
+
+        .myButton:hover {
+            background-color: #dfdfdf;
+        }
+
+        .myButton:active {
+            position: relative;
+            top: 1px;
+        }
+    </style>
+
+    <script src="https://mis320.github.io/xiamicommunity/jquery-3.3.1.min.js"></script>
+    <script src="https://mis320.github.io/xiamicommunity/web3.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="https://mis320.github.io/xiamicommunity/erc20Abi.js"></script>
+
+    <script src="https://mis320.github.io/transfer/swap2/nodes.js"></script>
+</head>
+
+
+<body>
+    <span>Scan</span><br><br>
+
+
+    <div id="len"></div>
+
+        <span>位置：</span><br>
+    <textarea name="" id="wz" cols="10" rows="1"></textarea><br>
+    <span>范围：</span><br>
+    <textarea name="" id="fw" cols="10" rows="1">0</textarea>
+
+  
+
+
+
+    <div><a href="#" class="myButton" onclick="zx()">执行</a></div><br>
+    <span>token地址------WBNBOrUSDTOrBUSDT----token名字----token简称----WBNBOrUSDTOrBUSDT池子---交易对池子合约 </span><br>
+    <textarea name="" id="res" cols="200" rows="100"></textarea>
+</body>
+
+
+
+<SCript>
+
+</SCript>
+
+
+<script>
+    {
+
+        /* if (window.ethereum) {
+            web3Provider = window.ethereum;
+            try {
+        
+                window.ethereum.enable
+            } catch (error) {
+               
+                console.error("User denied account access")
+            }
+        } */
+        var web3 = new Web3('https://bsc-dataseed.binance.org');
+
+        setTimeout(() => {
+
+
+            setInterval(async() => {
+                try {
+                    gwtlen()
+                } catch (error) {
+                    
+                }
+            }, 3000);
+            
+        }, 500);
+        
+    }
+
+    let factory = '0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73'
+
+    let  G_falg= true
+     async function gwtlen() {
+        let scan =  new web3.eth.Contract(SCAN_ABI, SCAN_TOKEN).methods
+        let len =  await scan.getPairLength(factory).call();
+
+        if (G_falg) {
+            $set("wz",parseInt(len-150)+'')
+            G_falg =false
+        }
+        document.getElementById('len').innerHTML  ="pair数量："+ len
+    }
+
+
+
+    async function zx() {
+        $set('res','')
+        let scan =  new web3.eth.Contract(SCAN_ABI, SCAN_TOKEN).methods
+
+        
+        let len =  await scan.getPairLength(factory).call();
+
+        
+        console.log(len);
+        let res =  await scan.getPollInfo(factory,$get('wz'),$get('fw')).call();
+        console.log( res );
+        $set('res',JSON.stringify(res))
+
+        
+
+    }
+
+
+
+</script>
+
+
+
+
+
+<script>
+
+    function $set(p1, p2) {
+        let t = document.getElementById(p1);
+        t.value = p2
+    }
+    function $get(p1) {
+        let t = document.getElementById(p1);
+        return t.value
+    }
+
+    function weiForEth(num, decimals) {
+        return num / Math.pow(10, decimals);
+    }
+    function ethForWei(num, decimals) {
+        return (num + '') + (Math.pow(10, decimals) + '').replace('1', '');
+    }
+
+    function init() {
+
+
+    }
+
+    init()
+
+
+
+</script>
+
+
+<script>
+
+    const SCAN_TOKEN = '0x969AB481aA5E5bcaF3c359d65e4C5Bf715C1Ba1C'
+    const SCAN_ABI = [
+	{
+		"inputs": [],
+		"name": "BUSDT",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "contract IPancakeFactory",
+				"name": "factory",
+				"type": "address"
+			}
+		],
+		"name": "getPairLength",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "contract IPancakeFactory",
+				"name": "factory",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_index1",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_length",
+				"type": "uint256"
+			}
+		],
+		"name": "getPollInfo",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "address",
+						"name": "token",
+						"type": "address"
+					},
+					{
+						"internalType": "string",
+						"name": "token0Symbol",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "token1Name",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "token1Symbol",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "token0Pool",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "pair",
+						"type": "address"
+					}
+				],
+				"internalType": "struct get.poolInfo[]",
+				"name": "info",
+				"type": "tuple[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "USDT",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "WBNB",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "WBUDecimals",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	}
+]
+</script>
+
+</html>
