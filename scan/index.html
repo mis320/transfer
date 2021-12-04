@@ -109,7 +109,7 @@
         let len =  await scan.getPairLength(factory).call();
 
         if (G_falg) {
-            $set("wz",parseInt(len-150)+'')
+            $set("wz",parseInt(len-100)+'')
             G_falg =false
         }
         document.getElementById('len').innerHTML  ="pair数量："+ len
