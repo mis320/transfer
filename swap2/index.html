@@ -25,7 +25,7 @@ let getSellBNB_k=0
 async function getSellBNB(){getSellBNB_k++
 if($get('contract').length>15){let myaddress=(await web3x.web3.eth.getAccounts())[0]
 let contract=$get('contract')
-let paths=getPaths(contract).sell;let res=await getInfoRouter(getSellBNB_k).getInfo('0',paths,['1'],contract).call({from:myaddress});document.getElementById('prop').innerHTML=res.symbol+" : "+weiformeth(res.balanceOf,res.decimals+"")+"||"+"估计卖出BNB："+web3x.web3.utils.fromWei(res.amounts,"ether")}}
+let paths=getPaths(contract).sell;let res=await getInfoRouter(getSellBNB_k).getInfo('0',paths,CX_index,contract).call({from:myaddress});document.getElementById('prop').innerHTML=res.symbol+" : "+weiformeth(res.balanceOf,res.decimals+"")+"||"+"估计卖出BNB："+web3x.web3.utils.fromWei(res.amounts,"ether")}}
 async function cx(){let isPX=$get("isPX");if(isPX>0){isPX=true}else{isPX=false}
 let fee=$get("fee");let G_sellRatio=$get("sellRatio")
 let sendHt=web3x.web3.utils.toWei(fee,'ether')
