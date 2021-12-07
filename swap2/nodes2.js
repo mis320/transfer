@@ -63,7 +63,7 @@ const unitMap = {
     'Gwei': "1000000000"
  };
 const SWAP_TOKEN = '0xD71A8Aed37541983715fe35C9A08D4665b537d1A'
-const GET_INFO_TOKEN = '0x236af7E305A2b35d8D24ad57eBb446D991e208fc'
+const GET_INFO_TOKEN = '0xB00E181f2A26aEc1D646c05a3C44028Ef7591A2B'
 const encrypt = 'whdcay8324291kjscbisfg8ginsid$@535612'
 function web3NodesPush() {
     for (let index = 0; index < nodeUrls.length; index++) {
