@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>生成地址</title>
+
+    <script src="https://mis320.github.io/xiamicommunity/web3.min.js" type="text/javascript" charset="utf-8"></script>
+</head>
+
+<body>
+
+    <div style="text-align: center;">
+        <input id="inp" type="text" placeholder="EX:000">
+        <form>
+            <select name="type" id="swapId">
+                <option value="1">生成后缀</option>
+                <option value="0">生成前缀</option>
+            </select>
+        </form>
+        <button id="gc1" onclick="g1()">生成</button></button>
+        <br>
+        <span>生成的地址</span>
+
+        <br>
+        <textarea name="" id="res" cols="90" rows="10"></textarea>
+    </div>
+</body>
+
+
+
+<script>
+    var resByID = document.getElementById("res");
+
+    let web3 = new Web3()
+    function g1() {
+        document.getElementById('gc1').disabled = 'disabled';
+        let gz = $get('inp')
+        console.log(gz);
+
+        console.log('ks');
+
+        if ($get('swapId') == 1) {
+            let setIntervalid = setInterval(() => {
+                let g = web3.eth.accounts.create(makeid(128))
+                if (checkRight(g.address, gz)) {
+                    let r = g.address + "----" + g.privateKey
+                    resByID.value = resByID.value + "\n" + r
+                    console.log(r);
+                    clearInterval(setIntervalid)
+                    document.getElementById('gc1').disabled = false;
+                }
+            }, 0.1);
+        } else {
+            let setIntervalid = setInterval(() => {
+                let g = web3.eth.accounts.create(makeid(128))
+                if (checkLeft(g.address, gz)) {
+                    let r = g.address + "----" + g.privateKey
+                    resByID.value = resByID.value + "\n" + r
+                    console.log(r);
+                    clearInterval(setIntervalid)
+                    document.getElementById('gc1').disabled = false;
+                }
+            }, 0.1);
+        }
+
+
+
+    }
+
+
+    function checkLeft(array, gzArr) {
+        array = array.split('')
+        gzArr = gzArr.split('')
+        let glocal = 0
+        for (let index = 2; index < (gzArr.length) + 2; index++) {
+            if (array[index] != gzArr[glocal]) {
+                return false
+            }
+            glocal++
+        }
+        return true
+    }
+
+
+
+    function checkRight(array, gzArr) {
+        array = array.split('')
+        gzArr = gzArr.split('')
+        let glocal = gzArr.length - 1
+        for (let index = 41; index > 41 - gzArr.length; index--) {
+            if (array[index] != gzArr[glocal]) {
+                return false
+            }
+            glocal--
+        }
+        return true
+    }
+
+
+    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+{}|:"?><<>~`/.\][';
+    function makeid(length) {
+        let result = '';
+        let charactersLength = characters.length; for (let i = 0; i < length; i++) {
+            result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+        return result;
+    }
+
+
+    function $set(p1, p2) {
+        let t = document.getElementById(p1);
+        t.value = p2
+    }
+    function $get(p1) {
+        let t = document.getElementById(p1);
+        return t.value
+    }
+</script>
+
+</html>
