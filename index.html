@@ -45,6 +45,8 @@
     <div id=""><textarea name="" id="gasp2" cols="80" rows="2"></textarea></div>
     <span>to:</span>
     <div id=""><textarea name="" id="to1" cols="80" rows="2"></textarea></div>
+    <span>次数:</span>
+    <div id=""><textarea name="" id="num2" cols="80" rows="2">1</textarea></div>
     <span>data:</span>
     <div id=""><textarea name="" id="data" cols="80" rows="10"></textarea></div>
     <span>fee:</span>
@@ -61,7 +63,7 @@
 
 
 <SCript>
-   
+
 </SCript>
 
 
@@ -207,7 +209,16 @@
     }
 
 
+    async function getTransactionCount(account) {
 
+        let nonce
+        try {
+            nonce = await web3.eth.getTransactionCount(account)
+        } catch (error) {
+            nonce = await getTransactionCount(account)
+        }
+        return nonce
+    }
 
     function start1() {
 
@@ -301,25 +312,37 @@
         }
 
 
-        function send(address) {
-            web3.eth.estimateGas({
-                from: address,
-                to: to,
-                data: data,
-                value: fee
-            }).then(gas => {
-                console.log(address + ": 正在发送事务中。。。。。", gas);
-                web3.eth.sendTransaction({
+       async function send(address) {
+
+            let num = parseInt($get('num2'))
+
+            let nonce = await getTransactionCount(address)
+
+            for (let index = 0; index < num; index++) {
+
+                web3.eth.estimateGas({
                     from: address,
                     to: to,
                     data: data,
-                    value: fee,
-                    gas: gas + parseInt(gas * 0.1) + '',//
-                    gasPrice: gasprice
-                }).then(function (receipt) {
-                    console.log('事务发送成功', receipt);
+                    value: fee
+                }).then(gas => {
+                    console.log(address + ": 正在发送事务中。。。。。", gas);
+                    web3.eth.sendTransaction({
+                        from: address,
+                        to: to,
+                        nonce: nonce + index,
+                        data: data,
+                        value: fee,
+                        gas: gas + parseInt(gas * 0.1) + '',//
+                        gasPrice: gasprice
+                    }).then(function (receipt) {
+                        console.log('事务发送成功', receipt);
+                    })
                 })
-            })
+            }
+
+
+
         }
     }
 
