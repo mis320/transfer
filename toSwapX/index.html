@@ -60,7 +60,8 @@
     <div class="prop1" id="prop1">当前执行了:.......</div><br>
     <div><a href="#" class="myButton" onclick="approveSCE()">授权SCE</a></div>
     <div><a href="#" class="myButton" onclick="approveUSDT()">授权USDT</a></div>
-    <div><a href="#" class="myButton" onclick="execute()">执行</a></div>
+    <button class="myButton" id="allbuy" onclick="execute()">执行1</button>
+
 </body>
 
 <script>
@@ -167,7 +168,7 @@
         }
 
 
-        document.getElementById('prop1').innerHTML = "授权完成,等待30秒"
+        document.getElementById('prop1').innerHTML = "授权USDT完成,等待30秒"
 
 
 
@@ -204,72 +205,137 @@
             })
         }
 
-        document.getElementById('prop1').innerHTML = "授权完成,等待30秒"
+        document.getElementById('prop1').innerHTML = "授权SCE完成,等待30秒"
     }
 
 
     async function execute() {
-
+        console.log('start');
+        let exeTRYE = 0
+        document.getElementById('allbuy').disabled = 'disabled';
         //let numMax = parseInt($get('numMax'))
-        let exeNum = 0;
+        let exeNum = -1;
+        let sellp = -1
         G_K++
+
         let keyss = $get('key');
         let accountss = keyss.split('\n');
 
-        let sellp = 0
+
         let stopid = setInterval(async () => {
+            exeNum++
+            sellp++
+
+            console.log('exeTRYE', exeTRYE);
+            console.log('sellp', sellp);
+            console.log('exeNum', exeNum);
             let time = Math.round(new Date().getTime() / 1000) + 36000 + ''
 
-            if (exeNum + 1 == parseInt($get('numMax'))) {
+            if (exeTRYE + 1 == parseInt($get('numMax'))) {
                 clearInterval(stopid)
+                document.getElementById('allbuy').disabled = false;
             }
-            if (exeNum <= parseInt($get('numMax'))) {
+            if (exeTRYE <= parseInt($get('numMax'))) {
                 G_K++
                 const pKey = accountss[exeNum % accountss.length];
                 accountWalletAdd(pKey)
                 let msg = web3Nodes[0].eth.accounts.wallet[0].address
                 console.log(msg);
                 let sendusdt
-                console.log(sendusdt);
+
                 let path
 
 
                 let InfoBuy
                 let buyNUM
                 if (sellp >= parseInt($get('sellP'))) {
+                    //卖
                     sendusdt = web3Nodes[0].utils.toWei($get('sellnum'), '18')
                     path = getPath().sell
                     sellp = 0
-                    InfoBuy = await getRouter(G_K).PancakeSwapMethods.getAmountsIn(sendusdt, path).call()
-                    buyNUM = ethers.utils.bigNumberify(InfoBuy[0]).mul(95).div(100).toString()
+                    try {
+                        InfoBuy = await getRouter(G_K).PancakeSwapMethods.getAmountsIn(sendusdt, path).call()
+                        buyNUM = ethers.utils.bigNumberify(InfoBuy[0]).mul(95).div(100).toString()
+                        gas = await getRouter(G_K).PancakeSwapMethods.swapExactTokensForTokens(buyNUM, '0', path, msg, time).estimateGas({
+                            from: msg
+                        })
 
-                    let gasandmsg = await SELLestimateGas(accountss, buyNUM, path, msg, time)
-                    console.log(gasandmsg);
+                        /* let gasandmsg = await SELLestimateGas(accountss, buyNUM, path, msg, time)
+                        console.log(gasandmsg); */
 
-                    getRouter(G_K).PancakeSwapMethods.swapExactTokensForTokens(buyNUM, '0', path, gasandmsg.msg, time).send({
-                        gas: gasandmsg.gas,
-                        from: gasandmsg.msg,
-                        gasPrice: '5100000000'
-                    })
+                        getRouter(G_K).PancakeSwapMethods.swapExactTokensForTokens(buyNUM, '0', path, msg, time).send({
+                            gas: gas,
+                            from: msg,
+                            gasPrice: '5100000000'
+                        })
+                        console.log('SWAP3');
+                    } catch (error) {
+                        console.log('SWAP4');
+                        if (sellp > 0) {
+                            sellp--
+                        }
+
+
+                        path = getPath().buy
+                        sendusdt = web3Nodes[0].utils.toWei($get('buynum'), '18')
+                        InfoBuy = await getRouter(G_K).PancakeSwapMethods.getAmountsOut(sendusdt, path).call()
+                        buyNUM = ethers.utils.bigNumberify(InfoBuy[1]).mul(95).div(100).toString()
+                        let gas = await getRouter(G_K).PancakeSwapMethods.swapExactTokensForTokens(sendusdt, buyNUM, path, msg, time).estimateGas({
+                            from: msg
+                        })
+                        console.log('gas', gas);
+                        getRouter(G_K).PancakeSwapMethods.swapExactTokensForTokens(sendusdt, buyNUM, path, msg, time).send({
+                            gas: gas,
+                            from: msg,
+                            gasPrice: '5100000000'
+                        })
+
+
+                    }
                 } else {
+                    //买
                     path = getPath().buy
                     sendusdt = web3Nodes[0].utils.toWei($get('buynum'), '18')
                     InfoBuy = await getRouter(G_K).PancakeSwapMethods.getAmountsOut(sendusdt, path).call()
                     buyNUM = ethers.utils.bigNumberify(InfoBuy[1]).mul(95).div(100).toString()
 
-                    let gas = await getRouter(G_K).PancakeSwapMethods.swapExactTokensForTokens(sendusdt, buyNUM, path, msg, time).estimateGas({
-                        from: msg
-                    })
-                    console.log('gas', gas);
-                    getRouter(G_K).PancakeSwapMethods.swapExactTokensForTokens(sendusdt, buyNUM, path, msg, time).send({
-                        gas: gas,
-                        from: msg,
-                        gasPrice: '5100000000'
-                    })
+                    try {
+
+                        let gas = await getRouter(G_K).PancakeSwapMethods.swapExactTokensForTokens(sendusdt, buyNUM, path, msg, time).estimateGas({
+                            from: msg
+                        })
+                        console.log('gas', gas);
+                        getRouter(G_K).PancakeSwapMethods.swapExactTokensForTokens(sendusdt, buyNUM, path, msg, time).send({
+                            gas: gas,
+                            from: msg,
+                            gasPrice: '5100000000'
+                        })
+                        console.log('SWAP1');
+                    } catch (error) {
+                        //卖
+                        path = getPath().sell
+                        sendusdt = web3Nodes[0].utils.toWei($get('sellnum'), '18')
+                        console.log('SWAP2');
+                        InfoBuy = await getRouter(G_K).PancakeSwapMethods.getAmountsIn(sendusdt, path).call()
+                        buyNUM = ethers.utils.bigNumberify(InfoBuy[0]).mul(95).div(100).toString()
+                        gas = await getRouter(G_K).PancakeSwapMethods.swapExactTokensForTokens(buyNUM, '0', path, msg, time).estimateGas({
+                            from: msg
+                        })
+
+                        /* let gasandmsg = await SELLestimateGas(accountss, buyNUM, path, msg, time)
+                        console.log(gasandmsg); */
+
+                        getRouter(G_K).PancakeSwapMethods.swapExactTokensForTokens(buyNUM, '0', path, msg, time).send({
+                            gas: gas,
+                            from: msg,
+                            gasPrice: '5100000000'
+                        })
+
+                    }
 
                 }
-                console.log('sellp', sellp);
-                console.log('exeNum', exeNum);
+
+
                 console.log(InfoBuy);
                 console.log("buyNUM", buyNUM);
 
@@ -282,10 +348,10 @@
 
 
 
-                document.getElementById('prop1').innerHTML = "当前执行了:" + (exeNum + 1) + " 次"
+                document.getElementById('prop1').innerHTML = "当前执行了:" + (exeTRYE + 1) + " 次"
+                exeTRYE++
             }
-            exeNum++
-            sellp++
+
         }, parseInt($get('interval')) * 1000);
 
 
