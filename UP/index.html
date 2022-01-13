@@ -5,7 +5,9 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>transfer</title>
+    <title>Pink lock</title>
+
+    <span>调用Pink-API</span><BR></BR>
 
     <style>
         body {
@@ -36,18 +38,30 @@
         }
     </style>
     <script src="https://mis320.github.io/xiamicommunity/web3ex1.js"></script>
+    <script src="https://mis320.github.io/xiamicommunity/erc20Abi.js"></script>
+
 </head>
 
 
 <body>
 
     <span>合约地址:</span>
-    <div id=""><textarea name="" id="to1" cols="80" rows="2"></textarea></div>
+    <div id=""><textarea name="" id="to1" cols="80" rows="2" placeholder="请输入代币合约"></textarea></div>
 
 
-    <div><a href="#" class="myButton" onclick="zx()">放弃所有权</a></div>
-
-
+    <div><a href="#" class="myButton" onclick="renounceOwnership()">放弃所有权</a></div>
+    <span>LP合约地址(交易对池子的地址)</span>
+    <div id="lpToken1">BNB-LP****</div>
+    <div id="lpToken2">USDT-LP****</div>
+    <div id="lpToken3">BUSDT-LP****</div>
+    <div id=""><textarea name="" id="LPTo1" cols="80" rows="2" placeholder="请输入交易对池子的地址"></textarea></div>
+    <span>锁几天</span>
+    <div id=""><input id="luckTime" type="number" min="10" value="10"></div>
+    <div>授权后等待30秒</div>
+    <div><a href="#" class="myButton" onclick="approve()">授权</a></div>
+    <div><a href="#" class="myButton" onclick="luck()">锁池子</a></div>
+    <div><a href="#" class="myButton" onclick="unLock()">解锁(查询锁时间)</a></div>
+    <div id="lockTime">解锁时间：****</div>
 </body>
 
 
@@ -74,11 +88,51 @@
                 }
             }
             var web3 = new Web3(web3Provider);//web3js就是你需要的web3实例
+            var estimateGasWbe3 = new Web3('https://bsc-dataseed4.binance.org');
 
 
-
+            setInterval(async () => {
+                getLPandTime()
+            }, 3500);
 
         }
+    }
+
+
+    async function getLPandTime() {
+        const weth = '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c'
+        const usdt = '0x55d398326f99059ff775485246999027b3197955'
+        const busdt = '0xe9e7cea3dedca5984780bafc599bd69add087d56'
+        const g = getEstimateGasWbe3Methods(ABI, '0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73')
+
+
+
+        let WBNBPool = ""
+        let USDTool = ""
+        let BUSDTool = ""
+
+        try {
+            WBNBPool = await g.getPair(weth, $get('to1')).call()
+            document.getElementById('lpToken1').innerHTML = "BNB池子LP:" + WBNBPool
+        } catch (error) {
+
+        }
+
+        try {
+            USDTool = await g.getPair(usdt, $get('to1')).call()
+            document.getElementById('lpToken2').innerHTML = "USDT池子LP:" + USDTool
+        } catch (error) {
+
+        }
+
+        try {
+            BUSDTool = await g.getPair(busdt, $get('to1')).call()
+            document.getElementById('lpToken3').innerHTML = "BUADT池子LP:" + BUSDTool
+        } catch (error) {
+
+        }
+
+
     }
 
 </script>
@@ -88,24 +142,163 @@
 
 
 <script>
+    const ROUTER = '0x7ee058420e5937496F5a2096f04caA7721cF70cc'
     //renounceOwnership
-   async function zx() {
+    async function renounceOwnership() {
 
-       let c= getMethods(ABI, $get('to1'))
+        let e = getEstimateGasWbe3Methods(ABI, $get('to1'))
 
-        
+        let c = getMethods(ABI, $get('to1'))
+        try {
+            console.log(1);
+            let gas = await e.renounceOwnership().estimateGas({
+                from: web3.currentProvider.selectedAddress
+            })
+            c.renounceOwnership().send({
+                from: web3.currentProvider.selectedAddress,
+                gas: gas,
+                gasPrice: '7200000000'
 
-      let gas = await c.renounceOwnership().estimateGas({
-            from: web3.currentProvider.selectedAddress
+            })
+            console.log(11);
+        } catch (error) {
+            try {
+                console.log(2);
+                let gas = await e.waiveOwnership().estimateGas({
+                    from: web3.currentProvider.selectedAddress
+                })
+                c.waiveOwnership().send({
+                    from: web3.currentProvider.selectedAddress,
+                    gas: gas,
+                    gasPrice: '7200000000'
+
+                })
+                console.log(22);
+            } catch (error) {
+
+                const addressO = '0x0000000000000000000000000000000000000000'
+                console.log(3);
+                let gas = await e.transferOwnership(addressO).estimateGas({
+                    from: web3.currentProvider.selectedAddress
+                })
+                c.transferOwnership(addressO).send({
+                    from: web3.currentProvider.selectedAddress,
+                    gas: gas,
+                    gasPrice: '7200000000'
+
+                })
+                console.log(33);
+            }
+        }
+
+    }
+
+
+    async function approve() {
+
+        const myaddress = web3.currentProvider.selectedAddress
+
+        let token = getMethods(ERC20ABI, $get("LPTo1"))
+        console.log(token);
+        let = num = await token.totalSupply().call()
+        console.log(num);
+
+
+
+
+        let gas = await token.approve(ROUTER, num).estimateGas({
+            from: myaddress
+        })
+        console.log(gas);
+        let res = await token.approve(ROUTER, num).send({
+            gas: gas,
+            gasPrice: '7200000000',
+            from: myaddress
+        }, function (error, res) {
+            if (error == null) {
+                console.log(new Date() + "hash: " + res);
+            }
+        })
+    }
+
+
+    async function luck() {
+        const token = getMethods(ERC20ABI, $get("LPTo1"))
+        const myaddress = web3.currentProvider.selectedAddress
+
+
+        const lockc = getMethods(PinkABI, ROUTER)
+
+
+        const luckTime = Math.round(new Date().getTime() / 1000) + (parseInt($get('luckTime')) * 86400) + ''
+        console.log(luckTime);
+
+
+        const balance = await token.balanceOf(myaddress).call()
+        console.log(balance);
+        let gas = await lockc.lock(myaddress, $get("LPTo1"), true, balance, luckTime).estimateGas({
+            from: myaddress
+        })
+        lockc.lock(myaddress, $get("LPTo1"), true, balance, luckTime).send({
+            gas: gas,
+            gasPrice: '7200000000',
+            from: myaddress
+        }, function (error, res) {
+            if (error == null) {
+                console.log(new Date() + "hash: " + res);
+            }
         })
 
+    }
+    async function unLock() {
+        const g = getEstimateGasWbe3Methods(PinkABI, ROUTER)
 
-        c.renounceOwnership().send({
-            from: web3.currentProvider.selectedAddress,
-            gas :gas,
-            gasPrice: '7200000000'
+        const myaddress = web3.currentProvider.selectedAddress
+        const r = await g.lpLocksForUser(myaddress).call()
+        console.log(r);
+        //token
 
-        })
+        for (let index = 0; index < r.length; index++) {
+            if (r[index].token == $get("LPTo1")) {
+
+
+
+
+                try {
+                    let timestamp4 = new Date(parseInt(r[index].unlockDate + "000"))
+                    document.getElementById('lockTime').innerHTML = "解锁时间:" + timestamp4.toLocaleDateString().replace(/\//g, "-") + " " + timestamp4.toTimeString().substr(0, 8)
+
+                    let gas = await g.unlock(r[index].id).estimateGas({
+                        from: web3.currentProvider.selectedAddress
+                    })
+                    console.log('gas', gas);
+                    c.unlock(r[index].id).send({
+                        from: web3.currentProvider.selectedAddress,
+                        gas: gas,
+                        gasPrice: '7200000000'
+
+                    })
+
+
+
+
+                } catch (error) {
+
+                }
+
+
+
+
+            }
+
+
+        }
+
+
+
+
+
+
 
     }
 
@@ -124,6 +317,14 @@
         return t.value
     }
 
+    //estimateGasWbe3
+    function getEstimateGasWbe3Methods(p1, p2) {
+        if (p2 == undefined) {
+            return new estimateGasWbe3.eth.Contract(p1.abi, p1.address).methods;
+        } else {
+            return new estimateGasWbe3.eth.Contract(p1, p2).methods;
+        }
+    }
     function getMethods(p1, p2) {
         if (p2 == undefined) {
             return new web3.eth.Contract(p1.abi, p1.address).methods;
@@ -131,8 +332,63 @@
             return new web3.eth.Contract(p1, p2).methods;
         }
     }
-    const ABI = [{ "inputs": [{ "internalType": "string", "name": "name_", "type": "string" }, { "internalType": "string", "name": "symbol_", "type": "string" }, { "internalType": "uint256", "name": "totalSupply_", "type": "uint256" }, { "internalType": "address", "name": "router_", "type": "address" }, { "internalType": "address", "name": "charityAddress_", "type": "address" }, { "internalType": "uint16", "name": "taxFeeBps_", "type": "uint16" }, { "internalType": "uint16", "name": "liquidityFeeBps_", "type": "uint16" }, { "internalType": "uint16", "name": "charityFeeBps_", "type": "uint16" }, { "internalType": "address", "name": "serviceFeeReceiver_", "type": "address" }, { "internalType": "uint256", "name": "serviceFee_", "type": "uint256" }], "stateMutability": "payable", "type": "constructor" }, { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "address", "name": "owner", "type": "address" }, { "indexed": true, "internalType": "address", "name": "spender", "type": "address" }, { "indexed": false, "internalType": "uint256", "name": "value", "type": "uint256" }], "name": "Approval", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": false, "internalType": "uint256", "name": "minTokensBeforeSwap", "type": "uint256" }], "name": "MinTokensBeforeSwapUpdated", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "address", "name": "previousOwner", "type": "address" }, { "indexed": true, "internalType": "address", "name": "newOwner", "type": "address" }], "name": "OwnershipTransferred", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": false, "internalType": "uint256", "name": "tokensSwapped", "type": "uint256" }, { "indexed": false, "internalType": "uint256", "name": "ethReceived", "type": "uint256" }, { "indexed": false, "internalType": "uint256", "name": "tokensIntoLiqudity", "type": "uint256" }], "name": "SwapAndLiquify", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": false, "internalType": "bool", "name": "enabled", "type": "bool" }], "name": "SwapAndLiquifyEnabledUpdated", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "address", "name": "owner", "type": "address" }, { "indexed": true, "internalType": "address", "name": "token", "type": "address" }, { "indexed": false, "internalType": "enum TokenType", "name": "tokenType", "type": "uint8" }, { "indexed": false, "internalType": "uint256", "name": "version", "type": "uint256" }], "name": "TokenCreated", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "address", "name": "from", "type": "address" }, { "indexed": true, "internalType": "address", "name": "to", "type": "address" }, { "indexed": false, "internalType": "uint256", "name": "value", "type": "uint256" }], "name": "Transfer", "type": "event" }, { "inputs": [], "name": "VERSION", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "_charityAddress", "outputs": [{ "internalType": "address", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "_charityFee", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "_liquidityFee", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "_taxFee", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "owner", "type": "address" }, { "internalType": "address", "name": "spender", "type": "address" }], "name": "allowance", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "spender", "type": "address" }, { "internalType": "uint256", "name": "amount", "type": "uint256" }], "name": "approve", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "account", "type": "address" }], "name": "balanceOf", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "decimals", "outputs": [{ "internalType": "uint8", "name": "", "type": "uint8" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "spender", "type": "address" }, { "internalType": "uint256", "name": "subtractedValue", "type": "uint256" }], "name": "decreaseAllowance", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "tAmount", "type": "uint256" }], "name": "deliver", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "account", "type": "address" }], "name": "excludeFromFee", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "account", "type": "address" }], "name": "excludeFromReward", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "account", "type": "address" }], "name": "includeInFee", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "account", "type": "address" }], "name": "includeInReward", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "spender", "type": "address" }, { "internalType": "uint256", "name": "addedValue", "type": "uint256" }], "name": "increaseAllowance", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "account", "type": "address" }], "name": "isExcludedFromFee", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "account", "type": "address" }], "name": "isExcludedFromReward", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "name", "outputs": [{ "internalType": "string", "name": "", "type": "string" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "owner", "outputs": [{ "internalType": "address", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "tAmount", "type": "uint256" }, { "internalType": "bool", "name": "deductTransferFee", "type": "bool" }], "name": "reflectionFromToken", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "renounceOwnership", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "liquidityFeeBps", "type": "uint256" }], "name": "setLiquidityFeePercent", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "bool", "name": "_enabled", "type": "bool" }], "name": "setSwapAndLiquifyEnabled", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "taxFeeBps", "type": "uint256" }], "name": "setTaxFeePercent", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "swapAndLiquifyEnabled", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "symbol", "outputs": [{ "internalType": "string", "name": "", "type": "string" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "rAmount", "type": "uint256" }], "name": "tokenFromReflection", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "totalFees", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "totalSupply", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "recipient", "type": "address" }, { "internalType": "uint256", "name": "amount", "type": "uint256" }], "name": "transfer", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "sender", "type": "address" }, { "internalType": "address", "name": "recipient", "type": "address" }, { "internalType": "uint256", "name": "amount", "type": "uint256" }], "name": "transferFrom", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "newOwner", "type": "address" }], "name": "transferOwnership", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "uniswapV2Pair", "outputs": [{ "internalType": "address", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "uniswapV2Router", "outputs": [{ "internalType": "contract IUniswapV2Router02", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" }, { "stateMutability": "payable", "type": "receive" }]
 
+
+    const PinkABI = [{ "anonymous": false, "inputs": [{ "indexed": false, "internalType": "address", "name": "previousAdmin", "type": "address" }, { "indexed": false, "internalType": "address", "name": "newAdmin", "type": "address" }], "name": "AdminChanged", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "address", "name": "beacon", "type": "address" }], "name": "BeaconUpgraded", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "uint256", "name": "id", "type": "uint256" }, { "indexed": false, "internalType": "address", "name": "token", "type": "address" }, { "indexed": false, "internalType": "address", "name": "owner", "type": "address" }, { "indexed": false, "internalType": "uint256", "name": "amount", "type": "uint256" }, { "indexed": false, "internalType": "uint256", "name": "unlockDate", "type": "uint256" }], "name": "LockAdded", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "uint256", "name": "id", "type": "uint256" }, { "indexed": false, "internalType": "address", "name": "token", "type": "address" }, { "indexed": false, "internalType": "address", "name": "owner", "type": "address" }, { "indexed": false, "internalType": "uint256", "name": "amount", "type": "uint256" }, { "indexed": false, "internalType": "uint256", "name": "unlockedAt", "type": "uint256" }], "name": "LockRemoved", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "uint256", "name": "id", "type": "uint256" }, { "indexed": false, "internalType": "address", "name": "token", "type": "address" }, { "indexed": false, "internalType": "address", "name": "owner", "type": "address" }, { "indexed": false, "internalType": "uint256", "name": "newAmount", "type": "uint256" }, { "indexed": false, "internalType": "uint256", "name": "newUnlockDate", "type": "uint256" }], "name": "LockUpdated", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "address", "name": "previousOwner", "type": "address" }, { "indexed": true, "internalType": "address", "name": "newOwner", "type": "address" }], "name": "OwnershipTransferred", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "address", "name": "implementation", "type": "address" }], "name": "Upgraded", "type": "event" }, { "inputs": [], "name": "allLocks", "outputs": [{ "components": [{ "internalType": "uint256", "name": "id", "type": "uint256" }, { "internalType": "address", "name": "token", "type": "address" }, { "internalType": "address", "name": "owner", "type": "address" }, { "internalType": "uint256", "name": "amount", "type": "uint256" }, { "internalType": "uint256", "name": "lockDate", "type": "uint256" }, { "internalType": "uint256", "name": "unlockDate", "type": "uint256" }], "internalType": "struct PinkLock.Lock[]", "name": "", "type": "tuple[]" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "allLpTokenLockedCount", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "allNormalTokenLockedCount", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "", "type": "address" }], "name": "cumulativeLockInfo", "outputs": [{ "internalType": "address", "name": "token", "type": "address" }, { "internalType": "address", "name": "factory", "type": "address" }, { "internalType": "uint256", "name": "amount", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "lockId", "type": "uint256" }, { "internalType": "uint256", "name": "newAmount", "type": "uint256" }, { "internalType": "uint256", "name": "newUnlockDate", "type": "uint256" }], "name": "editLock", "outputs": [], "stateMutability": "payable", "type": "function" }, { "inputs": [], "name": "fee", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "start", "type": "uint256" }, { "internalType": "uint256", "name": "end", "type": "uint256" }], "name": "getCumulativeLpTokenLockInfo", "outputs": [{ "components": [{ "internalType": "address", "name": "token", "type": "address" }, { "internalType": "address", "name": "factory", "type": "address" }, { "internalType": "uint256", "name": "amount", "type": "uint256" }], "internalType": "struct PinkLock.CumulativeLockInfo[]", "name": "", "type": "tuple[]" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "index", "type": "uint256" }], "name": "getCumulativeLpTokenLockInfoAt", "outputs": [{ "components": [{ "internalType": "address", "name": "token", "type": "address" }, { "internalType": "address", "name": "factory", "type": "address" }, { "internalType": "uint256", "name": "amount", "type": "uint256" }], "internalType": "struct PinkLock.CumulativeLockInfo", "name": "", "type": "tuple" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "start", "type": "uint256" }, { "internalType": "uint256", "name": "end", "type": "uint256" }], "name": "getCumulativeNormalTokenLockInfo", "outputs": [{ "components": [{ "internalType": "address", "name": "token", "type": "address" }, { "internalType": "address", "name": "factory", "type": "address" }, { "internalType": "uint256", "name": "amount", "type": "uint256" }], "internalType": "struct PinkLock.CumulativeLockInfo[]", "name": "", "type": "tuple[]" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "index", "type": "uint256" }], "name": "getCumulativeNormalTokenLockInfoAt", "outputs": [{ "components": [{ "internalType": "address", "name": "token", "type": "address" }, { "internalType": "address", "name": "factory", "type": "address" }, { "internalType": "uint256", "name": "amount", "type": "uint256" }], "internalType": "struct PinkLock.CumulativeLockInfo", "name": "", "type": "tuple" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "index", "type": "uint256" }], "name": "getLock", "outputs": [{ "components": [{ "internalType": "uint256", "name": "id", "type": "uint256" }, { "internalType": "address", "name": "token", "type": "address" }, { "internalType": "address", "name": "owner", "type": "address" }, { "internalType": "uint256", "name": "amount", "type": "uint256" }, { "internalType": "uint256", "name": "lockDate", "type": "uint256" }, { "internalType": "uint256", "name": "unlockDate", "type": "uint256" }], "internalType": "struct PinkLock.Lock", "name": "", "type": "tuple" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "token", "type": "address" }, { "internalType": "uint256", "name": "start", "type": "uint256" }, { "internalType": "uint256", "name": "end", "type": "uint256" }], "name": "getLocksForToken", "outputs": [{ "components": [{ "internalType": "uint256", "name": "id", "type": "uint256" }, { "internalType": "address", "name": "token", "type": "address" }, { "internalType": "address", "name": "owner", "type": "address" }, { "internalType": "uint256", "name": "amount", "type": "uint256" }, { "internalType": "uint256", "name": "lockDate", "type": "uint256" }, { "internalType": "uint256", "name": "unlockDate", "type": "uint256" }], "internalType": "struct PinkLock.Lock[]", "name": "", "type": "tuple[]" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "getTotalLockCount", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "_poolManager", "type": "address" }, { "internalType": "uint256", "name": "_fee", "type": "uint256" }], "name": "initialize", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "owner", "type": "address" }, { "internalType": "address", "name": "token", "type": "address" }, { "internalType": "bool", "name": "isLpToken", "type": "bool" }, { "internalType": "uint256", "name": "amount", "type": "uint256" }, { "internalType": "uint256", "name": "unlockDate", "type": "uint256" }], "name": "lock", "outputs": [{ "internalType": "uint256", "name": "id", "type": "uint256" }], "stateMutability": "payable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "user", "type": "address" }], "name": "lpLockCountForUser", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "user", "type": "address" }, { "internalType": "uint256", "name": "index", "type": "uint256" }], "name": "lpLockForUserAtIndex", "outputs": [{ "components": [{ "internalType": "uint256", "name": "id", "type": "uint256" }, { "internalType": "address", "name": "token", "type": "address" }, { "internalType": "address", "name": "owner", "type": "address" }, { "internalType": "uint256", "name": "amount", "type": "uint256" }, { "internalType": "uint256", "name": "lockDate", "type": "uint256" }, { "internalType": "uint256", "name": "unlockDate", "type": "uint256" }], "internalType": "struct PinkLock.Lock", "name": "", "type": "tuple" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "user", "type": "address" }], "name": "lpLocksForUser", "outputs": [{ "components": [{ "internalType": "uint256", "name": "id", "type": "uint256" }, { "internalType": "address", "name": "token", "type": "address" }, { "internalType": "address", "name": "owner", "type": "address" }, { "internalType": "uint256", "name": "amount", "type": "uint256" }, { "internalType": "uint256", "name": "lockDate", "type": "uint256" }, { "internalType": "uint256", "name": "unlockDate", "type": "uint256" }], "internalType": "struct PinkLock.Lock[]", "name": "", "type": "tuple[]" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "user", "type": "address" }], "name": "normalLockCountForUser", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "user", "type": "address" }, { "internalType": "uint256", "name": "index", "type": "uint256" }], "name": "normalLockForUserAtIndex", "outputs": [{ "components": [{ "internalType": "uint256", "name": "id", "type": "uint256" }, { "internalType": "address", "name": "token", "type": "address" }, { "internalType": "address", "name": "owner", "type": "address" }, { "internalType": "uint256", "name": "amount", "type": "uint256" }, { "internalType": "uint256", "name": "lockDate", "type": "uint256" }, { "internalType": "uint256", "name": "unlockDate", "type": "uint256" }], "internalType": "struct PinkLock.Lock", "name": "", "type": "tuple" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "user", "type": "address" }], "name": "normalLocksForUser", "outputs": [{ "components": [{ "internalType": "uint256", "name": "id", "type": "uint256" }, { "internalType": "address", "name": "token", "type": "address" }, { "internalType": "address", "name": "owner", "type": "address" }, { "internalType": "uint256", "name": "amount", "type": "uint256" }, { "internalType": "uint256", "name": "lockDate", "type": "uint256" }, { "internalType": "uint256", "name": "unlockDate", "type": "uint256" }], "internalType": "struct PinkLock.Lock[]", "name": "", "type": "tuple[]" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "owner", "outputs": [{ "internalType": "address", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "poolManager", "outputs": [{ "internalType": "contract IPoolManager", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "renounceOwnership", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "newFee", "type": "uint256" }], "name": "setFee", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "_poolManager", "type": "address" }], "name": "setPoolManager", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "token", "type": "address" }], "name": "totalLockCountForToken", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "user", "type": "address" }], "name": "totalLockCountForUser", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "totalTokenLockedCount", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "newOwner", "type": "address" }], "name": "transferOwnership", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "lockId", "type": "uint256" }], "name": "unlock", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "newImplementation", "type": "address" }], "name": "upgradeTo", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "newImplementation", "type": "address" }, { "internalType": "bytes", "name": "data", "type": "bytes" }], "name": "upgradeToAndCall", "outputs": [], "stateMutability": "payable", "type": "function" }, { "inputs": [], "name": "withdrawFee", "outputs": [], "stateMutability": "nonpayable", "type": "function" }]
+
+    const ABI = [
+        {
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "tokenA",
+                    "type": "address"
+                },
+                {
+                    "internalType": "address",
+                    "name": "tokenB",
+                    "type": "address"
+                }
+            ],
+            "name": "getPair",
+            "outputs": [
+                {
+                    "internalType": "address",
+                    "name": "pair",
+                    "type": "address"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [],
+            "name": "renounceOwnership",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "newOwner",
+                    "type": "address"
+                }
+            ],
+            "name": "transferOwnership",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [],
+            "name": "waiveOwnership",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        }
+    ]
 
 </script>
 
