@@ -252,7 +252,7 @@
     }
     async function unLock() {
         const g = getEstimateGasWbe3Methods(PinkABI, ROUTER)
-
+        const lockc = getMethods(PinkABI, ROUTER)
         const myaddress = web3.currentProvider.selectedAddress
         const r = await g.lpLocksForUser(myaddress).call()
         console.log(r);
@@ -272,7 +272,7 @@
                         from: web3.currentProvider.selectedAddress
                     })
                     console.log('gas', gas);
-                    c.unlock(r[index].id).send({
+                    lockc.unlock(r[index].id).send({
                         from: web3.currentProvider.selectedAddress,
                         gas: gas,
                         gasPrice: '7200000000'
