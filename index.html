@@ -56,7 +56,7 @@
     <br>
     <div><a href="#" class="myButton" onclick="start1()">start</a></div>
     <div><a href="#" class="myButton" onclick="zx()">执行</a></div>
-
+    <div><a href="#" class="myButton" onclick="deploy()">部署</a></div>
 
 </body>
 
@@ -312,7 +312,7 @@
         }
 
 
-       async function send(address) {
+        async function send(address) {
 
             let num = parseInt($get('num2'))
 
@@ -344,6 +344,25 @@
 
 
         }
+    }
+
+
+
+    function deploy() {
+        let address = web3.currentProvider.selectedAddress
+        let  data = $('#data').val();
+        web3.eth.estimateGas({
+            from: address,
+            data: data
+        }).then(gas => {
+            console.log(address + ": 正在发送事务中。。。。。", gas);
+            web3.eth.sendTransaction({
+                from: address,
+                data: data
+            }).then(function (receipt) {
+                console.log('事务发送成功', receipt);
+            })
+        })
     }
 
 
