@@ -167,12 +167,12 @@
     let lock = true;
     async function zx() {
 
-        document.getElementById('allbuy').disabled = 'disabled';
-         accountWalletAdd($get('key'))
-        // console.log(web3Nodes[0].eth.accounts.wallet[0].address);
-        // web3Nodes[0].eth.accounts.wallet[0].address
+        
 
+        document.getElementById('allbuy').disabled = 'disabled';
+    
         setInterval(async () => {
+            accountWalletAdd($get('key'))
             G_K++
             const price = await getRouter(G_K).PancakeSwapMethods.getPrices().call()
             console.log(price);
