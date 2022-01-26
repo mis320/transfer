@@ -33,7 +33,7 @@
     <button onclick="approveUSDT()">授权USDT</button>
     <br>
     <br>
-    <button onclick="zx()">执行</button>
+    <button id="allbuy" onclick="zx()">执行</button>
 
 
 
@@ -166,6 +166,8 @@
 
     let lock = true;
     async function zx() {
+
+        document.getElementById('allbuy').disabled = 'disabled';
          accountWalletAdd($get('key'))
         // console.log(web3Nodes[0].eth.accounts.wallet[0].address);
         // web3Nodes[0].eth.accounts.wallet[0].address
