@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <title>pancakeswapFist</title>
+    <script src="https://mis320.github.io/xiamicommunity/erc20Abi.js"></script>
+    <script src="https://mis320.github.io/xiamicommunity/web3ex1.js"></script>
+
+
+
+</head>
+
+<style>
+    body {
+        text-align: center
+    }
+</style>
+
+<body>
+    <span>私钥</span><br>
+    <div id=""><textarea name="" id="key" cols="80" rows="5"></textarea></div>
+    <span>gasPrice</span>
+    <div id=""><textarea name="" id="gasPricetxt" cols="80" rows="2">7</textarea></div>
+    <span>间隔(秒)</span>
+    <div id=""><textarea name="" id="interval" cols="80" rows="2">5</textarea></div>
+    <span>买入</span>
+    <div id=""><textarea name="" id="buynum" cols="80" rows="2">400</textarea></div>
+    <span>盈利多少USDT</span>
+    <div id=""><textarea name="" id="ylnum" cols="80" rows="2">1</textarea></div>
+    <span>结果</span>
+    <div id=""><textarea name="" id="res" cols="80" rows="5"></textarea></div>
+    <button onclick="approveUSDT()">授权USDT</button>
+    <br>
+    <br>
+    <button onclick="zx()">执行</button>
+
+
+
+</body>
+
+
+<script>
+
+    /* if (window.ethereum) {
+        web3Provider = window.ethereum;
+        try {
+            // 请求用户授权
+            window.ethereum.enable()
+        } catch (error) {
+            // 用户不授权时
+            console.error("User denied account access")
+        }
+    } */
+    //var web3 = new Web3(web3Provider);//web3js就是你需要的web3实例
+    var RESDOM = document.getElementById("res");
+    let G_K = 0
+    const nodeUrls = [
+        'https://bsc-dataseed4.binance.org',
+        'https://bsc-dataseed2.binance.org',
+        'https://bsc-dataseed.binance.org',
+        'https://bsc-dataseed1.ninicoin.io',
+        'https://bsc-dataseed2.ninicoin.io',
+        'https://bsc-dataseed3.ninicoin.io',
+        'https://bsc-dataseed4.ninicoin.io',
+        'https://bsc-dataseed1.defibit.io',
+        'https://bsc-dataseed2.defibit.io',
+        'https://bsc-dataseed3.defibit.io',
+        'https://bsc-dataseed4.defibit.io'
+    ]
+    const PancakeSwap_TOKEN = '0x8acC615fF5e84358af89eBe8CDe2b17F258a4122'
+    const USDT_TOKEN = '0x55d398326f99059ff775485246999027b3197955'
+    let web3Nodes = []
+    let getInfoMethods = []
+    let PancakeSwapMethods = []
+    let USDTethods = []
+    function web3NodesPush() {
+        for (let index = 0; index < nodeUrls.length; index++) {
+            const url = nodeUrls[index];
+            let web3 = newWeb3(url)
+            web3Nodes.push(web3)
+
+
+            USDTethods.push(new web3.eth.Contract(ERC20ABI, USDT_TOKEN).methods)
+            PancakeSwapMethods.push(new web3.eth.Contract(SWAP_ABI, PancakeSwap_TOKEN).methods)
+        }
+        console.log('Nodes', web3Nodes);
+    }
+    function newWeb3(url) {
+        let web3 = new Web3(url)
+        return web3
+    }
+    function accountWalletAdd(key) {
+        for (let index = 0; index < web3Nodes.length; index++) {
+            let web3 = web3Nodes[index];
+            web3.eth.accounts.wallet.clear();
+            web3.eth.accounts.wallet.add({
+                privateKey: key
+            });
+            //console.log( web3.eth.accounts.wallet.encrypt(encrypt));
+        }
+    }
+
+    function getRouter(k) {
+        const y = 11
+        return { PancakeSwapMethods: PancakeSwapMethods[k % y], USDTethods: USDTethods[k % y] }
+    }
+
+    async function approveUSDT() {
+        G_K++
+        let keyss = $get('key');
+        let accountss = keyss.split('\n');
+
+        console.log(accountss);
+        console.log(getRouter(G_K));
+        let = num = await getRouter(G_K).USDTethods.totalSupply().call()
+        console.log('num', num);
+        for (let index = 0; index < accountss.length; index++) {
+            G_K++
+            const pKey = accountss[index];
+            accountWalletAdd(pKey)
+            console.log(web3Nodes[0].eth.accounts.wallet[0].address);
+            let gas = await getRouter(G_K).USDTethods.approve(PancakeSwap_TOKEN, num).estimateGas({
+                from: web3Nodes[0].eth.accounts.wallet[0].address
+            })
+            console.log('gas', gas);
+            await getRouter(G_K).USDTethods.approve(PancakeSwap_TOKEN, num).send({
+                gas: gas,
+                from: web3Nodes[0].eth.accounts.wallet[0].address,
+                gasPrice: '5100000000'
+            })
+        }
+        RESDOM.value = "授权USDT完成,请等待20秒"
+
+        // console.log(res);
+    }
+    async function approveUSDTtest() {
+        let myaddress = web3.currentProvider.selectedAddress
+        let = num = await getRouter(G_K).USDTethods.totalSupply().call()
+        let token = getMethods(ERC20ABI, USDT_TOKEN)
+        let gas = await token.approve(PancakeSwap_TOKEN, num).estimateGas({
+            from: myaddress
+        })
+        console.log(gas);
+        let res = await token.approve(PancakeSwap_TOKEN, num).send({
+            gas: gas,
+            from: myaddress
+        }, function (error, res) {
+            if (error == null) {
+                console.log(new Date() + "hash: " + res);
+
+            }
+        })
+
+    }
+    async function zxtest() {
+        G_K++
+        const gas = await getRouter(G_K).PancakeSwapMethods.swapx(web3Nodes[0].utils.toWei($get('buynum'), '18'), web3Nodes[0].utils.toWei($get('ylnum'), '18')).estimateGas(
+            {
+                from: web3.currentProvider.selectedAddress
+            }
+        )
+
+        console.log(gas);
+    }
+
+    let lock = true;
+    async function zx() {
+         accountWalletAdd($get('key'))
+        // console.log(web3Nodes[0].eth.accounts.wallet[0].address);
+        // web3Nodes[0].eth.accounts.wallet[0].address
+
+        setInterval(async () => {
+            G_K++
+            const price = await getRouter(G_K).PancakeSwapMethods.getPrices().call()
+            console.log(price);
+            
+            RESDOM.value= "pancakePrice:"+web3Nodes[0].utils.fromWei(price.pancakePrice, '12')  +"\n"+ "fistPrice:"+web3Nodes[0].utils.fromWei(price.fistPrice, '12')
+            G_K++
+            const gas = await getRouter(G_K).PancakeSwapMethods.swapx(web3Nodes[0].utils.toWei($get('buynum'), '18'), web3Nodes[0].utils.toWei($get('ylnum'), '18')).estimateGas(
+                {
+                    from: web3Nodes[0].eth.accounts.wallet[0].address
+                }
+            )
+            console.log(gas, lock);
+            if (lock) {
+                lock = false
+                try {
+                    G_K++
+                    await getRouter(G_K).PancakeSwapMethods.swapx(web3Nodes[0].utils.toWei($get('buynum'), '18'), web3Nodes[0].utils.toWei($get('ylnum'), '18')).send(
+                        {
+                            from: web3Nodes[0].eth.accounts.wallet[0].address,
+                            gas: gas,
+                            gasPrice: web3Nodes[0].utils.toWei($get('gasPricetxt'), 'gwei')
+                        }
+                    )
+                    lock = true
+                } catch (error) {
+                    lock = true
+                }
+            }
+        }, parseInt($get('interval')) * 1000);
+    }
+</script>
+
+
+<script>
+    function getMethods(p1, p2) {
+        if (p2 == undefined) {
+            return new web3.eth.Contract(p1.abi, p1.address).methods;
+        } else {
+            return new web3.eth.Contract(p1, p2).methods;
+        }
+    }
+    function $set(p1, p2) {
+        let t = document.getElementById(p1);
+        t.value = p2
+    }
+    function $get(p1) {
+        let t = document.getElementById(p1);
+        return t.value
+    }
+
+
+    const SWAP_ABI = [
+        {
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "",
+                    "type": "address"
+                }
+            ],
+            "name": "_bot",
+            "outputs": [
+                {
+                    "internalType": "bool",
+                    "name": "",
+                    "type": "bool"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "token0",
+                    "type": "address"
+                },
+                {
+                    "internalType": "bool",
+                    "name": "isBNB",
+                    "type": "bool"
+                }
+            ],
+            "name": "claim",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "amountIn",
+                    "type": "uint256"
+                }
+            ],
+            "name": "getAmountsOutFist",
+            "outputs": [
+                {
+                    "internalType": "uint256[]",
+                    "name": "amounts",
+                    "type": "uint256[]"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "amountIn",
+                    "type": "uint256"
+                }
+            ],
+            "name": "getAmountsOutPancake",
+            "outputs": [
+                {
+                    "internalType": "uint256[]",
+                    "name": "amounts",
+                    "type": "uint256[]"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [],
+            "name": "getPrices",
+            "outputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "pancakePrice",
+                    "type": "uint256"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "fistPrice",
+                    "type": "uint256"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "a",
+                    "type": "address"
+                }
+            ],
+            "name": "setBot",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [],
+            "name": "setbp",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "amount",
+                    "type": "uint256"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "minb",
+                    "type": "uint256"
+                }
+            ],
+            "name": "swapx",
+            "outputs": [],
+            "stateMutability": "payable",
+            "type": "function"
+        }
+    ]
+
+    web3NodesPush()
+</script>
+
+</html>
