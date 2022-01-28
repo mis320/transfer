@@ -24,7 +24,7 @@ const swapInfo ={
     2:"bakerySwap(面包)",
     3:"babySwap(北鼻)",
     4:"apeswap(猩猩)",
-    5:"",
+    5:"snowballswap(雪球)",
     6:"",
     7:"",
     8:""
