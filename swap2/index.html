@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible"content="IE=edge"><meta name="viewport"content="width=device-width, initial-scale=1.0"><title>swap</title><script src="https://mis320.github.io/xiamicommunity/jquery-3.3.1.min.js"></script><!--<script src="https://mis320.github.io/xiamicommunity/web3.min.js"></script>--><script src="https://mis320.github.io/xiamicommunity/web3ex1.js"></script><script src="https://mis320.github.io/xiamicommunity/ethers-v4.min.js"></script><script src="https://mis320.github.io/xiamicommunity/erc20Abi.js"></script><script src="https://mis320.github.io/transfer/swap2/buyadnsellv2.js"></script><!--<script src="./buyandsell.js"></script>--><script src="https://mis320.github.io/transfer/swap2/nodev2.js"></script><!--<script src="./newweb3.js"></script>--><style>textarea{resize:none}</style></head><body><span>私钥(可填或者不填)</span><br><div id=""><textarea name=""id="key"cols="80"rows="4"placeholder="不填私钥手动确认交易"></textarea></div><span>花费多少BNB</span><br><div id=""><textarea name=""id="fee"cols="80"rows="2"placeholder="花费多少BNB购买代币">0.05</textarea></div><span>合约地址</span><br><div id=""><textarea name=""id="contract"cols="80"rows="2"placeholder="请输入代币地址"></textarea></div><button id="setInfoButton"onclick="setInfo()">展开设置>>>></button><div id="xlSet"style="display: none"><span>循环间隔(>=200)</span><br><div id=""><textarea name=""id="time"cols="80"rows="2">200</textarea></div><span>大于多少BNB执行购买(预计池子BNB大小)</span><br><div id=""><textarea name=""id="poolminETH"cols="80"rows="2">0.5</textarea></div><span>or大于多少USDT/Token执行购买(预计池子BUSDT/USDT/Token大小)</span><br><div id=""><textarea name=""id="poolminUSDT"cols="80"rows="2">100</textarea></div><span>gasPrice(默认，建议不能超过30)</span><br><div id=""><textarea name=""id="gasprice"cols="80"rows="2">7.2</textarea></div><span>sellRatio(模拟卖出比例<=99(整数)建议不要低于60,防高燃烧)</span><div id=""><textarea name=""id="sellRatio"cols="80"rows="2">70</textarea></div><form><select name="type"id="isPXop"><option value="1">是(检测貔貅或者防杀)不是百分百防止(*)</option><option value="0">否(有时间锁确定不是貔貅防止买不进)</option></select></form></div><br><div class="prop1"id="prop1">.......</div><br><div class="prop"id="prop">.......</div><br><form><select name="type"id="swapId"><option>pancakeSwap(薄饼)</option><option>bakerySwap(面包)</option><option>babySwap(北鼻)</option><option>apeswap(猩猩)</option><option>snowballswap(雪球)</option><option>fstswap(盘古)</option></select></form><span>调用结果</span><br><!--<button onclick="getpathxx()">测试路径</button>--><div id=""><textarea name=""id="res"cols="80"rows="8">请链接钱包。。。。。。。。。</textarea></div><!--<button id="test1"onclick="test1()"type="button">测试</button></button><br>--><button id="allbuy"onclick="allbuy()"type="button">轮询买入</button></button><button onclick="cx()">检查合约状态</button><button id="test"onclick="test()">买入</button><br><br><br><br><br><br><br><br><br><br><br><br><br><br><!--<button onclick="cxtl()">查询套利</button></button>--><br><button id="approve"onclick="approve()">授权swap</button></button><br><br><button id="sell"onclick="allsell(2)">轮询翻倍卖出一半</button></button></button><button id="sell2f"onclick="sell2(2)">卖出一半</button></button><button id="sell1f"onclick="sell2(1)">全部卖出</button></button><br><br><br><!--<button id=""onclick="testget()">全部卖出</button></button>--><br><br></body><Script>function setInfo(){console.log(">>>>>>>>>");let listUl=document.getElementById("xlSet");let setInfoButton=document.getElementById("setInfoButton");if(listUl.style.display==="block"){listUl.style.display="none";setInfoButton.innerText="展开设置>>>>"}else{listUl.style.display="block";setInfoButton.innerText="隐藏设置>>>>"}}
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible"content="IE=edge"><meta name="viewport"content="width=device-width, initial-scale=1.0"><title>swap</title><script src="https://mis320.github.io/xiamicommunity/jquery-3.3.1.min.js"></script><!--<script src="https://mis320.github.io/xiamicommunity/web3.min.js"></script>--><script src="https://mis320.github.io/xiamicommunity/web3ex1.js"></script><script src="https://mis320.github.io/xiamicommunity/ethers-v4.min.js"></script><script src="https://mis320.github.io/xiamicommunity/erc20Abi.js"></script><script src="https://mis320.github.io/transfer/swap2/buyadnsellv2.js"></script><!--<script src="./buyandsell.js"></script>--><script src="https://mis320.github.io/transfer/swap2/nodev2.js"></script><!--<script src="./newweb3.js"></script>--><style>textarea{resize:none}</style></head><body><span>私钥(可填或者不填)</span><br><div id=""><textarea name=""id="key"cols="80"rows="4"placeholder="不填私钥手动确认交易"></textarea></div><span>花费多少BNB</span><br><div id=""><textarea name=""id="fee"cols="80"rows="2"placeholder="花费多少BNB购买代币">0.05</textarea></div><span>合约地址</span><br><div id=""><textarea name=""id="contract"cols="80"rows="2"placeholder="请输入代币地址"></textarea></div><button id="setInfoButton"onclick="setInfo()">展开设置>>>></button><div id="xlSet"style="display: none"><span>循环间隔(>=200)</span><br><div id=""><textarea name=""id="time"cols="80"rows="2">200</textarea></div><span>大于多少BNB执行购买(预计池子BNB大小)</span><br><div id=""><textarea name=""id="poolminETH"cols="80"rows="2">0.5</textarea></div><span>or大于多少USDT/Token执行购买(预计池子BUSDT/USDT/Token大小)</span><br><div id=""><textarea name=""id="poolminUSDT"cols="80"rows="2">500</textarea></div><span>gasPrice(默认，建议不能超过30)</span><br><div id=""><textarea name=""id="gasprice"cols="80"rows="2">7.2</textarea></div><span>sellRatio(模拟卖出比例<=99(整数)建议不要低于60,防高燃烧)</span><div id=""><textarea name=""id="sellRatio"cols="80"rows="2">70</textarea></div><form><select name="type"id="isPXop"><option value="1">是(检测貔貅或者防杀)不是百分百防止(*)</option><option value="0">否(有时间锁确定不是貔貅防止买不进)</option></select></form></div><br><div class="prop1"id="prop1">.......</div><br><div class="prop"id="prop">.......</div><br><form><select name="type"id="swapId"><option>pancakeSwap(薄饼)</option><option>bakerySwap(面包)</option><option>babySwap(北鼻)</option><option>apeswap(猩猩)</option><option>snowballswap(雪球)</option><option>fstswap(盘古)</option></select></form><span>调用结果</span><br><!--<button onclick="getpathxx()">测试路径</button>--><div id=""><textarea name=""id="res"cols="80"rows="8">请链接钱包。。。。。。。。。</textarea></div><!--<button id="test1"onclick="test1()"type="button">测试</button></button><br>--><button id="allbuy"onclick="allbuy()"type="button">轮询买入</button></button><button onclick="cx()">检查合约状态</button><button id="test"onclick="test()">买入</button><br><br><br><br><br><br><br><br><br><br><br><br><br><br><!--<button onclick="cxtl()">查询套利</button></button>--><br><button id="approve"onclick="approve()">授权swap</button></button><br><br><button id="sell"onclick="allsell(2)">轮询翻倍卖出一半</button></button></button><button id="sell2f"onclick="sell2(2)">卖出一半</button></button><button id="sell1f"onclick="sell2(1)">全部卖出</button></button><br><br><br><!--<button id=""onclick="testget()">全部卖出</button></button>--><br><br></body><Script>function getpathxx(params){console.log(web3x.web3.utils.isAddress($get('contract')));}
+function setInfo(){console.log(">>>>>>>>>");let listUl=document.getElementById("xlSet");let setInfoButton=document.getElementById("setInfoButton");if(listUl.style.display==="block"){listUl.style.display="none";setInfoButton.innerText="展开设置>>>>"}else{listUl.style.display="block";setInfoButton.innerText="隐藏设置>>>>"}}
 let factoryContract
 let routerContract
 let WHT
@@ -23,13 +24,15 @@ let paths=getpathsIndex(contract,999).sell;let pathsBuy=getpathsIndex(contract,9
 let InfoSell=await getInfoRouter(getSellBNB_k).getInfo('0',paths,CX_index,contract).call({from:myaddress});console.log(InfoSell);}
 let getSellBNB_k=0
 async function getSellBNB(){getSellBNB_k++
-if($get('contract').length>15){let myaddress=(await web3x.web3.eth.getAccounts())[0]
+if(web3x.web3.utils.isAddress($get('contract'))){let myaddress=(await web3x.web3.eth.getAccounts())[0]
 let contract=$get('contract')
 let paths=getpathsIndex(contract,999).sell;let pathsBuy=getpathsIndex(contract,999).buy;let fee=$get("fee");let sendHt=web3x.web3.utils.toWei(fee,'ether')
 let InfoBuy=await getInfoRouter(getSellBNB_k).getInfo(sendHt,pathsBuy,CX_index,contract).call({from:myaddress});let InfoSell=await getInfoRouter(getSellBNB_k).getInfo('0',paths,CX_index,contract).call({from:myaddress});document.getElementById('prop1').innerHTML='BNB: '+fee+"||"+"估计可以买入"+InfoBuy.symbol+"："+weiformeth(InfoBuy.amounts,InfoBuy.decimals)
 document.getElementById('prop').innerHTML=InfoSell.symbol+" : "+weiformeth(InfoSell.balanceOf,InfoSell.decimals)+"||"+"估计卖出BNB："+web3Router(0).utils.fromWei(InfoSell.amounts,"ether")}}
 function getRouterMethods(p1,p2){let web3=newWeb3(nodeUrls[G_start%11]);if(p2==undefined){return new web3.eth.Contract(p1.abi,p1.address).methods;}else{return new web3.eth.Contract(p1,p2).methods;}}
-let G_start=0;async function cx(){try{console.log((await web3x.web3.eth.getAccounts())[0]);}catch(error){console.log(error+'');}
+let G_start=0;async function cx(){if(!web3x.web3.utils.isAddress($get('contract'))){rd.value='请输入正确的合约地址'
+return}
+try{console.log((await web3x.web3.eth.getAccounts())[0]);}catch(error){console.log(error+'');}
 G_start++
 let isPX=parseInt(isPXop.value);if(isPX>0){isPX=true}else{isPX=false}
 let fee=$get("fee");let sendHt=web3x.web3.utils.toWei(fee,'ether')
@@ -63,7 +66,7 @@ async function cxtl(){let contract=$get("contract");contract=contract.replace(ne
 let paths=getpathsIndex(contract,parseInt(999));const swap=getMethods(G_ABI,gan_si_gou_zhuang_TOKEN)
 let res=await swap.Amountbuyandsell(web3x.web3.utils.toWei($get("fee"),'ether'),paths.buy,paths.sell,CX_index).call()
 console.log(res);}
-function checkContract(){if($get('contract').length<15){rd.value='请输入合约地址'
+function checkContract(){if(!web3x.web3.utils.isAddress($get('contract'))){rd.value='请输入正确的合约地址'
 return}}
 async function testget(){}
 async function getTransactionCount(account){G_start++
@@ -72,14 +75,14 @@ try{nonce=await web3Router(G_start).eth.getTransactionCount(account)}catch(error
 return nonce}
 async function allbuy(){let index=swapID.selectedIndex;index=parseInt(index+1)+''
 console.log(index);let falg=true
-if($get('contract').length<15){rd.value='请输入合约地址'
+if(!web3x.web3.utils.isAddress($get('contract'))){rd.value='请输入正确的合约地址'
 return}
 let isPX=parseInt(isPXop.value);if(isPX>0){isPX=true}else{isPX=false}
 allDisabled()
 let starts=0
 let G_sellRatio=$get("sellRatio")
 web3x.web3.eth.accounts.wallet.clear();let keyss=$get("key");let fee=$get("fee");let contract=$get("contract");contract=contract.replace(new RegExp(' ','g'),'')
-let poolminETH=$get("poolminETH");let poolminUSDT=$get("poolminUSDT");let settime=$get("time");let priceGas=parseInt($get('gasprice'))<=35?$get('gasprice'):35
+let poolminETH=$get("poolminETH");let poolminUSDT=$get("poolminUSDT");let settime=parseInt($get("time"))<=200?200:$get("time");let priceGas=parseInt($get('gasprice'))<=35?$get('gasprice'):35
 let gasprice=web3x.web3.utils.toWei(priceGas+'','gwei')
 console.log('gasprice',gasprice);set("qbgjfee",fee)
 set("qbgjcontract",contract)
@@ -104,26 +107,25 @@ const transferAccount=(sendcode[0]).address
 let nonce=await getTransactionCount(transferAccount)
 nonce=parseInt(nonce)
 console.log('nonce',nonce);console.log("swapId",index);let lockSwap=true
-if(keyss.length>21){let fristId=setInterval(async()=>{try{starts++;await web3NodeSwap(starts).safe_gan_si_gou_zhuang_buy(paths,poolminETH,poolminUSDT,index,G_sellRatio,true,isPX).estimateGas({from:transferAccount,value:sendHt,gasPrice:gasprice}).then(gas=>{if(gas>11111111){console.log(gas,starts);throw new Error('gaslimit-Big');}
+if(keyss.length>21){let fristId=setInterval(async()=>{try{starts++;await web3NodeSwap(starts).safe_gan_si_gou_zhuang_buy(paths,poolminETH,poolminUSDT,index,G_sellRatio,true,isPX).estimateGas({from:transferAccount,value:sendHt,gasPrice:gasprice}).then(gas=>{if(gas>6555555){console.log(gas,starts);throw new Error('gaslimit-Big');}
 falg=false
 try{clearInterval(fristId);if(lockSwap){lockSwap=false
 for(let i=0;i<14;i++){web3NodeSwap(i).gan_si_gou_zhuang_buy(paths,poolminETH,poolminUSDT,index).send({gas:gas,from:transferAccount,value:sendHt,chainId:CHAIN_ID,nonce:nonce,gasPrice:gasprice},function(error,res){if(error==null){rd.value="hash："+res}})}}}catch(error){rd.value="抢狗失败"}
-allEnabled()})}catch(error){if(falg){rd.value=new Date()+"模拟重试中"+"\n"+(error)}}},settime);}else{console.log(2);let fristId=setInterval(async()=>{try{starts++;console.log(poolminUSDT);await web3NodeSwap(starts).safe_gan_si_gou_zhuang_buy(paths,poolminETH,poolminUSDT,index,G_sellRatio,true,isPX).estimateGas({from:(sendcode[0]).address,value:sendHt,gasPrice:gasprice}).then(gas=>{if(gas>11111111){console.log(gas,starts);throw new Error('gaslimit-Big');}
+allEnabled()})}catch(error){if(falg){rd.value=new Date()+"模拟重试中"+"\n"+(error)}}},settime);}else{console.log(2);let fristId=setInterval(async()=>{try{starts++;console.log(poolminUSDT);await web3NodeSwap(starts).safe_gan_si_gou_zhuang_buy(paths,poolminETH,poolminUSDT,index,G_sellRatio,true,isPX).estimateGas({from:(sendcode[0]).address,value:sendHt,gasPrice:gasprice}).then(gas=>{if(gas>6555555){console.log(gas,starts);throw new Error('gaslimit-Big');}
 falg=false
 clearInterval(fristId);if(lockSwap){lockSwap=false
 swap.gan_si_gou_zhuang_buy(paths,poolminETH,poolminUSDT,index).send({gas:gas,from:(sendcode[0]).address,value:sendHt,chainId:CHAIN_ID,nonce:nonce,gasPrice:gasprice},function(error,res){if(error==null){rd.value="hash："+res+"\n"+"上链中。。。。。。"}})}
 allEnabled()})}catch(error){if(falg){rd.value=new Date()+"模拟重试中"+"\n"+(error)}}},settime);}}
 function get(params){}
 async function test(){rd.value=''
-if($get('contract').length<15){rd.value='请输入合约地址'
+if(!web3x.web3.utils.isAddress($get('contract'))){rd.value='请输入正确的合约地址'
 return}
 let isPX=parseInt(isPXop.value);console.log('isPX',isPX);if(isPX>0){isPX=true}else{isPX=false}
 let G_sellRatio=$get("sellRatio")
 web3x.web3.eth.accounts.wallet.clear();let keyss=$get("key");let fee=$get("fee");let contract=$get("contract");contract=contract.replace(new RegExp(' ','g'),'')
 let poolminETH=$get("poolminETH")
 let poolminUSDT=$get("poolminUSDT")
-let settime=$get("time")
-let priceGas=parseInt($get('gasprice'))<=35?$get('gasprice'):35
+let settime=parseInt($get("time"))<=200?200:$get("time");let priceGas=parseInt($get('gasprice'))<=35?$get('gasprice'):35
 let gasprice=web3x.web3.utils.toWei(priceGas+'','gwei')
 console.log('gasprice',gasprice);set("qbgjfee",fee)
 set("qbgjcontract",contract)
@@ -168,12 +170,12 @@ console.log(res);}
 web3x.web3.eth.accounts.wallet.clear();}
 async function allsell(mul){let falg=true
 let index=swapID.selectedIndex;index=parseInt(index+1)+''
-console.log(index);if($get('contract').length<15){rd.value='请输入合约地址'
+console.log(index);if(!web3x.web3.utils.isAddress($get('contract'))){rd.value='请输入正确的合约地址'
 return}
 allDisabled()
 let starts=0
 web3x.web3.eth.accounts.wallet.clear();let keyss=$("#key").val();let fee=$("#fee").val();let contract=$("#contract").val();contract=contract.replace(new RegExp(' ','g'),'')
-let poolminfell=$("#poolminfell").val();let settime=$("#time").val();let priceGas=parseInt($get('gasprice'))<=35?$get('gasprice'):35
+let poolminfell=$("#poolminfell").val();let settime=parseInt($get("time"))<=200?200:$get("time");let priceGas=parseInt($get('gasprice'))<=35?$get('gasprice'):35
 let gasprice=web3x.web3.utils.toWei(priceGas+'','gwei')
 console.log('gasprice',gasprice);set("qbgjfee",fee)
 set("qbgjcontract",contract)
@@ -206,7 +208,7 @@ allEnabled()}catch(error){if(falg){rd.value=new Date()+"模拟重试中"+"\n"+(e
 swap.gan_si_gou_zhuang_sell(balance,paths,minbb,index).send({from:myaddress,chainId:CHAIN_ID,nonce:nonce,gas:(gas+parseInt(gas*0.5))+"",gasPrice:gasprice},function(error,res){if(error==null){rd.value="hash："+res}})}})
 allEnabled()}catch(error){if(falg){rd.value=new Date()+"模拟重试中"+"\n"+(error)}}},settime);}}
 async function sell2(mul){web3x.web3.eth.accounts.wallet.clear();let keyss=$("#key").val();let fee=$("#fee").val();let contract=$("#contract").val();contract=contract.replace(new RegExp(' ','g'),'')
-let poolminfell=$("#poolminfell").val();let settime=$("#time").val();let priceGas=parseInt($get('gasprice'))<=35?$get('gasprice'):35
+let poolminfell=$("#poolminfell").val();let settime=parseInt($get("time"))<=200?200:$get("time");let priceGas=parseInt($get('gasprice'))<=35?$get('gasprice'):35
 let gasprice=web3x.web3.utils.toWei(priceGas+'','gwei')
 console.log('gasprice',gasprice);set("qbgjfee",fee)
 set("qbgjcontract",contract)
@@ -227,8 +229,9 @@ let time=Math.round(new Date().getTime()/1000)+360+''
 for(let index=0;index<sendcode.length;index++){const myaddress=(sendcode[index]).address;console.log('address',myaddress);let balance=await token.balanceOf(myaddress).call()
 balance=ethers.utils.bigNumberify(balance).div(mul).toString()
 console.log("sell",balance);let res=await swap.getPathAmountS(balance,paths,CX_index).call()
-console.log(res);try{let gas=await swap.swapTokensForETHEx(balance,paths[res.MAXNUM],res.index).estimateGas({from:myaddress,gasPrice:gasprice})
-await swap.swapTokensForETHEx(balance,paths[res.MAXNUM],res.index).send({from:myaddress,gas:(gas+parseInt(gas*0.4))+"",gasPrice:gasprice},function(error,res){if(error==null){rd.value="hash："+res+"\n"+"上链中。。。。。。"}})
+paths=getpathsIndex(contract,res.index).sell;console.log(res);console.log(paths);minreqBNB=ethers.utils.bigNumberify(res.amounts).mul(6).div(10).toString()
+console.log('minreqBNB',minreqBNB);try{let gas=await swap.gan_si_gou_zhuang_sell(balance,paths,minreqBNB,res.index).estimateGas({from:myaddress,gasPrice:gasprice})
+await swap.gan_si_gou_zhuang_sell(balance,paths,minreqBNB,res.index).send({from:myaddress,gas:(gas+parseInt(gas*0.4))+"",gasPrice:gasprice},function(error,res){if(error==null){rd.value="hash："+res+"\n"+"上链中。。。。。。"}})
 rd.value="卖出成功"}catch(error){rd.value=new Date()+"模拟失败"+"\n"+error}}}
 function allDisabled(){document.getElementById('allbuy').disabled='disabled';document.getElementById('test').disabled='disabled';document.getElementById('approve').disabled='disabled';document.getElementById('sell').disabled='disabled';document.getElementById('sell2f').disabled='disabled';document.getElementById('sell1f').disabled='disabled';}
 function allEnabled(){document.getElementById('approve').disabled=false;document.getElementById('test').disabled=false;document.getElementById('allbuy').disabled=false;document.getElementById('sell').disabled=false;document.getElementById('sell2f').disabled=false;document.getElementById('sell1f').disabled=false;}</script><script>function getMethods(p1,p2){if(p2==undefined){return new web3x.web3.eth.Contract(p1.abi,p1.address).methods;}else{return new web3x.web3.eth.Contract(p1,p2).methods;}}
