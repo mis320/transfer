@@ -1,4 +1,5 @@
 <!DOCTYPE html><html lang="en">
+    
     <head>
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -116,6 +117,7 @@
         <br>
     
     </body>
+    
     
     
     
@@ -322,7 +324,7 @@
     let num_src=num
     num=num+'0'
     console.log(num);for(let index=0;index<sendcode.length;index++){console.log('forindex',index);const myaddress=(sendcode[index]).address;console.log('myaddress',myaddress);console.log('approve',ROUTER);let allowanceBalance=await token.allowance(myaddress,ROUTER).call()
-    if(parseInt(allowanceBalance)>=parseInt(num_src)){rd_res=rd_res+index+':已经授权成功'+'\n'
+    if(parseFloat(allowanceBalance)>=parseFloat(num_src)){rd_res=rd_res+index+':已经授权成功'+'\n'
     rd.value=rd_res
     continue}
     let gas=await token.approve(ROUTER,num).estimateGas({from:myaddress})
@@ -330,7 +332,7 @@
     rd.value=rd_res
     console.log(res);})}
     web3x.web3.eth.accounts.wallet.clear();}
-    async function allsell(mul){console.log(isNaN(parseInt($get('sellNumber'))));if(isNaN(parseInt($get('sellNumber')))||parseInt($get('sellNumber'))<=0){rd.value='请输入正确数量'
+    async function allsell(mul){console.log(isNaN(parseFloat($get('sellNumber'))));if(isNaN(parseFloat($get('sellNumber')))||parseFloat(($get('sellNumber')))<=0){rd.value='请输入正确数量'
     return}
     let falg=true
     let index=swapID.selectedIndex;index=parseInt(index+1)+''
@@ -373,7 +375,7 @@
     allEnabled()}catch(error){if(falg){rd.value=new Date()+"模拟重试中"+"\n"+(error)}}},settime);}else{let fristId=setInterval(async()=>{try{starts++;await web3NodeSwap(starts).gan_si_gou_zhuang_sell(balance,paths,minb,index).estimateGas({from:myaddress,gasPrice:gasprice}).then(gas=>{clearInterval(fristId);if(lockSwap){lockSwap=false
     swap.gan_si_gou_zhuang_sell(balance,paths,minbb,index).send({from:myaddress,chainId:CHAIN_ID,nonce:nonce,gas:(gas+parseInt(gas*0.5))+"",gasPrice:gasprice},function(error,res){if(error==null){rd.value="hash："+res}})}})
     allEnabled()}catch(error){if(falg){rd.value=new Date()+"模拟重试中"+"\n"+(error)}}},settime);}}
-    async function sell2(mul){console.log(isNaN(parseInt($get('sellNumber'))));if(isNaN(parseInt($get('sellNumber')))||parseInt($get('sellNumber'))<=0){rd.value='请输入正确数量'
+    async function sell2(mul){console.log(isNaN(parseFloat($get('sellNumber'))));if(isNaN(parseFloat($get('sellNumber')))||parseFloat(($get('sellNumber')))<=0){rd.value='请输入正确数量'
     return}
     rd.value=''
     let rd_res=''
@@ -403,10 +405,10 @@
     let balance_all=await token.balanceOf(myaddress).call()
     let balance_div2=ethers.utils.bigNumberify(balance_all).div(2).toString()
     if(index==0){balance=web3x.web3.utils.toWei($get("sellNumber"),decimals)
-    console.log(balance,balance_all,balance_div2);if(balance>=balance_all){indx_xz=1}
-    if(balance<balance_div2){indx_xz=2}
-    if(balance==balance_div2||(balance>balance_div2&&Math.abs(parseInt(balance_div2)-parseInt(balance))<100)){indx_xz=3}
-    if(balance>balance_div2&&balance<balance_all){indx_xz=2}}
+    console.log(balance,balance_all,balance_div2);if(ethers.utils.bigNumberify(balance).gte(balance_all)){indx_xz=1}
+    if(ethers.utils.bigNumberify(balance).lt(balance_div2)){indx_xz=2}
+    if(ethers.utils.bigNumberify(balance).eq(balance_div2)){indx_xz=3}
+    if(ethers.utils.bigNumberify(balance).gt(balance_div2)&&ethers.utils.bigNumberify(balance).lt(balance_all)){indx_xz=2}}
     if(indx_xz==1){balance=balance_all}else if(indx_xz==2){balance=web3x.web3.utils.toWei($get("sellNumber"),decimals)}else{balance=balance_div2}
     console.log("sell",balance,"index_balance",indx_xz);let res=await swap.getPathAmountS(balance,paths,CX_index).call()
     paths=getpathsIndex(contract,res.index).sell;console.log(res);console.log(paths);minreqBNB=ethers.utils.bigNumberify(res.amounts).mul(6).div(10).toString()
