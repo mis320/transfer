@@ -17,7 +17,8 @@ const fst_weth = '0x0efb5fd2402a0967b92551d6af54de148504a115' */
 
 function getpathsIndex(contract, index) {
     index
-   /*  let WETH = weth
+   let WETH = weth
+    /* 
     if (index == 6) {
         WETH = fst_weth
     } */
