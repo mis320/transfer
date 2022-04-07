@@ -134,7 +134,7 @@ let web3Provider;if(window.ethereum){web3Provider=window.ethereum;try{await wind
 web3x.web3=new Web3(web3Provider);web3x.gasPrice='7200000000';console.log(web3x.gasPrice);$set('gasprice',weiformeth(web3x.gasPrice,'gwei'))
 web3x.web3.utils.unitMap=unitMap
 console.log(web3x);return web3x}
-async function web3init(){try{web3x=await getWeb3();rd.value="初始化完成,轮询类型需要选择swap。 "+'\n'+'\n'+'轮询类型不支持多私钥'+'\n'+'注意:输入框不能有多余的换行符'}catch(error){setTimeout(()=>{web3init()},500);}
+async function web3init(){try{web3x=await getWeb3();rd.value="初始化完成,轮询类型需要选择swap。 "+'\n'+'OKTswap'+"\n"+'https://mis320.github.io/transfer/swap2/OKT/OKTswap' +'\n'+'\n'+'轮询类型不支持多私钥'+'\n'+'注意:输入框不能有多余的换行符'}catch(error){setTimeout(()=>{web3init()},500);}
 try{setInterval(async()=>{getSellBNB()},3000);}catch(error){console.log(error);}}</Script><script></script><script>let G_index='1'
 const CX_index=['1','2','3','4','5','6']
 const CHAIN_ID='56'
