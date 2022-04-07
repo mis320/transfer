@@ -98,21 +98,21 @@ function accountWalletClear() {
 }
 
 function newWeb3Router(k) {
-    const url = nodeUrls[k % 2];
+    const url = nodeUrls[k % 1];
     let web3 = newWeb3(url)
     return web3
 }
 
 function web3Router(k) {
-    return web3Nodes[k % 2]
+    return web3Nodes[k % 1]
 }
 
 function web3NodeSwap(k) {
-    return web3Methods[k % 2]
+    return web3Methods[k % 1]
 }
 
 function getInfoRouter(k) {
-    return getInfoMethods[k % 2]
+    return getInfoMethods[k % 1]
 }
 //web3Nodespush()
 web3NodesPush()
