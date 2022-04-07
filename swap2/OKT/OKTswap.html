@@ -413,7 +413,7 @@
     //修改urlNumber
     function getRouterMethods(p1, p2) {
         G_start++
-        let web3 = newWeb3(nodeUrls[G_start % 2]);
+        let web3 = newWeb3(nodeUrls[G_start % 1]);
         if (p2 == undefined) {
 
             return new web3.eth.Contract(p1.abi, p1.address).methods;
