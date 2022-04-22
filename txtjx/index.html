@@ -60,24 +60,13 @@
             G_TXT = $get("webtxt1")
             ex()
         }
-    }, 1000);
-
-
-
+    }, 2000);
     function ex() {
         let txt = $get("webtxt1")
-
         let regtxt = txt.match(/0x(.{40})/ig)
-
-        if (regtxt != null) {
-            $set("webtxt2", JSON.stringify(regtxt))
-        }
-
-
-
         let w1 = ''
         for (let index = 0; index < regtxt.length; index++) {
-            if (regtxt[index].length == 42 && parseInt(regtxt[index])>0 ) {
+            if (regtxt[index].length == 42 && parseInt(regtxt[index]) > 0) {
                 if (index != regtxt.length - 1) {
                     w1 = w1 + regtxt[index] + "\n"
                 } else {
@@ -86,20 +75,14 @@
             }
         }
         $set("webtxt3", w1)
-
-        console.log(regtxt.length);
-
-        $set("sun", regtxt.length)
-
-
-
-
-
-
-
+        let jsontxt = []
+        let ws = w1.split("\n")
+        for (let index = 0; index < ws.length; index++) {
+            jsontxt.push(ws[index])
+        }
+        $set("webtxt2", JSON.stringify(jsontxt))
+        $set("sun", ws.length)
     }
-
-
     function $set(p1, p2) {
         let t = document.getElementById(p1);
         t.value = p2
@@ -108,7 +91,6 @@
         let t = document.getElementById(p1);
         return t.value
     }
-
 </script>
 
 </html>
