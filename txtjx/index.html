@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文本解析</title>
+
+    <style>
+        textarea {
+            resize: none
+        }
+
+        textarea::placeholder {
+            border-color: rgb(7, 7, 7);
+        }
+    </style>
+</head>
+
+
+<body>
+    <textarea name="" id="sun" cols="3" rows="1"></textarea><br>
+    <span>input</span><br>
+    <textarea name="" id="webtxt1" cols="60" rows="20"></textarea><br>
+    <span>jsonTXT</span><br>
+    <textarea name="" id="webtxt2" cols="60" rows="20"></textarea><br>
+    <span>addressTXT</span><br>
+    <textarea name="" id="webtxt3" cols="60" rows="20"></textarea>
+
+
+
+</body>
+
+<script>
+
+    /* let w = ''
+    for (let index = 0; index < webtxt.length; index++) {
+
+        if (index != webtxt.length - 1) {
+            w = w + webtxt[index] + "\n"
+        } else {
+            w = w + webtxt[index]
+        }
+
+    }
+    console.log(w);
+    let jsontxt = []
+    let ws = w.split("\n")
+    for (let index = 0; index < ws.length; index++) {
+
+        jsontxt.push(ws[index])
+
+    }
+    console.log(jsontxt); */
+
+    let G_TXT = '??'
+    setInterval(async () => {
+        if ($get("webtxt1") != G_TXT) {
+            G_TXT = $get("webtxt1")
+            ex()
+        }
+    }, 1000);
+
+
+
+    function ex() {
+        let txt = $get("webtxt1")
+
+        let regtxt = txt.match(/0x(.{40})/ig)
+
+        if (regtxt != null) {
+            $set("webtxt2", JSON.stringify(regtxt))
+        }
+
+
+
+        let w1 = ''
+        for (let index = 0; index < regtxt.length; index++) {
+            if (regtxt[index].length == 42) {
+                if (index != regtxt.length - 1) {
+                    w1 = w1 + regtxt[index] + "\n"
+                } else {
+                    w1 = w1 + regtxt[index]
+                }
+            }
+        }
+        $set("webtxt3", w1)
+
+        console.log(regtxt.length);
+
+        $set("sun", regtxt.length)
+
+
+
+
+
+
+
+    }
+
+
+    function $set(p1, p2) {
+        let t = document.getElementById(p1);
+        t.value = p2
+    }
+    function $get(p1) {
+        let t = document.getElementById(p1);
+        return t.value
+    }
+
+</script>
+
+</html>
