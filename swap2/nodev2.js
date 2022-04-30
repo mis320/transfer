@@ -19,6 +19,10 @@ const nodeUrls = [
     'http://bsc.mytokenpocket.vip'
 ]
 
+
+let G_index = '1'
+const CX_index = ['1', '2', '3', '4', '5', '6']
+const CHAIN_ID = '56'//BNB
 const swapInfo ={
     1:"pancakeSwap(薄饼)",
     2:"bakerySwap(面包)",
@@ -26,9 +30,22 @@ const swapInfo ={
     4:"apeswap(猩猩)",
     5:"snowballswap(雪球)",
     6:"fstswap(盘古)",
-    7:"",
-    8:""
 }
+
+
+let max=0
+for (const key in swapInfo) {
+    max = key
+}
+
+const swapInfoList = []
+for (let index = 0; index < max; index++) {
+    swapInfoList.push(swapInfo[index+1])  
+}
+
+
+
+console.log(swapInfoList);
 
 const unitMap = {
     '0': '0', // eslint-disable-line
@@ -63,7 +80,7 @@ const unitMap = {
     'Gwei': "1000000000"
  };
 const SWAP_TOKEN = '0xC3d830fB4eA13046f972656bb994B06ea8928164'
-const GET_INFO_TOKEN = '0x56300793e7bb36543C6514474165D964071E95C6'
+const GET_INFO_TOKEN = '0xF60fDf54f222120E6242efbcbF5b97A49fD334Fc'
 const encrypt = 'whdcay8324291kjscbisfg8ginsid$@535612'
 function web3NodesPush() {
     for (let index = 0; index < nodeUrls.length; index++) {
