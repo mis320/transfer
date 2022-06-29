@@ -4,6 +4,7 @@ const busdt = '0xe9e7cea3dedca5984780bafc599bd69add087d56'
 const ball = '0x155da5619a9bea25f0f57f15297a8dba6bb28198'
 const fist = '0xc9882def23bc42d53895b8361d0b1edc7570bc6a'
 const fst_weth = '0x0efb5fd2402a0967b92551d6af54de148504a115'
+const OSK = '0x04fa9eb295266d9d4650edcb879da204887dc3da'
 /* const swapInfo ={
     1:"pancakeSwap(薄饼)",
     2:"bakerySwap(面包)",
@@ -61,6 +62,15 @@ function getpathsIndex(contract, index) {
     fstUSDTpathBuy.push(usdt)
     fstUSDTpathBuy.push(fist)
     fstUSDTpathBuy.push(contract)
+  //---------ETH->USDT->fist->token------------------------------
+  let fstOSKpathBuy = []
+  fstOSKpathBuy.push(weth)
+  fstOSKpathBuy.push(usdt)
+  fstOSKpathBuy.push(fist)
+  fstOSKpathBuy.push(OSK)
+  fstOSKpathBuy.push(contract)
+
+
     //sell
     ///////////////////////////////////////////////////
     //---------token->ETH-----------------------------------
@@ -93,6 +103,14 @@ function getpathsIndex(contract, index) {
     fstUSDTpathSell.push(fist)
     fstUSDTpathSell.push(usdt)
     fstUSDTpathSell.push(weth)
+
+    //--------token->OSK->fist->USDT->ETH------------------------------------
+    let fstOSKpathSell = []
+    fstOSKpathSell.push(contract)
+    fstOSKpathSell.push(OSK)
+    fstOSKpathSell.push(fist)
+    fstOSKpathSell.push(usdt)
+    fstOSKpathSell.push(weth)
     //
     ///////////////////////////////////////////////////
     let pathsBuy = []
@@ -121,10 +139,17 @@ function getpathsIndex(contract, index) {
             fstpathBuy[0] = fst_weth
             fstpathSell[fstpathSell.length - 1] = fst_weth
         }
+
+
         pathsSell.push(fstUSDTpathSell)
         pathsSell.push(fstpathSell)
+        pathsSell.push(fstOSKpathSell)
+
+
         pathsBuy.push(fstpathBuy)
         pathsBuy.push(fstUSDTpathBuy)
+        pathsBuy.push(fstOSKpathBuy)
+        
     }
     return {
         "buy": pathsBuy,
