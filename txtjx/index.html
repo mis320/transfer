@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://mis320.github.io/transfer/ethjs-unit.min.js"></script>
     <title>文本解析</title>
 
     <style>
@@ -20,6 +21,12 @@
 
 
 <body>
+    <textarea name="" id="decimals" cols="3" rows="1">18</textarea>
+    <textarea name="" id="input" cols="10" rows="1">0</textarea>
+    <textarea name="" id="outFromWei" cols="25" rows="1"></textarea>
+    <textarea name="" id="outToWei" cols="25" rows="1"></textarea>
+
+    <br>
     <textarea name="" id="sun" cols="3" rows="1"></textarea><br>
     <span>input</span><br>
     <textarea name="" id="webtxt1" cols="60" rows="20"></textarea><br>
@@ -27,13 +34,9 @@
     <textarea name="" id="webtxt2" cols="60" rows="20"></textarea><br>
     <span>addressTXT</span><br>
     <textarea name="" id="webtxt3" cols="60" rows="20"></textarea>
-
-
-
 </body>
 
 <script>
-
     /* let w = ''
     for (let index = 0; index < webtxt.length; index++) {
 
@@ -55,12 +58,40 @@
     console.log(jsontxt); */
 
     let G_TXT = '??'
+    let G_decimmalsTXT = '??'
     setInterval(async () => {
         if ($get("webtxt1") != G_TXT) {
             G_TXT = $get("webtxt1")
             ex()
         }
-    }, 2000);
+
+        
+        if (parseFloat($get('input'))!=0) {
+                decimalsOut()
+            }
+    }, 1000);
+
+    function decimalsOut() {
+        let decimals = $get('decimals')
+        let input = $get('input')
+
+
+       try {
+        $set('outFromWei',ethUnit.fromWei(input,decimals))
+       } catch (error) {
+        
+       }
+       try {
+        $set('outToWei', ethUnit.toWei(input,decimals))
+       } catch (error) {
+        
+       }
+        
+       
+    }
+
+
+
     function ex() {
         let txt = $get("webtxt1")
         let regtxt = txt.match(/0x(.{40})/ig)
