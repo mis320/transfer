@@ -65,10 +65,10 @@
             ex()
         }
 
-        
-        if (parseFloat($get('input'))!=0) {
-                decimalsOut()
-            }
+
+        if (parseFloat($get('input')) != 0) {
+            decimalsOut()
+        }
     }, 1000);
 
     function decimalsOut() {
@@ -76,18 +76,18 @@
         let input = $get('input')
 
 
-       try {
-        $set('outFromWei',ethUnit.fromWei(input,decimals))
-       } catch (error) {
-        
-       }
-       try {
-        $set('outToWei', ethUnit.toWei(input,decimals))
-       } catch (error) {
-        
-       }
-        
-       
+        try {
+            $set('outFromWei', ethUnit.fromWei(input, decimals))
+        } catch (error) {
+
+        }
+        try {
+            $set('outToWei', ethUnit.toWei(input, decimals))
+        } catch (error) {
+
+        }
+
+
     }
 
 
@@ -98,11 +98,15 @@
         let w1 = ''
         for (let index = 0; index < regtxt.length; index++) {
             if (regtxt[index].length == 42 && parseInt(regtxt[index]) > 0) {
-                if (index != regtxt.length - 1) {
-                    w1 = w1 + regtxt[index] + "\n"
-                } else {
-                    w1 = w1 + regtxt[index]
+
+                if ('0x0000000000000000000000000000000000000000'.toLocaleLowerCase() != regtxt[index]) {
+                    if (index != regtxt.length - 1) {
+                        w1 = w1 + regtxt[index] + "\n"
+                    } else {
+                        w1 = w1 + regtxt[index]
+                    }
                 }
+
             }
         }
         $set("webtxt3", w1)
