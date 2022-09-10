@@ -8,6 +8,14 @@
     <title>transfer</title>
 
     <style>
+        textarea {
+            resize: none
+        }
+
+        textarea::placeholder {
+            border-color: rgb(7, 7, 7);
+        }
+
         body {
             text-align: center
         }
@@ -48,15 +56,20 @@
     <span>次数:</span>
     <div id=""><textarea name="" id="num2" cols="80" rows="2">1</textarea></div>
     <span>data:</span>
-    <div id=""><textarea name="" id="data" cols="80" rows="10"></textarea></div>
+    <div id=""><textarea name="" id="data" cols="80" rows="10">0x</textarea></div>
     <span>fee:</span>
     <div id=""><textarea name="" id="fee" cols="80" rows="2">0</textarea></div>
-    <span>accounts:</span>
-    <div id=""><textarea name="" id="accountss" cols="80" rows="30"></textarea></div>
+    <span>私钥:</span>
+    <div id=""><textarea name="" id="accountss" cols="80" rows="10"></textarea></div>
     <br>
-    <div><a href="#" class="myButton" onclick="start1()">start</a></div>
-    <div><a href="#" class="myButton" onclick="zx()">执行</a></div>
-    <div><a href="#" class="myButton" onclick="deploy()">部署</a></div>
+    <span>结果:</span>
+    <div id=""><textarea name="" id="res" cols="80" rows="20"></textarea></div>
+    <br>
+    <div><a class="myButton" onclick="start1()">批量执行</a></div>
+    <div><a class="myButton" onclick="zx()">批量执行直到成功</a></div>
+
+
+    <!-- <div><a href="#" class="myButton" onclick="deploy()">部署</a></div> -->
 
 </body>
 
@@ -70,7 +83,7 @@
 <script>
     //授权
     {
-        var token0 = '0x64ff637fb478863b7468bc97d30a5bf3a428a1fd';
+       
         var bigAddress;
         var TOKEN_name;
         var decimals;
@@ -79,6 +92,7 @@
         var gasp;
         var to;
         var networkVersion
+        var G_res = document.getElementById('res')
         //授权
         {
             if (window.ethereum) {
@@ -106,12 +120,22 @@
     }
 
 
+    function addRes(params) {
+        G_res.innerHTML = G_res.innerHTML + params + '\n =======================\n'
+    }
+    function restRes(params) {
+        G_res.innerHTML = ''
+    }
+
     function zx() {
         let gasprice = web3.utils.toWei($get('gasp2'), 'gwei')
 
 
         let to = $('#to1').val();
         let data = $('#data').val();
+        if (data.length < 1) {
+            data = '0x'
+        }
         set('transferTo', to)
         set('transferData', data)
         let fee = web3.utils.toWei($('#fee').val(), 'ether');
@@ -171,9 +195,7 @@
         function send(address) {
 
             let setIntervalId = setInterval(async () => {
-
                 try {
-
                     let gas = await web3.eth.estimateGas({
                         from: address,
                         to: to,
@@ -181,9 +203,9 @@
                         value: fee
                     })
                     clearInterval(setIntervalId);
-
-
                     console.log(address + ": 正在发送事务中。。。。。", gas);
+                    addRes('当前地址正在发送事务中----->：' + address)
+
                     web3.eth.sendTransaction({
                         from: address,
                         to: to,
@@ -192,16 +214,18 @@
                         gas: gas + parseInt(gas * 0.1) + '',//
                         gasPrice: gasprice
                     }).then(function (receipt) {
+
+                        addRes('当前地址：' + address + "----->事务发送成功hash:" + receipt.transactionHash)
                         console.log('事务发送成功', receipt);
                     })
                 } catch (error) {
-
+                    addRes('模拟重试中----->：' + address)
                 }
 
 
 
 
-            }, 300);
+            }, 1000);
 
 
 
@@ -232,6 +256,10 @@
 
         let to = $('#to1').val();
         let data = $('#data').val();
+
+        if (data.length < 1) {
+            data = '0x'
+        }
         set('transferTo', to)
         set('transferData', data)
         let fee = web3.utils.toWei($('#fee').val(), 'ether');
@@ -275,40 +303,17 @@
                 }
             }
         } catch (error) {
-
             console.log(web3.currentProvider.selectedAddress);
             send(web3.currentProvider.selectedAddress)
             return
-
         }
-
-
         var addressS = web3.eth.accounts.wallet;
-        console.log(addressS);
-
-
-
-
-
-
-
-        //
-
-        //
         {
-
-
-
-
-
             for (let index = 0; index < addressS.length; index++) {
                 const element = addressS[index].address;
                 console.log(element);
-
                 send(element);
             }
-
-
         }
 
 
@@ -320,25 +325,32 @@
 
             for (let index = 0; index < num; index++) {
 
-                web3.eth.estimateGas({
-                    from: address,
-                    to: to,
-                    data: data,
-                    value: fee
-                }).then(gas => {
-                    console.log(address + ": 正在发送事务中。。。。。", gas);
-                    web3.eth.sendTransaction({
+                try {
+                    web3.eth.estimateGas({
                         from: address,
                         to: to,
-                        nonce: nonce + index,
                         data: data,
-                        value: fee,
-                        gas: gas + parseInt(gas * 0.1) + '',//
-                        gasPrice: gasprice
-                    }).then(function (receipt) {
-                        console.log('事务发送成功', receipt);
+                        value: fee
+                    }).then(gas => {
+                        addRes('当前地址正在发送事务中----->：' + address)
+                        console.log(address + ": 正在发送事务中。。。。。", gas);
+                        web3.eth.sendTransaction({
+                            from: address,
+                            to: to,
+                            nonce: nonce + index,
+                            data: data,
+                            value: fee,
+                            gas: gas + parseInt(gas * 0.1) + '',//
+                            gasPrice: gasprice
+                        }).then(function (receipt) {
+
+                            console.log(receipt);
+                            addRes('当前地址：' + address + "----->事务发送成功hash:" + receipt.transactionHash)
+                        })
                     })
-                })
+                } catch (error) {
+                    addRes('当前地址：' + address + "----->事务发送失败" + ' ' + String(error))
+                }
             }
 
 
@@ -350,7 +362,7 @@
 
     function deploy() {
         let address = web3.currentProvider.selectedAddress
-        let  data = $('#data').val();
+        let data = $('#data').val();
         web3.eth.estimateGas({
             from: address,
             data: data
