@@ -1,4 +1,6 @@
 const weth = '0x7Bf88d2c0e32dE92CdaF2D43CcDc23e8Edfd5990'
+const usdt = '0x2ad7868ca212135c6119fd7ad1ce51cfc5702892'
+const busdt = '0x25de68ef588cb0c2c8f3537861e828ae699cd0db'
 
 /* const swapInfo ={
     1:"pancakeSwap(薄饼)",
@@ -14,7 +16,7 @@ const weth = '0x7Bf88d2c0e32dE92CdaF2D43CcDc23e8Edfd5990'
 function getpathsIndex(contract, index) {
     index;
     let WETH = weth
-   
+
 
     //buy
     ///////////////////////////////////////////////////
@@ -22,21 +24,48 @@ function getpathsIndex(contract, index) {
     let ETHpathBuy = []
     ETHpathBuy.push(WETH)
     ETHpathBuy.push(contract)
-    
+    //----------ETH->USDT->token----------------------------------
+    let USDpathBuy = []
+    USDpathBuy.push(weth)
+    USDpathBuy.push(usdt)
+    USDpathBuy.push(contract)
+    //-----------ETH->BUSDT->token---------------------------------
+    let BUSDpathBuy = []
+    BUSDpathBuy.push(weth)
+    BUSDpathBuy.push(busdt)
+    BUSDpathBuy.push(contract)
+
+
+
     //sell
     ///////////////////////////////////////////////////
     //---------token->ETH-----------------------------------
     let ETHpathSell = []
     ETHpathSell.push(contract)
     ETHpathSell.push(WETH)
+
+    //---------token->USDT->ETH-----------------------------------
+    let USDpathSell = []
+    USDpathSell.push(contract)
+    USDpathSell.push(usdt)
+    USDpathSell.push(weth)
+    //---------token->BUSDT->ETH------------------------------------
+    let BUSDpathSell = []
+    BUSDpathSell.push(contract)
+    BUSDpathSell.push(busdt)
+    BUSDpathSell.push(weth)
     //
     ///////////////////////////////////////////////////
     let pathsBuy = []
     pathsBuy.push(ETHpathBuy)
+    pathsBuy.push(USDpathBuy)
+    pathsBuy.push(BUSDpathBuy)
 
     let pathsSell = []
     pathsSell.push(ETHpathSell)
-    
+    pathsSell.push(USDpathSell)
+    pathsSell.push(BUSDpathSell)
+
     ///////////////////////////////////////////////////
 
     return {
