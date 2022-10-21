@@ -6,16 +6,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>swap</title>
-    <!-- <script src="https://mis320.github.io/xiamicommunity/jquery-3.3.1.min.js"></script> -->
-    <!-- <script src="https://mis320.github.io/xiamicommunity/web3.min.js"></script> -->
     <script src="https://mis320.github.io/xiamicommunity/web3ex1.js"></script>
     <script src="https://mis320.github.io/xiamicommunity/ethers-v4.min.js"></script>
     <script src="https://mis320.github.io/xiamicommunity/erc20Abi.js"></script>
     <script src="https://mis320.github.io/transfer/swap2/buyadnsellv2.js"></script>
-    <!--  <script src="./buyandsell.js"></script> -->
-    <script src="https://mis320.github.io/transfer/swap2/nodev2.js"></script>
-
-    <!-- <script src="./newweb3.js"></script> -->
+    <script src="./newweb3.js"></script>
 
     <style>
         textarea {
@@ -53,14 +48,13 @@
 
         <span>gasPrice(默认，建议不能超过30)</span><br>
         <div id=""><textarea name="" id="gasprice" cols="80" rows="2">7.2</textarea></div>
-        <span>sellRatio(模拟卖出比例<=99(整数)建议不要低于60,防高燃烧) </span>
-                <div id=""><textarea name="" id="sellRatio" cols="80" rows="2">70</textarea></div>
-                <form>
-                    <select name="type" id="isPXop">
-                        <option value="1">是(检测貔貅或者防杀)不是百分百防止(*)</option>
-                        <option value="0">否(有时间锁确定不是貔貅防止买不进)</option>
-                    </select>
-                </form>
+
+        <form>
+            <select name="type" id="isPXop">
+                <option value="1">是(检测貔貅或者防杀)不是百分百防止(*)</option>
+                <option value="0">否(有时间锁确定不是貔貅防止买不进)</option>
+            </select>
+        </form>
     </div>
     <br>
     <div style=" text-align: left;
@@ -71,9 +65,10 @@
 
     <div style=" text-align: left;
     word-break: break-word;" class="prop3" id="prop3">.......</div><br>
+    <span>sellRatio(滑点){滑点太低可能失败,太高可能被夹} </span>
+    <div id=""><textarea name="" id="sellRatio" cols="80" rows="2">25</textarea></div>
     <form>
         <select name="type" id="swapId">
-
         </select>
     </form>
     <span>调用结果</span><br>
@@ -129,6 +124,9 @@
 </script>
 
 <Script>
+
+    var buyHD = '1'
+    var sellHD = '1'
 
     function getpathxx(params) {
         console.log(web3x.web3.utils.isAddress($get('contract')));
@@ -251,7 +249,8 @@
         try {
             web3x = await getWeb3();
             //console.log(web3x.web3, web3x.gasPrice);
-            rd.value = "初始化完成,轮询类型需要选择swap。 "+'\n\n'  +'' + '\n\n' + '轮询类型不支持多私钥' + '\n' + '注意:输入框不能有多余的换行符'
+            console.log(txtInfo);
+            rd.value = txtInfo
         } catch (error) {
             setTimeout(() => {
                 web3init()
@@ -281,7 +280,7 @@
 <script>
 </script>
 <script>
-    
+
 
     const swapID = document.getElementById("swapId");
     const isPXop = document.getElementById("isPXop");
@@ -417,27 +416,41 @@
 
             document.getElementById('prop').innerHTML = InfoSell.symbol + " : " + weiformeth(InfoSell.balanceOf, InfoSell.decimals) + "||" + "估计卖出BNB：" + weiformeth(InfoSell.amounts, "ether")
 
-            let info = await getInfoRouter(getSellBNB_k).getHD(pathsBuy, paths, [InfoBuy.index]).call({ from:"0x0000000000000000000000000000000000000000",value:sendHt});
-           
-            let buy = (((1 - (info.endbuy_ / info.startbuy_)) * 100))
-            if (parseInt(buy)<97) {
-                buy-= 1.9
-            }
-            buy=buy.toFixed(4)
-           // console.log(info.endsell_);
-           //console.log(info.startsell_);
+            let info = await getInfoRouter(getSellBNB_k).getHD(pathsBuy, paths, [InfoBuy.index]).call({ from: "0x0000000000000000000000000000000000000000", value: sendHt });
 
-            
-            let sell = (((1 - (info.endsell_ / info.startsell_)) * 100))
-            if (parseInt(sell)<97) {
-                sell-= 1.9
+            let buy = (((1 - (info.endbuy_ / info.startbuy_)) * 100))
+            if (parseInt(buy) < 97) {
+                buy -= 1.9
             }
-            sell=sell.toFixed(4)
-            console.log(buy,sell);
-            let HDtxt = '买入滑点: '+buy + "    ||   卖出滑点: "+sell + "  || 购买："+info.isbuy_ + " ||  卖出："+info.issell_
+            // var buyHD = '1'
+            //var sellHD = '1'
+            buy = buy.toFixed(4)
+            if (buy < 0) {
+                buy = 1
+            }
+            //10000
+            let buyAndselllK = 1000
+            if (buy <= 1.5 || isNaN(buy)) {
+                buyHD = parseInt(2 * buyAndselllK)
+            } else {
+                buyHD = parseInt((buy * buyAndselllK) * 1.25)
+            }
+            // console.log(info.endsell_);
+            //console.log(info.startsell_);
+
+            let sell = (((1 - (info.endsell_ / info.startsell_)) * 100))
+            if (parseInt(sell) < 97) {
+                sell -= 1.9
+            }
+            sell = sell.toFixed(4)
+            // console.log(buy, sell);
+            sellHD = isNaN(parseInt(sell)) || parseInt(sell) <= 1.5 ? parseInt(2 * buyAndselllK) : parseInt((buy * buyAndselllK) * 1.25)
+
+            let HDtxt = '买入滑点: ' + buy + "    ||   卖出滑点: " + sell + "  || 购买：" + info.isbuy_ + " ||  卖出：" + info.issell_
             document.getElementById('prop3').innerHTML = HDtxt
 
 
+            //console.log("buyHD:"+buyHD,sellHD);
         }
     }
 
@@ -504,7 +517,12 @@
 
         let fee = $get("fee");
         let sendHt = ethforwei(fee, 'ether')
-        let G_sellRatio = $get("sellRatio")
+        let G_sellRatio = parseInt($get("sellRatio"))
+        G_sellRatio += 2
+        if (G_sellRatio >= 100) {
+            G_sellRatio = 80
+        }
+        G_sellRatio = parseInt(100 - G_sellRatio)
 
         let contract = $get("contract");
         contract = contract.replace(new RegExp(' ', 'g'), '')
@@ -687,8 +705,12 @@
         allDisabled()
         let starts = 0
 
-        let G_sellRatio = $get("sellRatio")
-
+        let G_sellRatio = parseInt($get("sellRatio"))
+        G_sellRatio += 2
+        if (G_sellRatio >= 100) {
+            G_sellRatio = 80
+        }
+        G_sellRatio = parseInt(100 - G_sellRatio)
 
         web3x.web3.eth.accounts.wallet.clear();
         let keyss = $get("key");
@@ -724,7 +746,7 @@
         let paths = getpathsIndex(contract, parseInt(index)).buy;
         console.log(paths);
 
-        console.log(keyss.length);
+        console.log("keyss.length", keyss.length);
 
         if (keyss.length > 21) {
             console.log(1);
@@ -793,114 +815,203 @@
 
 
 
-
-
         let lockSwap = true
         if (keyss.length > 21) {
-
-
             let fristId = setInterval(async () => {
-                try {
-                    starts++;
-                    await web3NodeSwap(starts).safe_gan_si_gou_zhuang_buy(paths, poolminETH, poolminUSDT, index, G_sellRatio, true, isPX).estimateGas({
-                        from: transferAccount,
-                        value: sendHt,
-                        gasPrice: gasprice
-                    }).then(gas => {
-                        if (gas > 6555555) {
-                            console.log(gas, starts);
-                            throw new Error('gaslimit-Big');
-                        }
-                        falg = false
-                        try {
+
+                if (isPX) {
+                    try {
+                        starts++;
+
+                        await web3NodeSwap(starts).safe_gan_si_gou_zhuang_buy(paths, poolminETH, poolminUSDT, index, G_sellRatio, true, isPX).estimateGas({
+                            from: transferAccount,
+                            value: sendHt,
+                            gasPrice: gasprice
+                        }).then(gas => {
                             clearInterval(fristId);
-                            if (lockSwap) {
-                                lockSwap = false
-                                for (let i = 0; i < 14; i++) {
-                                    web3NodeSwap(i).gan_si_gou_zhuang_buy(paths, poolminETH, poolminUSDT, index).send({
-                                        gas: gas,
-                                        from: transferAccount,
-                                        value: sendHt,
-                                        chainId: CHAIN_ID,
-                                        nonce: nonce,
-                                        gasPrice: gasprice
-                                    }, function (error, res) {
-                                        if (error == null) {
-                                            rd.value = "hash：" + res
-                                        }
-                                    })
-                                }
+                            if (gas > 6555555) {
+                                console.log(gas, starts);
+                                throw new Error('gaslimit-Big');
                             }
-
-                            //rd.value = "抢狗成功"
-                        } catch (error) {
-                            //rd.value = "抢狗失败"
+                            falg = false
+                            try {
+                                if (lockSwap) {
+                                    lockSwap = false
+                                    for (let i = 0; i < 14; i++) {
+                                        web3NodeSwap(i).gan_si_gou_zhuang_buy('10', paths, poolminETH, poolminUSDT, index).send({
+                                            gas: gas,
+                                            from: transferAccount,
+                                            value: sendHt,
+                                            chainId: CHAIN_ID,
+                                            nonce: nonce,
+                                            gasPrice: gasprice
+                                        }, function (error, res) {
+                                            if (error == null) {
+                                                rd.value = "hash：" + res
+                                            }
+                                        })
+                                      
+                                    }
+                                }
+                                //rd.value = "抢狗成功"
+                            } catch (error) {
+                                console.log(new String(error));
+                                //rd.value = "抢狗失败"
+                            }
+                            allEnabled()
+                        })
+                    } catch (error) {
+                        if (falg) {
+                            rd.value = new Date() + "模拟重试中" + "\n" + (error)
                         }
+                    }
+                } else {
+                    try {
+                        starts++;
 
+                        await web3NodeSwap(starts).gan_si_gou_zhuang_buy('10', paths, poolminETH, poolminUSDT, index).estimateGas({
 
-                        allEnabled()
-
-                    })
-                } catch (error) {
-                    if (falg) {
-                        rd.value = new Date() + "模拟重试中" + "\n" + (error)
+                            from: transferAccount,
+                            value: sendHt,
+                            chainId: CHAIN_ID,
+                            nonce: nonce,
+                            gasPrice: gasprice
+                        }).then(gas => {
+                            clearInterval(fristId);
+                            if (gas > 6555555) {
+                                console.log(gas, starts);
+                                throw new Error('gaslimit-Big');
+                            }
+                            falg = false
+                            try {
+                                if (lockSwap) {
+                                    lockSwap = false
+                                    for (let i = 0; i < 14; i++) {
+                                        web3NodeSwap(i).gan_si_gou_zhuang_buy('10', paths, poolminETH, poolminUSDT, index).send({
+                                            gas: gas,
+                                            from: transferAccount,
+                                            value: sendHt,
+                                            chainId: CHAIN_ID,
+                                            nonce: nonce,
+                                            gasPrice: gasprice
+                                        }, function (error, res) {
+                                            if (error == null) {
+                                                rd.value = "hash：" + res
+                                            }
+                                        })
+                                      
+                                    }
+                                }
+                                //rd.value = "抢狗成功"
+                            } catch (error) {
+                                console.log(new String(error));
+                                //rd.value = "抢狗失败"
+                            }
+                            allEnabled()
+                        })
+                    } catch (error) {
+                        if (falg) {
+                            rd.value = new Date() + "模拟重试中" + "\n" + (error)
+                        }
                     }
                 }
+
             }, settime);
-
-
-
-
-
-
-
         } else {
 
             console.log(2);
 
             let fristId = setInterval(async () => {
-                try {
-                    starts++;
-                    console.log(poolminUSDT);
-                    await web3NodeSwap(starts).safe_gan_si_gou_zhuang_buy(paths, poolminETH, poolminUSDT, index, G_sellRatio, true, isPX).estimateGas({
-                        from: (sendcode[0]).address,
-                        value: sendHt,
-                        gasPrice: gasprice
-                    }).then(gas => {
-                        if (gas > 6555555) {
-                            console.log(gas, starts);
-                            throw new Error('gaslimit-Big');
-                        }
-                        //console.log('gas:' + gas, lockSwap);
-                        falg = false
-                        clearInterval(fristId);
-                        if (lockSwap) {
-                            lockSwap = false
-                            swap.gan_si_gou_zhuang_buy(paths, poolminETH, poolminUSDT, index).send({
-                                gas: gas,
-                                from: (sendcode[0]).address,
-                                value: sendHt,
-                                chainId: CHAIN_ID,
-                                nonce: nonce,
-                                gasPrice: gasprice
-                            }, function (error, res) {
-                                if (error == null) {
-                                    //console.log(new Date() + "hash: " + res);
-                                    rd.value = "hash：" + res + "\n" + "上链中。。。。。。"
-                                }
-                            })
+
+                if (isPX) {
+                    try {
+                        starts++;
+                        console.log(poolminUSDT);
+                        await web3NodeSwap(starts).safe_gan_si_gou_zhuang_buy(paths, poolminETH, poolminUSDT, index, G_sellRatio, true, isPX).estimateGas({
+                            from: (sendcode[0]).address,
+                            value: sendHt,
+                            gasPrice: gasprice
+                        }).then(gas => {
+                            if (gas > 6555555) {
+                                console.log(gas, starts);
+                                throw new Error('gaslimit-Big');
+                            }
+                            //console.log('gas:' + gas, lockSwap);
+                            falg = false
+                            clearInterval(fristId);
+                            if (lockSwap) {
+                                lockSwap = false
+                                swap.gan_si_gou_zhuang_buy('10', paths, poolminETH, poolminUSDT, index).send({
+                                    gas: gas,
+                                    from: (sendcode[0]).address,
+                                    value: sendHt,
+                                    chainId: CHAIN_ID,
+                                    nonce: nonce,
+                                    gasPrice: gasprice
+                                }, function (error, res) {
+                                    if (error == null) {
+                                        //console.log(new Date() + "hash: " + res);
+                                        rd.value = "hash：" + res + "\n" + "上链中。。。。。。"
+                                    }
+                                })
+
+                            }
+
+                            allEnabled()
+                        })
+                    } catch (error) {
+                        if (falg) {
+                            rd.value = new Date() + "模拟重试中" + "\n" + (error)
 
                         }
+                    }
+                } else {
+                    try {
+                        starts++;
+                        console.log(poolminUSDT);
+                        await web3NodeSwap(starts).gan_si_gou_zhuang_buy('10', paths, poolminETH, poolminUSDT, index).estimateGas({
 
-                        allEnabled()
-                    })
-                } catch (error) {
+                            from: (sendcode[0]).address,
+                            value: sendHt,
+                            chainId: CHAIN_ID,
+                            nonce: nonce,
+                            gasPrice: gasprice
+                        }).then(gas => {
+                            if (gas > 6555555) {
+                                console.log(gas, starts);
+                                throw new Error('gaslimit-Big');
+                            }
+                            //console.log('gas:' + gas, lockSwap);
+                            falg = false
+                            clearInterval(fristId);
+                            if (lockSwap) {
+                                lockSwap = false
+                                swap.gan_si_gou_zhuang_buy('10', paths, poolminETH, poolminUSDT, index).send({
+                                    gas: gas,
+                                    from: (sendcode[0]).address,
+                                    value: sendHt,
+                                    chainId: CHAIN_ID,
+                                    nonce: nonce,
+                                    gasPrice: gasprice
+                                }, function (error, res) {
+                                    if (error == null) {
+                                        //console.log(new Date() + "hash: " + res);
+                                        rd.value = "hash：" + res + "\n" + "上链中。。。。。。"
+                                    }
+                                })
 
-                    if (falg) {
-                        rd.value = new Date() + "模拟重试中" + "\n" + (error)
+                            }
 
+                            allEnabled()
+                        })
+                    } catch (error) {
+                        if (falg) {
+                            rd.value = new Date() + "模拟重试中" + "\n" + (error)
+
+                        }
                     }
                 }
+
             }, settime);
 
         }
@@ -927,7 +1038,13 @@
         } else {
             isPX = false
         }
-        let G_sellRatio = $get("sellRatio")
+        let G_sellRatio = parseInt($get("sellRatio"))
+        G_sellRatio += 2
+
+        if (G_sellRatio >= 100) {
+            G_sellRatio = 80
+        }
+        G_sellRatio = parseInt(100 - G_sellRatio)
         web3x.web3.eth.accounts.wallet.clear();
         let keyss = $get("key");
         let fee = $get("fee");
@@ -1020,39 +1137,67 @@
             poolminUSDT = ethforwei($get("poolminUSDT"), '6')
         }
         console.log(paths);
-
-
+        let amountOutMin = bigNumber(res.amounts).mul(G_sellRatio).div(100).toString()
+        console.log(amountOutMin);
         for (let index = 0; index < sendcode.length; index++) {
             try {
-                let gas = await swap.safe_gan_si_gou_zhuang_buy(paths, poolminETH, poolminUSDT, res.index, G_sellRatio, true, isPX).estimateGas({
-                    from: (sendcode[index]).address,
-                    value: sendHt,
-                    gasPrice: gasprice
-                })
-                swap.gan_si_gou_zhuang_buy(paths, poolminETH, poolminUSDT, res.index).send({
-                    gas: gas,
-                    from: (sendcode[index]).address,
-                    value: sendHt,
-                    gasPrice: gasprice
-                }).on('transactionHash', function (hash) {
-                    rd.value = "hash：" + hash
-                }).on('receipt', function (r) {
-                    rd_res = rd_res + index + ':购买成功' + '\n'
-                    rd.value = rd_res
-                    console.log(res);
-                })
+
+                if (isPX) {
+                    let gas = await swap.safe_gan_si_gou_zhuang_buy(paths, poolminETH, poolminUSDT, res.index, G_sellRatio, true, isPX).estimateGas({
+                        from: (sendcode[index]).address,
+                        value: sendHt,
+                        gasPrice: gasprice
+                    })
+
+                    await swap.gan_si_gou_zhuang_buy(amountOutMin, paths, poolminETH, poolminUSDT, res.index).estimateGas({
+
+                        from: (sendcode[index]).address,
+                        value: sendHt,
+                        gasPrice: gasprice
+                    })
+                    swap.gan_si_gou_zhuang_buy(amountOutMin, paths, poolminETH, poolminUSDT, res.index).send({
+                        gas: gas,
+                        from: (sendcode[index]).address,
+                        value: sendHt,
+                        gasPrice: gasprice
+                    }).on('transactionHash', function (hash) {
+                        rd.value = "hash：" + hash
+                    }).on('receipt', function (r) {
+                        rd_res = rd_res + index + ':购买成功' + '\n'
+                        rd.value = rd_res
+                        console.log(res);
+                    })
+                } else {
+                    console.log(00000);
+                    let gas = await swap.gan_si_gou_zhuang_buy(amountOutMin, paths, poolminETH, poolminUSDT, res.index).estimateGas({
+
+                        from: (sendcode[index]).address,
+                        value: sendHt,
+                        gasPrice: gasprice
+                    })
+
+                    console.log(11111);
+                    swap.gan_si_gou_zhuang_buy(amountOutMin, paths, poolminETH, poolminUSDT, res.index).send({
+                        gas: gas,
+                        from: (sendcode[index]).address,
+                        value: sendHt,
+                        gasPrice: gasprice
+                    }).on('transactionHash', function (hash) {
+                        rd.value = "hash：" + hash
+                    }).on('receipt', function (r) {
+                        rd_res = rd_res + index + ':购买成功' + '\n'
+                        rd.value = rd_res
+                        console.log(res);
+                    })
+
+                    console.log(3333);
+                }
+
             } catch (error) {
                 rd_res = rd_res + index + ':模拟失败' + error + '\n'
                 rd.value = rd_res
             }
         }
-
-
-
-
-
-
-
 
     }
     async function approve() {
@@ -1109,7 +1254,10 @@
         contract = contract.replace(new RegExp(' ', 'g'), '')
         let token = getMethods(ERC20ABI, contract)
         console.log(token);
-        let = num = await token.totalSupply().call()
+        let num = await token.totalSupply().call()
+        if (parseInt(num) < 1000000000000) {
+            num = '99999999999999999999999999999999999'
+        }
         let num_src = num
         num = num + '0'
         console.log(num);
@@ -1569,6 +1717,10 @@
 
 <script>
 
+    function bigNumber(params) {
+        return ethers.utils.bigNumberify(params)
+    }
+
     function getMethods(p1, p2) {
         if (p2 == undefined) {
             return new web3x.web3.eth.Contract(p1.abi, p1.address).methods;
@@ -1623,373 +1775,12 @@
     //0xf975256De2027F1e5EdD12E44FEA146311e1b2F9
     //0x390FC2Da7C65b0Ec5A8488954C3b08c7a7c91f80
     //0xD71A8Aed37541983715fe35C9A08D4665b537d1A
-    const ROUTER = '0xC3d830fB4eA13046f972656bb994B06ea8928164'
-    const gan_si_gou_zhuang_TOKEN = '0xC3d830fB4eA13046f972656bb994B06ea8928164'
-    const gan_si_gou_zhuang_ABi_test = [
-        {
-            "inputs": [],
-            "stateMutability": "nonpayable",
-            "type": "constructor"
-        },
-        {
-            "inputs": [],
-            "name": "BUSDT",
-            "outputs": [
-                {
-                    "internalType": "address",
-                    "name": "",
-                    "type": "address"
-                }
-            ],
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "inputs": [],
-            "name": "USDT",
-            "outputs": [
-                {
-                    "internalType": "address",
-                    "name": "",
-                    "type": "address"
-                }
-            ],
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "inputs": [],
-            "name": "WETH",
-            "outputs": [
-                {
-                    "internalType": "address",
-                    "name": "",
-                    "type": "address"
-                }
-            ],
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "account",
-                    "type": "address"
-                },
-                {
-                    "internalType": "address",
-                    "name": "token",
-                    "type": "address"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "v",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "string",
-                    "name": "fail",
-                    "type": "string"
-                }
-            ],
-            "name": "checkPool",
-            "outputs": [],
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "address[][]",
-                    "name": "paths",
-                    "type": "address[][]"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "minPoolETH",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "minPoolUSDTOrOther",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "index",
-                    "type": "uint256"
-                }
-            ],
-            "name": "gan_si_gou_zhuang_buy",
-            "outputs": [],
-            "stateMutability": "payable",
-            "type": "function"
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "sellNum",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "address[][]",
-                    "name": "paths",
-                    "type": "address[][]"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "minsellETH",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "index",
-                    "type": "uint256"
-                }
-            ],
-            "name": "gan_si_gou_zhuang_sell",
-            "outputs": [],
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "v",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "address[]",
-                    "name": "path",
-                    "type": "address[]"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "index",
-                    "type": "uint256"
-                }
-            ],
-            "name": "getAmountsOutCall",
-            "outputs": [
-                {
-                    "internalType": "uint256[]",
-                    "name": "amounts",
-                    "type": "uint256[]"
-                }
-            ],
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "token0",
-                    "type": "address"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "index",
-                    "type": "uint256"
-                }
-            ],
-            "name": "getPair",
-            "outputs": [
-                {
-                    "internalType": "address",
-                    "name": "WETHPari",
-                    "type": "address"
-                },
-                {
-                    "internalType": "address",
-                    "name": "USDTPari",
-                    "type": "address"
-                },
-                {
-                    "internalType": "address",
-                    "name": "BUSDTPari",
-                    "type": "address"
-                },
-                {
-                    "internalType": "address",
-                    "name": "platformTokenPari",
-                    "type": "address"
-                },
-                {
-                    "internalType": "uint256[4]",
-                    "name": "pool",
-                    "type": "uint256[4]"
-                }
-            ],
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "v",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "address[][]",
-                    "name": "paths",
-                    "type": "address[][]"
-                },
-                {
-                    "internalType": "uint256[]",
-                    "name": "indexs",
-                    "type": "uint256[]"
-                }
-            ],
-            "name": "getPathAmountS",
-            "outputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "amounts",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "MAXNUM",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "index",
-                    "type": "uint256"
-                }
-            ],
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "address[][]",
-                    "name": "paths",
-                    "type": "address[][]"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "minPoolETH",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "minPoolUSDTOrOther",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "index",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "sellRatio",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "bool",
-                    "name": "isPX",
-                    "type": "bool"
-                },
-                {
-                    "internalType": "bool",
-                    "name": "issell",
-                    "type": "bool"
-                }
-            ],
-            "name": "safe_gan_si_gou_zhuang_buy",
-            "outputs": [],
-            "stateMutability": "payable",
-            "type": "function"
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "address[]",
-                    "name": "path",
-                    "type": "address[]"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "index",
-                    "type": "uint256"
-                }
-            ],
-            "name": "swapETHForTokensEx",
-            "outputs": [],
-            "stateMutability": "payable",
-            "type": "function"
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "amountIn",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "address[]",
-                    "name": "path",
-                    "type": "address[]"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "index",
-                    "type": "uint256"
-                }
-            ],
-            "name": "swapExactTokensForTokens",
-            "outputs": [
-                {
-                    "internalType": "uint256[]",
-                    "name": "amounts",
-                    "type": "uint256[]"
-                }
-            ],
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "amountIn",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "address[]",
-                    "name": "path",
-                    "type": "address[]"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "index",
-                    "type": "uint256"
-                }
-            ],
-            "name": "swapTokensForETHEx",
-            "outputs": [],
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "stateMutability": "payable",
-            "type": "receive"
-        }
-    ]
-
-
-    //gan_si_gou_zhuang_ABI
-    //gan_si_gou_zhuang_ABi_test
-    const G_ABI = gan_si_gou_zhuang_ABi_test
+    const ROUTER = '0x3a849487c0099240493B1786D2da042A4Bf8d501'
+    const gan_si_gou_zhuang_TOKEN = '0x3a849487c0099240493B1786D2da042A4Bf8d501'
+    const G_ABI = gan_si_gou_zhuang_ABI_end
     init()
+
+
     web3init()
 </script>
 
