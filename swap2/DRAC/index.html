@@ -1,1 +1,1789 @@
-1
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>swap</title>
+    <script src="https://mis320.github.io/xiamicommunity/web3ex1.js"></script>
+    <script src="https://mis320.github.io/xiamicommunity/ethers-v4.min.js"></script>
+    <script src="https://mis320.github.io/xiamicommunity/erc20Abi.js"></script>
+    <script src="./buyadnsellv2.js"></script>
+    <script src="./newweb3.js"></script>
+
+    <style>
+        textarea {
+            resize: none;
+            border: 1px solid #000000;
+            border-radius: 3px;
+        }
+
+        textarea::placeholder {
+            border-color: rgb(7, 7, 7);
+        }
+    </style>
+</head>
+
+<body>
+    <span>私钥(可填或者不填,不填私钥手动确认交易)</span><br>
+    <div id=""><textarea name="" id="key" cols="80" rows="4" placeholder="0x.....
+0x.....
+0x....."></textarea></div>
+    <span>花费多少DRAC</span><br>
+
+
+
+
+    <div id=""><textarea name="" id="fee" cols="80" rows="2" placeholder="花费多少DRAC购买代币">0.05</textarea></div>
+    <span>合约地址</span><br>
+    <div id=""><textarea name="" id="contract" cols="80" rows="2" placeholder="请输入代币地址"></textarea>
+    </div>
+    <button id="setInfoButton" onclick="setInfo()"> 展开设置>>>> </button>
+    <div id="xlSet" style="display: none">
+        <span>循环间隔(>=200)</span><br>
+        <div id=""><textarea name="" id="time" cols="80" rows="2">200</textarea></div>
+        <span>大于多少DRAC执行购买(预计池子DRAC大小)</span><br>
+        <div id=""><textarea name="" id="poolminETH" cols="80" rows="2">0.5</textarea></div>
+        <span>or大于多少USDT/Token执行购买(预计池子BUSDT/USDT/Token大小)</span><br>
+        <div id=""><textarea name="" id="poolminUSDT" cols="80" rows="2">150</textarea></div>
+
+        <span>gasPrice(默认，建议不能超过30)</span><br>
+        <div id=""><textarea name="" id="gasprice" cols="80" rows="2">7.2</textarea></div>
+
+        <form>
+            <select name="type" id="isPXop">
+                <option value="1">是(检测貔貅或者防杀)不是百分百防止(*)</option>
+                <option value="0">否(有时间锁确定不是貔貅防止买不进)</option>
+            </select>
+        </form>
+    </div>
+    <br>
+    <div style=" text-align: left;
+    word-break: break-word;" class="prop1" id="prop1">.......</div><br>
+    <div style=" text-align: left;
+    word-break: break-word;" class="prop" id="prop">.......</div><br>
+
+
+    <div style=" text-align: left;
+    word-break: break-word;" class="prop3" id="prop3">.......</div><br>
+    <span>sellRatio(滑点){滑点太低可能失败,太高可能被夹} </span>
+    <div id=""><textarea name="" id="sellRatio" cols="80" rows="2">25</textarea></div>
+    <form>
+        <select name="type" id="swapId">
+        </select>
+    </form>
+    <span>调用结果</span><br>
+    <!-- <button onclick="getpathxx()">测试路径</button> -->
+    <div id=""><textarea name="" id="res" cols="80" rows="8">请链接钱包。。。。。。。。。</textarea></div>
+
+
+    <!--  <button id="test1" onclick="test1()" type="button"> 测试</button></button><br> -->
+    <button id="allbuy" onclick="allbuy()" type="button"> 轮询买入</button></button>
+
+    <button onclick="cx()">检查合约状态</button>
+    <button id="test" onclick="test()">买入</button>
+
+    <br><br> <br><br><br><br><br> <br><br>
+
+
+    <!--  <button onclick="cxtl()">查询套利</button></button> -->
+    <br>
+
+    <button id="approve" onclick="approve()"> 授权swap</button></button><br>
+
+
+    <span>卖出数量</span><br>
+    <input type="text" id="sellNumber" minlength="1" maxlength="79">
+    <button id="butt_MAX" onclick="butt_MAX1()">MAX</button>
+    <button id="sell1f" onclick="sell2(1)"> 卖出</button></button><br>
+
+    <br>
+    <span>期望得到多少DRAC</span><br>
+
+    <input type="text" id="sellDRACNumber" minlength="1" maxlength="79" value="10">
+    <button id="sell" onclick="allsell(2)">轮询卖出</button></button></button>
+
+    <br>
+    <br>
+    <br>
+
+    <!--  <button id="" onclick="testget()"> 全部卖出</button></button> -->
+    <br>
+    <br>
+
+</body>
+<script>
+    let selectE = document.getElementById("swapId");
+
+    //Option  一定要大写否则不能实现其功能 
+    for (let index = 0; index < swapInfoList.length; index++) {
+        //$("#swapId").append(`<option>${slIst[index]}</option>`);   //为Select追加一个Option(下拉项)
+        let newoption = new Option(swapInfoList[index], '');
+        selectE.options[selectE.options.length] = newoption;
+    }
+
+</script>
+
+<Script>
+
+    var buyHD = '1'
+    var sellHD = '1'
+
+    function getpathxx(params) {
+        console.log(web3x.web3.utils.isAddress($get('contract')));
+    }
+
+
+
+
+
+    function setInfo() {
+        console.log(">>>>>>>>>");
+        let listUl = document.getElementById("xlSet");
+        let setInfoButton = document.getElementById("setInfoButton");
+
+
+
+        if (listUl.style.display === "block") {
+            listUl.style.display = "none";
+            setInfoButton.innerText = "展开设置>>>>"
+        } else {
+            listUl.style.display = "block";
+            setInfoButton.innerText = "隐藏设置>>>>"
+
+        }
+
+    }
+
+    let factoryContract
+    let routerContract
+    let WHT
+    var LastAccount = '';
+    var gasp;
+    var swapbbContract;
+
+    var web3Provider;
+    let web3x
+
+    let falg = false
+    let intervalID
+
+
+    var rd = document.getElementById("res");
+
+
+
+    function init() {
+        let v1 = document.getElementById("fee");
+
+        if (get('qbgjfee') != null || (get('qbgjfee') != undefined)) {
+            v1.value = get('qbgjfee');
+        }
+
+
+
+        // let v2 = document.getElementById("contract");
+
+        /*  if (get('qbgjcontract') != null) {
+              v2.value = get('qbgjcontract');
+         } */
+
+        // let v3 = document.getElementById("poolminETH");
+
+        /*  if (get('poolminETH') != null) {
+ 
+             v3.value = get('poolminETH');
+         }
+ 
+         if (get('qbgjbuyMINPOOLUSDT') != null) {
+             $set('poolminUSDT', get('qbgjbuyMINPOOLUSDT'))
+         } */
+
+
+    }
+
+    async function getWeb3() {
+        clearInterval(intervalID)
+        let web3x = ({
+            web3: null,
+            gasPrice: null,
+        })
+        let web3Provider;
+        if (window.ethereum) {
+            web3Provider = window.ethereum;
+            try {
+
+                await window.ethereum.enable()
+            } catch (error) {
+                window.ethereum.enable();
+                web3Provider = window.web3.currentProvider;
+            }
+        } else {
+            window.ethereum.enable();
+            web3Provider = window.web3.currentProvider;
+        }
+        web3x.web3 = new Web3(web3Provider); //web3js就是你需要的web3实例
+
+        web3x.gasPrice = '7200000000';
+        console.log(web3x.gasPrice);
+
+
+        $set('gasprice', weiformeth(web3x.gasPrice, 'gwei'))
+        //let network =await web3x.web3.currentProvider.networkVersion
+        //console.log(network);
+        web3x.web3.utils.unitMap = unitMap
+
+        //console.log(web3x.web3.utils.unitMap);
+        /* intervalID = setInterval(async () => {
+            let networktemp = web3x.web3.currentProvider.networkVersion
+
+            if (network != networktemp) {
+                network = networktemp
+                web3x.gasPrice = await web3x.web3.eth.getGasPrice();
+            }
+        }, 1500); */
+        console.log(web3x);
+
+        return web3x
+    }
+    async function web3init() {
+        try {
+            web3x = await getWeb3();
+            //console.log(web3x.web3, web3x.gasPrice);
+            console.log(txtInfo);
+            rd.value = txtInfo
+        } catch (error) {
+            setTimeout(() => {
+                web3init()
+            }, 500);
+        }
+
+
+        try {
+
+
+
+
+
+            setInterval(async () => {
+                getSellDRAC()
+            }, 3000);
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+
+
+
+</Script>
+<script>
+</script>
+<script>
+
+
+    const swapID = document.getElementById("swapId");
+    const isPXop = document.getElementById("isPXop");
+
+    let web3_butt_MAX1 = new Web3()
+    async function butt_MAX1() {
+        console.log('butt_MAX1');
+        let account_end = (await web3x.web3.eth.getAccounts())[0]
+        let keyss = $get("key").split('\n')[0];
+
+        if (keyss.length >= 66) {
+            web3_butt_MAX1.eth.accounts.wallet.clear();
+            try {
+                web3_butt_MAX1.eth.accounts.wallet.add({
+                    privateKey: keyss
+                });
+                account_end = web3_butt_MAX1.eth.accounts.wallet[0].address
+            } catch (error) {
+                rd.value = "私钥错误:" + error
+
+                return
+            }
+        }
+
+        let setInfoButton = document.getElementById("butt_MAX");
+        if (setInfoButton.innerText == 'MAX') {
+            butt_MAX1_balance(1, account_end)
+            setInfoButton.innerText = '50%'
+        } else {
+            setInfoButton.innerText = 'MAX'
+            butt_MAX1_balance(2, account_end)
+        }
+    }
+
+
+
+    async function butt_MAX1_balance(para, address_msg) {
+        let token = getRouterMethods(ERC20ABI, $get("contract"))
+        let decimals = await token.decimals().call()
+        let balanceOf = await token.balanceOf(address_msg).call()
+        balanceOf = ethers.utils.bigNumberify(balanceOf).div(para).toString()
+        console.log(balanceOf);
+
+        $set('sellNumber', weiformeth(balanceOf, decimals))
+
+    }
+
+    async function test1() {
+
+        let myaddress = (await web3x.web3.eth.getAccounts())[0]
+
+        let contract = $get('contract')
+
+        let paths = getpathsIndex(contract, 999).sell;
+        let pathsBuy = getpathsIndex(contract, 999).buy;
+
+        console.log("myaddress", myaddress);
+        console.log("contract", contract);
+        let fee = $get("fee");
+        let sendHt = ethforwei(fee, 'ether')
+        //let token = getRouterMethods(ERC20ABI, contract)
+        //console.log(myaddress);
+        // console.log(paths, contract);
+
+
+        // let symbol = await token.symbol().call()
+        //let balanceOf = await token.balanceOf(myaddress).call()
+        // let decimals = await token.decimals().call()
+
+        //  let Info = await web3NodeSwap(getSellDRAC_k).getPathAmountS(balanceOf, paths, CX_index).call()
+
+        //let InfoBuy = await getInfoRouter(getSellDRAC_k).getInfo(sendHt, pathsBuy, CX_index, contract).call({ from: myaddress });
+
+        let InfoSell = await getInfoRouter(getSellDRAC_k).getInfo('0', paths, CX_index, contract).call({ from: myaddress });
+
+
+
+        // console.log(InfoBuy);
+
+        console.log(InfoSell);
+    }
+
+
+    let web3_getSellDRAC = new Web3()
+    let getSellDRAC_k = 0
+    async function getSellDRAC() {
+        getSellDRAC_k++
+        let account_end = (await web3x.web3.eth.getAccounts())[0]
+        let keyss = $get("key").split('\n')[0];
+
+        if (keyss.length >= 66) {
+            web3_getSellDRAC.eth.accounts.wallet.clear();
+            try {
+                web3_getSellDRAC.eth.accounts.wallet.add({
+                    privateKey: keyss
+                });
+                account_end = web3_getSellDRAC.eth.accounts.wallet[0].address
+            } catch (error) {
+                rd.value = "私钥错误:" + error
+
+                setTimeout(() => {
+                    rd.value = " "
+                }, 2000);
+                allEnabled()
+                return
+            }
+        }
+        if (web3x.web3.utils.isAddress($get('contract'))) {
+            let myaddress = (await web3x.web3.eth.getAccounts())[0]
+            let contract = $get('contract')
+            let paths = getpathsIndex(contract, 999).sell;
+            let pathsBuy = getpathsIndex(contract, 999).buy;
+
+            let fee = $get("fee");
+            let sendHt = ethforwei(fee, 'ether')
+            //let token = getRouterMethods(ERC20ABI, contract)
+            //console.log(myaddress);
+            // console.log(paths, contract);
+
+
+            // let symbol = await token.symbol().call()
+            //let balanceOf = await token.balanceOf(myaddress).call()
+            // let decimals = await token.decimals().call()
+
+            //  let Info = await web3NodeSwap(getSellDRAC_k).getPathAmountS(balanceOf, paths, CX_index).call()
+
+            let InfoBuy = await getInfoRouter(getSellDRAC_k).getInfo(sendHt, pathsBuy, CX_index, contract).call({ from: account_end });
+
+
+            let InfoSell = await getInfoRouter(getSellDRAC_k).getInfo('0', paths, CX_index, contract).call({ from: account_end });
+
+            document.getElementById('prop1').innerHTML = 'DRAC: ' + fee + "||" + "估计可以买入" + InfoBuy.symbol + "：" + weiformeth(InfoBuy.amounts, InfoBuy.decimals)
+
+            document.getElementById('prop').innerHTML = InfoSell.symbol + " : " + weiformeth(InfoSell.balanceOf, InfoSell.decimals) + "||" + "估计卖出DRAC：" + weiformeth(InfoSell.amounts, "ether")
+
+            let info = await getInfoRouter(getSellDRAC_k).getHD(pathsBuy, paths, [InfoBuy.index]).call({ from: HD_ADDRESS, value: sendHt });
+
+            let buy = (((1 - (info.endbuy_ / info.startbuy_)) * 100))
+            if (parseInt(buy) < 97) {
+                buy -= 1.9
+            }
+            // var buyHD = '1'
+            //var sellHD = '1'
+            buy = buy.toFixed(4)
+            if (buy < 0) {
+                buy = 1
+            }
+            //10000
+            let buyAndselllK = 1000
+            if (buy <= 1.5 || isNaN(buy)) {
+                buyHD = parseInt(2 * buyAndselllK)
+            } else {
+                buyHD = parseInt((buy * buyAndselllK) * 1.25)
+            }
+            // console.log(info.endsell_);
+            //console.log(info.startsell_);
+
+            let sell = (((1 - (info.endsell_ / info.startsell_)) * 100))
+            if (parseInt(sell) < 97) {
+                sell -= 1.9
+            }
+            sell = sell.toFixed(4)
+            // console.log(buy, sell);
+            sellHD = isNaN(parseInt(sell)) || parseInt(sell) <= 1.5 ? parseInt(2 * buyAndselllK) : parseInt((buy * buyAndselllK) * 1.25)
+
+            let HDtxt = '买入滑点: ' + buy + "    ||   卖出滑点: " + sell + "  || 购买：" + info.isbuy_ + " ||  卖出：" + info.issell_
+            document.getElementById('prop3').innerHTML = HDtxt
+
+
+            //console.log("buyHD:"+buyHD,sellHD);
+        }
+    }
+
+    function getRouterMethods(p1, p2) {
+        G_start++
+        let web3 = newWeb3(nodeUrls[G_start % nodeUrlsLen]);
+        if (p2 == undefined) {
+
+            return new web3.eth.Contract(p1.abi, p1.address).methods;
+        } else {
+            return new web3.eth.Contract(p1, p2).methods;
+        }
+    }
+
+
+    let G_start = 0;
+    async function cx() {
+
+        let account_end = (await web3x.web3.eth.getAccounts())[0]
+        if (!web3x.web3.utils.isAddress($get('contract'))) {
+            rd.value = '请输入正确的合约地址'
+            return
+        }
+
+        let keyss = $get("key").split('\n')[0];
+        if (keyss.length >= 66) {
+            web3x.web3.eth.accounts.wallet.clear();
+            try {
+                web3x.web3.eth.accounts.wallet.add({
+                    privateKey: keyss
+                });
+
+
+                account_end = web3x.web3.eth.accounts.wallet[0].address
+            } catch (error) {
+                rd.value = "私钥错误:" + error
+                setTimeout(() => {
+                    rd.value = ""
+                }, 1000);
+                allEnabled()
+                return
+            }
+        }
+
+        console.log("当前地址:" + account_end)
+
+
+
+
+        try {
+            console.log((await web3x.web3.eth.getAccounts())[0]);
+        } catch (error) {
+            console.log(error + '');
+        }
+        G_start++
+        let isPX = parseInt(isPXop.value);
+
+        if (isPX > 0) {
+            isPX = true
+        } else {
+            isPX = false
+        }
+
+
+        let fee = $get("fee");
+        let sendHt = ethforwei(fee, 'ether')
+        let G_sellRatio = parseInt($get("sellRatio"))
+        G_sellRatio += 2
+        if (G_sellRatio >= 100) {
+            G_sellRatio = 80
+        }
+        G_sellRatio = parseInt(100 - G_sellRatio)
+
+        let contract = $get("contract");
+        contract = contract.replace(new RegExp(' ', 'g'), '')
+        //console.log(contract);
+        let paths = getpathsIndex(contract, 999).buy;
+
+        console.log(JSON.stringify(paths));
+        console.log(JSON.stringify(getpathsIndex(contract, 999).sell));
+
+        const swap = getRouterMethods(G_ABI, gan_si_gou_zhuang_TOKEN)
+
+
+
+        //console.log(swap);
+        let Info = await swap.getPathAmountS(ethforwei($get("fee"), 'ether'), paths, CX_index).call()
+        //Info.amounts: "0"
+        //Info.index: "4"
+        console.log(Info);
+
+
+
+
+
+
+        if (Info.amounts == '0') {
+            Info.index = '1'
+        }
+
+        let pair = await swap.getPair(contract, Info.index).call()
+        let little = '1'
+
+
+        try {
+            await swap.safe_gan_si_gou_zhuang_buy(paths, little, little, Info.index, little, true, isPX).estimateGas({
+                from: account_end,
+                value: sendHt
+            })
+            console.log('合约目前正常！！');
+            rd.value = '合约目前正常！！'
+        } catch (error) {
+
+            try {
+                await swap.safe_gan_si_gou_zhuang_buy(paths, little, little, Info.index, little, false, isPX).estimateGas({
+                    from: account_end,
+                    value: sendHt
+                })
+                console.log('貔貅有解！！');
+                rd.value = '貔貅有解！！'
+            } catch (error) {
+                console.log(error);
+
+                let strE = new String(error)
+                console.log(strE);
+
+
+                if (strE.indexOf('minPool') != -1 || strE.indexOf('TransferHelper') != -1) {
+                    console.log('未知||流动性不足？||目前不能交易')
+                    rd.value = '未知||流动性不足？||目前不能交易'
+                } else if (strE.indexOf('insufficient') != -1) {
+                    console.log('当前账号无法检查该合约！gas不足');
+                    rd.value = '当前账号无法检查该合约！gas不足'
+                } else {
+                    console.log('貔貅无解！或高燃烧,等狗庄开交易');
+                    rd.value = '貔貅无解！或高燃烧，等狗庄开交易或者有时间锁或者限购'
+                }
+            }
+        }
+
+        console.log(pair);
+        /*   let wtoken = getRouterMethods(ERC20ABI, weth)
+          let utoken = getRouterMethods(ERC20ABI, usdt)
+          let btoken = getRouterMethods(ERC20ABI, busdt)
+          let w = await wtoken.balanceOf(pair.WETHPari).call()
+          let u = await utoken.balanceOf(pair.USDTPari).call()
+          let b = await btoken.balanceOf(pair.BUSDTPari).call()
+         */
+
+        /* 
+                BUSDTPari: "0x168277bC216BEE755d7621541da929C78bCEB18C"
+        USDTPari: "0x9B6c3ACA5C84eEA98b74F31F2f1016E779741e3c"
+        WETHPari: "0x7301B3c291f0630bfe259b8a282BEAAFFB55d3A8"
+        platformTokenPari: "0xD5aD10aED56e14152cbF56C00e2533441D8505C8"
+        pool: (4) ['1372613300503002984', '6520', '0', '6410403059'] */
+
+        let ctoken = getRouterMethods(ERC20ABI, contract)
+        let c = await ctoken.balanceOf(gan_si_gou_zhuang_TOKEN).call()
+        let w = pair.pool[0]
+        let u = pair.pool[1]
+        let b = pair.pool[2]
+        let t = pair.pool[3]
+        console.log();
+
+        if (parseInt(Info.index) != 6) {
+            t = weiformeth(t, 'ether')
+        } else {
+            t = weiformeth(t, '6')
+        }
+
+        let index = swapID.selectedIndex;
+
+
+
+        let temptxt = rd.value + '\n' + swapInfo[parseInt(Info.index)] + '交易对池子' + '\n' + 'WETH：' + weiformeth(w, 'ether') + '\n' + 'USDT：' + weiformeth(u, 'ether') + '\n' + 'BUSDT：'
+            + weiformeth(b, 'ether') + '\n' + 'coin:' + t
+        rd.value = temptxt
+        console.log(c);
+        console.log('WETH', weiformeth(w, 'ether'))
+        console.log('USDT', weiformeth(u, 'ether'))
+        console.log('BUSDT', weiformeth(b, 'ether'))
+
+        setTimeout(() => {
+            rd.value = '检查完成'
+        }, 8000);
+    }
+
+    async function cxtl() {
+        let contract = $get("contract");
+        contract = contract.replace(new RegExp(' ', 'g'), '')
+        let paths = getpathsIndex(contract, parseInt(999));
+
+        const swap = getMethods(G_ABI, gan_si_gou_zhuang_TOKEN)
+        let res = await swap.Amountbuyandsell(ethforwei($get("fee"), 'ether'), paths.buy, paths.sell, CX_index).call()
+
+        console.log(res);
+
+    }
+
+    function checkContract() {
+
+        if (!web3x.web3.utils.isAddress($get('contract'))) {
+
+
+            rd.value = '请输入正确的合约地址'
+            return
+        }
+
+    }
+
+
+    async function testget() {
+
+    }
+
+    async function getTransactionCount(account) {
+        G_start++
+        let nonce
+        try {
+            nonce = await web3Router(G_start).eth.getTransactionCount(account)
+        } catch (error) {
+            nonce = await getTransactionCount(account)
+        }
+        return nonce
+    }
+
+    async function allbuy() {
+        let index = swapID.selectedIndex;
+        index = parseInt(index + 1) + ''
+
+        console.log(index);
+
+
+        let falg = true
+
+        if (!web3x.web3.utils.isAddress($get('contract'))) {
+
+
+            rd.value = '请输入正确的合约地址'
+            return
+        }
+
+
+        let isPX = parseInt(isPXop.value);
+
+        if (isPX > 0) {
+            isPX = true
+        } else {
+            isPX = false
+        }
+
+        allDisabled()
+        let starts = 0
+
+        let G_sellRatio = parseInt($get("sellRatio"))
+        G_sellRatio += 2
+        if (G_sellRatio >= 100) {
+            G_sellRatio = 80
+        }
+        G_sellRatio = parseInt(100 - G_sellRatio)
+
+        web3x.web3.eth.accounts.wallet.clear();
+        let keyss = $get("key");
+        let fee = $get("fee");
+
+
+
+        let contract = $get("contract");
+        contract = contract.replace(new RegExp(' ', 'g'), '')
+        let poolminETH = $get("poolminETH");
+        let poolminUSDT = $get("poolminUSDT");
+
+        let settime = parseInt($get("time")) <= 200 ? 200 : $get("time");
+
+        let priceGas = parseInt($get('gasprice')) <= 35 ? $get('gasprice') : 35
+        let gasprice = ethforwei(priceGas + '', 'gwei')
+
+        console.log('gasprice', gasprice);
+        set("qbgjfee", fee)
+        set("qbgjcontract", contract)
+        set("poolminETH", poolminETH)
+        set("qbgjbuyMINPOOLUSDT", poolminUSDT)
+
+        let sendHt = ethforwei(fee, 'ether')
+        var defaultacc = {}
+        var sendcode = {}
+        poolminETH = ethforwei(poolminETH, 'ether')
+        poolminUSDT = ethforwei(poolminUSDT, 'ether')
+        if (parseInt(index) == 6) {
+            poolminUSDT = ethforwei($get("poolminUSDT"), '6')
+            console.log('poolminUSDT', poolminUSDT);
+        }
+        let paths = getpathsIndex(contract, parseInt(index)).buy;
+        console.log(paths);
+
+        console.log("keyss.length", keyss.length);
+
+        if (keyss.length > 21) {
+            console.log(1);
+            let accountss = keyss.split('\n');
+            if (keyss.indexOf('----') != -1) {
+                let c = accountss
+                for (let index = 0; index < c.length; index++) {
+                    const element = c[index];
+                    let keys = element.split('----');
+                    let key = keys[1];
+                    let addre = keys[0];
+
+                    try {
+                        web3x.web3.eth.accounts.wallet.add({
+                            privateKey: key
+                        });
+                        accountWalletAdd(key)
+                    } catch (error) {
+                        rd.value = "私钥错误:" + error
+                        allEnabled()
+                        return
+                    }
+
+
+
+
+                }
+            } else {
+                let c = accountss
+                for (let index = 0; index < c.length; index++) {
+                    const key = c[index];
+                    try {
+                        web3x.web3.eth.accounts.wallet.add({
+                            privateKey: key
+                        });
+                        accountWalletAdd(key)
+                    } catch (error) {
+                        rd.value = "私钥错误:" + error
+                        allEnabled()
+                        return
+                    }
+                }
+            }
+            sendcode = web3x.web3.eth.accounts.wallet
+        } else {
+            console.log(2);
+            defaultacc['address'] = (await web3x.web3.eth.getAccounts())[0]
+            sendcode[0] = defaultacc
+            sendcode['length'] = 1
+            console.log(sendcode[0].address);
+        }
+        console.log("当前调用者账号: ", sendcode);
+        const swap = getMethods(G_ABI, gan_si_gou_zhuang_TOKEN)
+
+
+        const transferAccount = (sendcode[0]).address
+
+
+        let nonce = await getTransactionCount(transferAccount)
+
+        nonce = parseInt(nonce)
+        console.log('nonce', nonce);
+
+        console.log("swapId", index);
+
+
+
+
+        let lockSwap = true
+        if (keyss.length > 21) {
+            let fristId = setInterval(async () => {
+
+                if (isPX) {
+                    try {
+                        starts++;
+
+                        await web3NodeSwap(starts).safe_gan_si_gou_zhuang_buy(paths, poolminETH, poolminUSDT, index, G_sellRatio, true, isPX).estimateGas({
+                            from: transferAccount,
+                            value: sendHt,
+                            gasPrice: gasprice
+                        }).then(gas => {
+                            clearInterval(fristId);
+                            if (gas > 6555555) {
+                                console.log(gas, starts);
+                                throw new Error('gaslimit-Big');
+                            }
+                            falg = false
+                            try {
+                                if (lockSwap) {
+                                    lockSwap = false
+                                    for (let i = 0; i < 14; i++) {
+                                        web3NodeSwap(i).gan_si_gou_zhuang_buy('10', paths, poolminETH, poolminUSDT, index).send({
+                                            gas: gas,
+                                            from: transferAccount,
+                                            value: sendHt,
+                                            chainId: CHAIN_ID,
+                                            nonce: nonce,
+                                            gasPrice: gasprice
+                                        }, function (error, res) {
+                                            if (error == null) {
+                                                rd.value = "hash：" + res
+                                            }
+                                        })
+
+                                    }
+                                }
+                                //rd.value = "抢狗成功"
+                            } catch (error) {
+                                console.log(new String(error));
+                                //rd.value = "抢狗失败"
+                            }
+                            allEnabled()
+                        })
+                    } catch (error) {
+                        if (falg) {
+                            rd.value = new Date() + "模拟重试中" + "\n" + (error)
+                        }
+                    }
+                } else {
+                    try {
+                        starts++;
+
+                        await web3NodeSwap(starts).gan_si_gou_zhuang_buy('10', paths, poolminETH, poolminUSDT, index).estimateGas({
+
+                            from: transferAccount,
+                            value: sendHt,
+                            chainId: CHAIN_ID,
+                            nonce: nonce,
+                            gasPrice: gasprice
+                        }).then(gas => {
+                            clearInterval(fristId);
+                            if (gas > 6555555) {
+                                console.log(gas, starts);
+                                throw new Error('gaslimit-Big');
+                            }
+                            falg = false
+                            try {
+                                if (lockSwap) {
+                                    lockSwap = false
+                                    for (let i = 0; i < 6; i++) {
+                                        web3NodeSwap(i).gan_si_gou_zhuang_buy('10', paths, poolminETH, poolminUSDT, index).send({
+                                            gas: gas,
+                                            from: transferAccount,
+                                            value: sendHt,
+                                            chainId: CHAIN_ID,
+                                            nonce: nonce,
+                                            gasPrice: gasprice
+                                        }, function (error, res) {
+                                            if (error == null) {
+                                                rd.value = "hash：" + res
+                                            }
+                                        })
+
+                                    }
+                                }
+                                //rd.value = "抢狗成功"
+                            } catch (error) {
+                                console.log(new String(error));
+                                //rd.value = "抢狗失败"
+                            }
+                            allEnabled()
+                        })
+                    } catch (error) {
+                        if (falg) {
+                            rd.value = new Date() + "模拟重试中" + "\n" + (error)
+                        }
+                    }
+                }
+
+            }, settime);
+        } else {
+
+            console.log(2);
+
+            let fristId = setInterval(async () => {
+
+                if (isPX) {
+                    try {
+                        starts++;
+                        console.log(poolminUSDT);
+                        await web3NodeSwap(starts).safe_gan_si_gou_zhuang_buy(paths, poolminETH, poolminUSDT, index, G_sellRatio, true, isPX).estimateGas({
+                            from: (sendcode[0]).address,
+                            value: sendHt,
+                            gasPrice: gasprice
+                        }).then(gas => {
+                            if (gas > 6555555) {
+                                console.log(gas, starts);
+                                throw new Error('gaslimit-Big');
+                            }
+                            //console.log('gas:' + gas, lockSwap);
+                            falg = false
+                            clearInterval(fristId);
+                            if (lockSwap) {
+                                lockSwap = false
+                                swap.gan_si_gou_zhuang_buy('10', paths, poolminETH, poolminUSDT, index).send({
+                                    gas: gas,
+                                    from: (sendcode[0]).address,
+                                    value: sendHt,
+                                    chainId: CHAIN_ID,
+                                    nonce: nonce,
+                                    gasPrice: gasprice
+                                }, function (error, res) {
+                                    if (error == null) {
+                                        //console.log(new Date() + "hash: " + res);
+                                        rd.value = "hash：" + res + "\n" + "上链中。。。。。。"
+                                    }
+                                })
+
+                            }
+
+                            allEnabled()
+                        })
+                    } catch (error) {
+                        if (falg) {
+                            rd.value = new Date() + "模拟重试中" + "\n" + (error)
+
+                        }
+                    }
+                } else {
+                    try {
+                        starts++;
+                        console.log(poolminUSDT);
+                        await web3NodeSwap(starts).gan_si_gou_zhuang_buy('10', paths, poolminETH, poolminUSDT, index).estimateGas({
+
+                            from: (sendcode[0]).address,
+                            value: sendHt,
+                            chainId: CHAIN_ID,
+                            nonce: nonce,
+                            gasPrice: gasprice
+                        }).then(gas => {
+                            if (gas > 6555555) {
+                                console.log(gas, starts);
+                                throw new Error('gaslimit-Big');
+                            }
+                            //console.log('gas:' + gas, lockSwap);
+                            falg = false
+                            clearInterval(fristId);
+                            if (lockSwap) {
+                                lockSwap = false
+                                swap.gan_si_gou_zhuang_buy('10', paths, poolminETH, poolminUSDT, index).send({
+                                    gas: gas,
+                                    from: (sendcode[0]).address,
+                                    value: sendHt,
+                                    chainId: CHAIN_ID,
+                                    nonce: nonce,
+                                    gasPrice: gasprice
+                                }, function (error, res) {
+                                    if (error == null) {
+                                        //console.log(new Date() + "hash: " + res);
+                                        rd.value = "hash：" + res + "\n" + "上链中。。。。。。"
+                                    }
+                                })
+
+                            }
+
+                            allEnabled()
+                        })
+                    } catch (error) {
+                        if (falg) {
+                            rd.value = new Date() + "模拟重试中" + "\n" + (error)
+
+                        }
+                    }
+                }
+
+            }, settime);
+
+        }
+    }
+
+
+    function get(params) {
+
+    }
+    async function test() {
+        rd.value = ''
+        let rd_res = ''
+
+        if (!web3x.web3.utils.isAddress($get('contract'))) {
+            rd.value = '请输入正确的合约地址'
+            return
+        }
+
+        let isPX = parseInt(isPXop.value);
+        console.log('isPX', isPX);
+
+        if (isPX > 0) {
+            isPX = true
+        } else {
+            isPX = false
+        }
+        let G_sellRatio = parseInt($get("sellRatio"))
+        G_sellRatio += 2
+
+        if (G_sellRatio >= 100) {
+            G_sellRatio = 80
+        }
+        G_sellRatio = parseInt(100 - G_sellRatio)
+        web3x.web3.eth.accounts.wallet.clear();
+        let keyss = $get("key");
+        let fee = $get("fee");
+
+        let contract = $get("contract");
+        contract = contract.replace(new RegExp(' ', 'g'), '')
+
+        let poolminETH = $get("poolminETH")
+        let poolminUSDT = $get("poolminUSDT")
+        let settime = parseInt($get("time")) <= 200 ? 200 : $get("time");
+
+
+        let priceGas = parseInt($get('gasprice')) <= 35 ? $get('gasprice') : 35
+        let gasprice = ethforwei(priceGas + '', 'gwei')
+
+        console.log('gasprice', gasprice);
+        set("qbgjfee", fee)
+        set("qbgjcontract", contract)
+        set("poolminETH", poolminETH)
+        set("qbgjbuyMINPOOLUSDT", poolminUSDT)
+
+
+        poolminETH = ethforwei($get("poolminETH"), 'ether')
+        poolminUSDT = ethforwei($get("poolminUSDT"), 'ether')
+        var sendcode = {}
+        let sendHt = ethforwei(fee, 'ether')
+
+        console.log('msg.vale', sendHt);
+        var defaultacc = {}
+
+
+        let paths = getpathsIndex(contract, 999).buy;
+
+        console.log(JSON.stringify(paths));
+        console.log(keyss.length);
+        if (keyss.length > 21) {
+            console.log(1);
+            let accountss = keyss.split('\n');
+            if (keyss.indexOf('----') != -1) {
+                let c = accountss
+                for (let index = 0; index < c.length; index++) {
+                    const element = c[index];
+                    let keys = element.split('----');
+                    let key = keys[1];
+                    let addre = keys[0];
+
+                    try {
+                        web3x.web3.eth.accounts.wallet.add({
+                            privateKey: key
+                        });
+                    } catch (error) {
+
+                        rd.value = "私钥错误:" + error
+                        return
+                    }
+
+                }
+            } else {
+                let c = accountss
+                for (let index = 0; index < c.length; index++) {
+                    const key = c[index];
+                    try {
+                        web3x.web3.eth.accounts.wallet.add({
+                            privateKey: key
+                        });
+                    } catch (error) {
+
+                        rd.value = "私钥错误:" + error
+                        return
+                    }
+                }
+            }
+            sendcode = web3x.web3.eth.accounts.wallet
+
+        } else {
+            console.log(2);
+            defaultacc['address'] = (await web3x.web3.eth.getAccounts())[0]
+            sendcode[0] = defaultacc
+            sendcode['length'] = 1
+            console.log(sendcode[0].address);
+        }
+        console.log("当前调用者账号: ", sendcode);
+        const swap = getMethods(G_ABI, gan_si_gou_zhuang_TOKEN)
+        let res = await swap.getPathAmountS(sendHt, paths, CX_index).call()
+
+        console.log(res);
+        paths = getpathsIndex(contract, res.index).buy
+
+        if (parseInt(res.index) == 6) {
+            poolminUSDT = ethforwei($get("poolminUSDT"), '6')
+        }
+        console.log(paths);
+        let amountOutMin = bigNumber(res.amounts).mul(G_sellRatio).div(100).toString()
+        console.log(amountOutMin);
+        for (let index = 0; index < sendcode.length; index++) {
+            try {
+
+                if (isPX) {
+                    let gas = await swap.safe_gan_si_gou_zhuang_buy(paths, poolminETH, poolminUSDT, res.index, G_sellRatio, true, isPX).estimateGas({
+                        from: (sendcode[index]).address,
+                        value: sendHt,
+                        gasPrice: gasprice
+                    })
+
+                    await swap.gan_si_gou_zhuang_buy(amountOutMin, paths, poolminETH, poolminUSDT, res.index).estimateGas({
+
+                        from: (sendcode[index]).address,
+                        value: sendHt,
+                        gasPrice: gasprice
+                    })
+                    swap.gan_si_gou_zhuang_buy(amountOutMin, paths, poolminETH, poolminUSDT, res.index).send({
+                        gas: gas,
+                        from: (sendcode[index]).address,
+                        value: sendHt,
+                        gasPrice: gasprice
+                    }).on('transactionHash', function (hash) {
+                        rd.value = "hash：" + hash
+                    }).on('receipt', function (r) {
+                        rd_res = rd_res + index + ':购买成功' + '\n'
+                        rd.value = rd_res
+                        console.log(res);
+                    })
+                } else {
+                    console.log(00000);
+                    let gas = await swap.gan_si_gou_zhuang_buy(amountOutMin, paths, poolminETH, poolminUSDT, res.index).estimateGas({
+
+                        from: (sendcode[index]).address,
+                        value: sendHt,
+                        gasPrice: gasprice
+                    })
+
+                    console.log(11111);
+                    swap.gan_si_gou_zhuang_buy(amountOutMin, paths, poolminETH, poolminUSDT, res.index).send({
+                        gas: gas,
+                        from: (sendcode[index]).address,
+                        value: sendHt,
+                        gasPrice: gasprice
+                    }).on('transactionHash', function (hash) {
+                        rd.value = "hash：" + hash
+                    }).on('receipt', function (r) {
+                        rd_res = rd_res + index + ':购买成功' + '\n'
+                        rd.value = rd_res
+                        console.log(res);
+                    })
+
+                    console.log(3333);
+                }
+
+            } catch (error) {
+                rd_res = rd_res + index + ':模拟失败' + error + '\n'
+                rd.value = rd_res
+            }
+        }
+
+    }
+    async function approve() {
+        rd.value = ''
+        let rd_res = ''
+        web3x.web3.eth.accounts.wallet.clear();
+        let gasprice = web3x.gasPrice
+        let keyss = $get('key').replace('/n', '');
+        var defaultacc = {}
+        var sendcode = {}
+        if (keyss.length > 21) {
+            console.log(1);
+            let accountss = keyss.split('\n');
+            if (keyss.indexOf('----') != -1) {
+                let c = accountss
+                for (let index = 0; index < c.length; index++) {
+                    const element = c[index];
+                    let keys = element.split('----');
+                    let key = keys[1];
+                    let addre = keys[0];
+                    try {
+                        web3x.web3.eth.accounts.wallet.add({
+                            privateKey: key
+                        });
+                    } catch (error) {
+                        rd.value = "私钥错误:" + error
+                        return
+                    }
+                }
+            } else {
+                let c = accountss
+                for (let index = 0; index < c.length; index++) {
+                    const key = c[index];
+                    try {
+                        web3x.web3.eth.accounts.wallet.add({
+                            privateKey: key
+                        });
+                    } catch (error) {
+                        rd.value = "私钥错误:" + error
+                        return
+                    }
+                }
+            }
+            sendcode = web3x.web3.eth.accounts.wallet
+        } else {
+            console.log(2);
+            defaultacc['address'] = (await web3x.web3.eth.getAccounts())[0]
+            sendcode[0] = defaultacc
+            sendcode['length'] = 1
+            console.log(sendcode[0].address);
+        }
+        console.log("当前调用者账号: ", sendcode);
+        let contract = $get("contract");
+        contract = contract.replace(new RegExp(' ', 'g'), '')
+        let token = getMethods(ERC20ABI, contract)
+        console.log(token);
+        let num = await token.totalSupply().call()
+        if (parseInt(num) < 1000000000000) {
+            num = '99999999999999999999999999999999999'
+        }
+        let num_src = num
+        num = num + '0'
+        console.log(num);
+        for (let index = 0; index < sendcode.length; index++) {
+
+            console.log('forindex', index);
+            const myaddress = (sendcode[index]).address;
+            console.log('myaddress', myaddress);
+            console.log('approve', ROUTER);
+            let allowanceBalance = await token.allowance(myaddress, ROUTER).call()
+
+            if (parseFloat(allowanceBalance) >= parseFloat(num_src)) {
+                rd_res = rd_res + index + ':已经授权成功' + '\n'
+                rd.value = rd_res
+                continue
+            }
+            let gas = await token.approve(ROUTER, num).estimateGas({
+                from: myaddress
+            })
+            console.log(gas);
+            token.approve(ROUTER, num).send({
+                gas: gas,
+                gasPrice: gasprice,
+                from: myaddress
+            }).on('transactionHash', function (hash) {
+
+                console.log(new Date() + "hash: " + hash);
+                rd.value = "hash：" + hash + '\n' + "请等待授权成功,如果超过20秒可能已经授权成功，可以操作下一步"
+
+            }).on('receipt', function (res) {
+
+                rd_res = rd_res + index + ':授权成功' + '\n'
+                rd.value = rd_res
+                console.log(res);
+            })
+        }
+        web3x.web3.eth.accounts.wallet.clear();
+    }
+
+    async function allsell(mul) {
+        console.log(isNaN(parseFloat($get('sellNumber'))));
+        if (isNaN(parseFloat($get('sellNumber'))) || parseFloat(($get('sellNumber'))) <= 0) {
+            rd.value = '请输入正确数量'
+            return
+        }
+        let falg = true
+        let index = swapID.selectedIndex;
+        index = parseInt(index + 1) + ''
+        console.log(index);
+        if (!web3x.web3.utils.isAddress($get('contract'))) {
+
+            rd.value = '请输入正确的合约地址'
+            return
+        }
+
+        allDisabled()
+        let starts = 0
+        web3x.web3.eth.accounts.wallet.clear();
+        let keyss = $get("key");
+        let fee = $get("sellDRACNumber");
+        let contract = $get("contract");
+        contract = contract.replace(new RegExp(' ', 'g'), '')
+
+        let settime = parseInt($get("time")) <= 200 ? 200 : $get("time");
+        let priceGas = parseInt($get('gasprice')) <= 35 ? $get('gasprice') : 35
+        let gasprice = ethforwei(priceGas + '', 'gwei')
+        console.log('gasprice', gasprice);
+        //set("qbgjfee", fee)
+        set("qbgjcontract", contract)
+
+        var sendcode = {}
+        let sendHt = ethforwei(fee, 'ether')
+        var defaultacc = {}
+
+
+
+
+
+        //let token = getMethods(ERC20ABI, contract)
+        let token = getRouterMethods(ERC20ABI, contract)
+        let paths = getpathsIndex(contract, parseInt(index)).sell;
+
+        console.log(paths);
+
+
+        if (keyss.length > 21) {
+            console.log(1);
+            let accountss = keyss.split('\n');
+            if (keyss.indexOf('----') != -1) {
+                let c = accountss
+                for (let index = 0; index < c.length; index++) {
+                    const element = c[index];
+                    let keys = element.split('----');
+                    let key = keys[1];
+                    let addre = keys[0];
+                    try {
+                        web3x.web3.eth.accounts.wallet.add({
+                            privateKey: key
+                        });
+                    } catch (error) {
+
+                        rd.value = "私钥错误:" + error
+                        return
+                    }
+                    accountWalletAdd(key)
+                }
+            } else {
+                let c = accountss
+                for (let index = 0; index < c.length; index++) {
+                    const key = c[index];
+                    try {
+                        web3x.web3.eth.accounts.wallet.add({
+                            privateKey: key
+                        });
+                    } catch (error) {
+
+                        rd.value = "私钥错误:" + error
+                        return
+                    }
+                    accountWalletAdd(key)
+                }
+            }
+            sendcode = web3x.web3.eth.accounts.wallet
+
+        } else {
+            console.log(2);
+            defaultacc['address'] = (await web3x.web3.eth.getAccounts())[0]
+            sendcode[0] = defaultacc
+            sendcode['length'] = 1
+            console.log(sendcode[0].address);
+        }
+
+        console.log("当前调用者账号: ", sendcode);
+        const swap = getMethods(G_ABI, gan_si_gou_zhuang_TOKEN)
+        let time = Math.round(new Date().getTime() / 1000) + 360 + ''
+        const myaddress = (sendcode[0]).address;
+        /* let balance = await token.balanceOf(myaddress).call()
+
+        balance = ethers.utils.bigNumberify(balance).div(mul) */
+
+        let decimals = await token.decimals().call()
+
+
+
+        let balance = ethforwei($get("sellNumber"), decimals)
+        console.log("sell", balance);
+
+
+        let minb = ethforwei(fee, 'ether')
+        let minbb = ethers.utils.bigNumberify(minb).mul(40).div(100)
+
+        const transferAccount = (sendcode[0]).address
+
+        let nonce = await getTransactionCount(transferAccount)
+        nonce = parseInt(nonce)
+        console.log('nonce', nonce);
+
+        lockSwap = true
+        console.log("swapId", index);
+        if (keyss.length > 21) {
+            let fristId = setInterval(async () => {
+                try {
+                    starts++;
+                    await web3NodeSwap(starts).gan_si_gou_zhuang_sell(balance, paths, minb, index).estimateGas({
+                        from: transferAccount,
+                        gasPrice: gasprice
+                    }).then(gas => {
+
+                        if (lockSwap) {
+                            lockSwap = false
+                            for (let i = 0; i < 14; i++) {
+                                web3NodeSwap(starts + 1).gan_si_gou_zhuang_sell(balance, paths, minbb, index).send({
+                                    from: transferAccount,
+                                    chainId: CHAIN_ID,
+                                    nonce: nonce,
+                                    gas: (gas + parseInt(gas * 0.5)) + "",
+                                    gasPrice: gasprice
+                                }, function (error, res) {
+                                    if (error == null) {
+                                        rd.value = "hash：" + res
+                                    }
+                                })
+
+                            }
+
+
+                        }
+
+
+
+
+
+
+
+                        clearInterval(fristId);
+                    })
+
+                    //rd.value = "卖出成功"
+                    allEnabled()
+
+                } catch (error) {
+
+                    if (falg) {
+                        rd.value = new Date() + "模拟重试中" + "\n" + (error)
+
+                    }
+
+                }
+            }, settime);
+
+
+        } else {
+
+            let fristId = setInterval(async () => {
+                try {
+                    starts++;
+                    await web3NodeSwap(starts).gan_si_gou_zhuang_sell(balance, paths, minb, index).estimateGas({
+                        from: myaddress,
+                        gasPrice: gasprice
+                    }).then(gas => {
+                        clearInterval(fristId);
+
+                        if (lockSwap) {
+                            lockSwap = false
+
+                            swap.gan_si_gou_zhuang_sell(balance, paths, minbb, index).send({
+                                from: myaddress,
+                                chainId: CHAIN_ID,
+                                nonce: nonce,
+                                gas: (gas + parseInt(gas * 0.5)) + "",
+                                gasPrice: gasprice
+                            }, function (error, res) {
+                                if (error == null) {
+
+                                    rd.value = "hash：" + res
+                                }
+                            })
+
+                        }
+
+                    })
+
+                    // rd.value = "卖出成功"
+                    allEnabled()
+                } catch (error) {
+
+                    if (falg) {
+                        rd.value = new Date() + "模拟重试中" + "\n" + (error)
+
+                    }
+
+
+                }
+            }, settime);
+
+
+        }
+
+
+
+    }
+
+    async function sell2(mul) {
+
+        console.log(isNaN(parseFloat($get('sellNumber'))));
+        if (isNaN(parseFloat($get('sellNumber'))) || parseFloat(($get('sellNumber'))) <= 0) {
+            rd.value = '请输入正确数量'
+            return
+        }
+        rd.value = ''
+        let rd_res = ''
+        web3x.web3.eth.accounts.wallet.clear();
+        let keyss = $get("key");
+        let fee = $get("fee");
+        let contract = $get("contract");
+        contract = contract.replace(new RegExp(' ', 'g'), '')
+
+        let settime = parseInt($get("time")) <= 200 ? 200 : $get("time");
+        let priceGas = parseInt($get('gasprice')) <= 35 ? $get('gasprice') : 35
+        let gasprice = ethforwei(priceGas + '', 'gwei')
+        console.log('gasprice', gasprice);
+        set("qbgjfee", fee)
+        set("qbgjcontract", contract)
+
+        var sendcode = {}
+        let sendHt = ethforwei(fee, 'ether')
+        var defaultacc = {}
+        let token = getRouterMethods(ERC20ABI, contract)
+        let decimals = await token.decimals().call()
+        let paths = getpathsIndex(contract, 999).sell;
+
+        if (keyss != '') {
+            console.log(1);
+            let accountss = keyss.split('\n');
+            if (keyss.indexOf('----') != -1) {
+                let c = accountss
+                for (let index = 0; index < c.length; index++) {
+                    const element = c[index];
+                    let keys = element.split('----');
+                    let key = keys[1];
+                    let addre = keys[0];
+                    try {
+                        web3x.web3.eth.accounts.wallet.add({
+                            privateKey: key
+                        });
+                    } catch (error) {
+
+                        rd.value = "私钥错误:" + error
+                        return
+                    }
+                }
+            } else {
+                let c = accountss
+                for (let index = 0; index < c.length; index++) {
+                    const key = c[index];
+                    try {
+                        web3x.web3.eth.accounts.wallet.add({
+                            privateKey: key
+                        });
+                    } catch (error) {
+
+                        rd.value = "私钥错误:" + error
+                        return
+                    }
+                }
+            }
+            sendcode = web3x.web3.eth.accounts.wallet
+        } else {
+            console.log(2);
+            defaultacc['address'] = (await web3x.web3.eth.getAccounts())[0]
+            sendcode[0] = defaultacc
+            sendcode['length'] = 1
+            console.log(sendcode[0].address);
+        }
+        console.log("当前调用者账号: ", sendcode);
+        const swap = getMethods(G_ABI, gan_si_gou_zhuang_TOKEN)
+        let time = Math.round(new Date().getTime() / 1000) + 360 + ''
+        let indx_xz
+        for (let index = 0; index < sendcode.length; index++) {
+            const myaddress = (sendcode[index]).address;
+            console.log('address', myaddress);
+            let balance
+
+            let balance_all = await token.balanceOf(myaddress).call()
+            let balance_div2 = ethers.utils.bigNumberify(balance_all).div(2).toString()
+            if (index == 0) {
+                balance = ethforwei($get("sellNumber"), decimals)
+                console.log(balance, balance_all, balance_div2);
+                //大于等于 //ethers.utils.bigNumberify('1').gte("1")
+                //小于等于 //ethers.utils.bigNumberify('1').lte("1")
+
+                if (ethers.utils.bigNumberify(balance).gte(balance_all)) {
+                    // balance = balance_all
+
+                    indx_xz = 1
+                }
+
+                if (ethers.utils.bigNumberify(balance).lt(balance_div2)) {
+                    // balance = ethforwei($get("sellNumber"), decimals)
+
+                    indx_xz = 2
+                }
+
+
+
+
+                if (ethers.utils.bigNumberify(balance).eq(balance_div2)) {
+                    // balance = balance_div2
+                    indx_xz = 3
+                }
+
+                if (ethers.utils.bigNumberify(balance).gt(balance_div2) && ethers.utils.bigNumberify(balance).lt(balance_all)) {
+                    // balance = ethforwei($get("sellNumber"), decimals)
+                    indx_xz = 2
+                }
+
+            }
+
+            if (indx_xz == 1) {
+                balance = balance_all
+            } else if (indx_xz == 2) {
+                balance = ethforwei($get("sellNumber"), decimals)
+            } else {
+                balance = balance_div2
+            }
+
+            console.log("sell", balance, "index_balance", indx_xz);
+
+
+            let res = await swap.getPathAmountS(balance, paths, CX_index).call()
+            paths = getpathsIndex(contract, res.index).sell;
+            console.log(res);
+            console.log(paths);
+            minreqDRAC = ethers.utils.bigNumberify(res.amounts).mul(6).div(10).toString()
+            console.log('minreqDRAC', minreqDRAC);
+            try {
+                let gas = await swap.gan_si_gou_zhuang_sell(balance, paths, minreqDRAC, res.index).estimateGas({
+                    from: myaddress,
+                    gasPrice: gasprice
+                })
+                try {
+                    swap.gan_si_gou_zhuang_sell(balance, paths, minreqDRAC, res.index).send({
+                        from: myaddress,
+                        gas: (gas + parseInt(gas * 0.4)) + "",
+                        gasPrice: gasprice
+                    }).on('transactionHash', function (hash) {
+
+                        console.log(new Date() + "hash: " + hash);
+                        rd.value = "hash：" + hash + '\n'
+
+                    }).on('receipt', function (res) {
+
+                        rd_res = rd_res + index + ':卖出成功' + '\n'
+                        rd.value = rd_res
+                        console.log(res);
+                    })
+                } catch (error) {
+                    rd_res = rd_res + index + ':卖出失败' + error + '\n'
+                    rd.value = rd_res
+                }
+
+
+            } catch (error) {
+                rd_res = rd_res + index + ':模拟失败' + error + '\n'
+                rd.value = rd_res
+            }
+
+        }
+
+
+
+    }
+
+    function allDisabled() {
+        document.getElementById('allbuy').disabled = 'disabled';
+
+        document.getElementById('test').disabled = 'disabled';
+
+        document.getElementById('approve').disabled = 'disabled';
+
+        document.getElementById('sell').disabled = 'disabled';
+        //document.getElementById('sell2f').disabled = 'disabled';
+        document.getElementById('sell1f').disabled = 'disabled';
+    }
+
+    function allEnabled() {
+        document.getElementById('approve').disabled = false;
+        document.getElementById('test').disabled = false;
+        document.getElementById('allbuy').disabled = false;
+        document.getElementById('sell').disabled = false;
+        //document.getElementById('sell2f').disabled = false;
+        document.getElementById('sell1f').disabled = false;
+    }
+
+</script>
+
+
+<script>
+
+    function bigNumber(params) {
+        return ethers.utils.bigNumberify(params)
+    }
+
+    function getMethods(p1, p2) {
+        if (p2 == undefined) {
+            return new web3x.web3.eth.Contract(p1.abi, p1.address).methods;
+        } else {
+            return new web3x.web3.eth.Contract(p1, p2).methods;
+        }
+    }
+
+
+
+    function $set(p1, p2) {
+        let t = document.getElementById(p1);
+        t.value = p2
+    }
+    function $get(p1) {
+        let t = document.getElementById(p1);
+        return t.value
+    }
+
+    function weiformeth(num, decimals) {
+        if (parseInt(decimals) == 0) {
+            return num;
+        }
+        // web3x.web3.utils.unitMap = unitMap
+
+        //console.log(web3x.web3.utils.unitMap);
+        return web3Router(1).utils.fromWei(num, decimals + "")
+    }
+
+    function ethforwei(num, decimals) {
+        if (parseInt(decimals) == 0) {
+            return num;
+        }
+        return web3Router(1).utils.toWei(num, decimals + "")
+    }
+    function pow(c) {
+        let p = '1'
+        for (let index = 0; index < c; index++) {
+            p += '0'
+        }
+        return p
+    }
+    function set(key, value) {
+        localStorage.setItem(key, value);
+    }
+    function get(key) {
+        return localStorage.getItem(key);
+    }
+
+</script>
+<script>
+    //0xf975256De2027F1e5EdD12E44FEA146311e1b2F9
+    //0x390FC2Da7C65b0Ec5A8488954C3b08c7a7c91f80
+    //0xD71A8Aed37541983715fe35C9A08D4665b537d1A
+    const ROUTER = '0x3a849487c0099240493B1786D2da042A4Bf8d501'
+    const gan_si_gou_zhuang_TOKEN = '0x3a849487c0099240493B1786D2da042A4Bf8d501'
+    const G_ABI = gan_si_gou_zhuang_ABI_end
+    init()
+
+
+    web3init()
+</script>
+
+</html>
