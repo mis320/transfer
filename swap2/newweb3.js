@@ -23,6 +23,7 @@ const nodeUrls = [
 
 let txtInfo=''
 const txtInfoArray=[
+    "新版本(待改进):https://mis320.github.io/transfer/swapV2/"
     '初始化完成,轮询类型需要选择swap。',
     '普通 购买 卖出 ,请用 购入,卖出 按键自己调滑点调滑点调滑点(防止被夹)',
     '轮训购买无视滑点谨慎使用',
