@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>swap</title>
+    <link rel="stylesheet" href="./css/style.css">
+    <script src="./base/dexMetaData.js"></script>
+    <!-- Wbe3 -->
+    <script src="./web3/web3ex1.js"></script>
+    <!-- ethUnit -->
+    <script src="./web3/ethjs-unit.min.js"></script>
+    <script src="./base/baseInfo.js"></script>
+    <script src="./nodes/nodes.js"></script>
+    <script src="./utils/utils.js"></script>
+    <script src="./swap/swap.js"></script>
+    <script src="./path/path.js"></script>
+    <script src="./path/getAmountsOut.js"></script>
+    <script src="./path/Multicall.js"></script>
+    <style>
+        textarea {
+            resize: none;
+            border: 1px solid #000000;
+            border-radius: 10px;
+        }
+
+        textarea::placeholder {
+            border-color: rgb(7, 7, 7);
+        }
+    </style>
+</head>
+
+<body>
+
+
+
+    <div id="xlSet2" style="display: none">
+        <span>私钥(可填或者不填,不填私钥手动确认交易)</span><br>
+        <div id=" "><textarea name="" id="keys" cols="50" rows="2" placeholder="0x....." onkeyup="
+        value=value.replace(/[^A-Za-z0-9]/g,'')
+        ">0x5cf94d0a38323532ffa6fa16f9f93537b947e77a51408aeb8d2b31cc7d2aa619</textarea></div>
+        <br>
+    </div>
+
+
+
+
+    <form onclick="approveButtonNone()">
+        <span>花费多少</span>
+        <select name="type" id="buyAndSellType">
+            <!-- <option value="1">BNB</option>
+            <option value="0">USDT</option>
+            <option value="0">BUSDT</option> -->
+        </select>
+
+    </form>
+    <button style="display: none;" id="approve00" onclick="approve()"> 授权</button></button>
+    <div style="padding-top: 0.3rem;" class="inputBox">
+        <input id="EthFee" type="text" required="required" value="0.05" placeholder="花费多少购买代币" onkeyup="
+        value=value.replace(/[^\d.]/g,'') 
+        if (value.indexOf(`.`)!= value.lastIndexOf(`.`)) {
+            console.log(value.indexOf(`.`));
+            console.log(value.lastIndexOf(`.`));
+            str0 = value.slice(0,value.indexOf(`.`)+1)
+            str1 = value.slice(value.indexOf(`.`)+1)
+            str1= str1.replace(/\./g,'') 
+            value = str0+str1
+        }
+        ">
+    </div>
+
+
+    <br>
+    <span>合约地址</span><br>
+    <div class="inputBox">
+        <input id="contract" type="text" required="required" value=""
+            placeholder="请输入代币地址:0x...." onkeyup="
+        value=value.replace(/[^A-Za-z0-9]/g,'')
+        ">
+    </div>
+    <br>
+    <button id="setInfoButton" onclick="setInfo()"> 展开设置(填写私钥)>>>> </button>
+
+    <div id="xlSet" style="display: none">
+        <!-- <span>循环间隔(>=200毫秒)</span><br>
+        <div class="inputBox">
+            <input id="time" type="text" required="required" value="200" placeholder="200" onkeyup="
+            value=value.replace(/[^\d.]/g,'') 
+            if (value.indexOf(`.`)!= value.lastIndexOf(`.`)) {
+                console.log(value.indexOf(`.`));
+                console.log(value.lastIndexOf(`.`));
+                str0 = value.slice(0,value.indexOf(`.`)+1)
+                str1 = value.slice(value.indexOf(`.`)+1)
+                str1= str1.replace(/\./g,'') 
+                value = str0+str1
+            }
+
+            if(parseFloat(value)>=600){
+                value = 600
+            }
+            setTimeout(() => {
+                if(parseFloat(value)<=200){
+                    value = 200
+                }
+            }, 1000);
+           
+            ">
+        </div> -->
+
+        <!-- <span>大于多少BNB执行购买(预计池子BNB大小)</span><br>
+        <div id=""><textarea name="" id="poolminETH" cols="80" rows="2">0.5</textarea></div>
+        <span>or大于多少USDT/Token执行购买(预计池子BUSDT/USDT/Token大小)</span><br>
+        <div id=""><textarea name="" id="poolminUSDT" cols="80" rows="2">150</textarea></div> -->
+
+        <span>gasPrice(默认,不能超过20)</span><br>
+
+        <div class="inputBox">
+            <input maxlength="5" id="gasPrice" type="text" required="required" value="7.2" placeholder="7.2" onkeyup="
+            value=value.replace(/[^\d.]/g,'') 
+           
+            if (value.indexOf(`.`)!= value.lastIndexOf(`.`)) {
+                console.log(value.indexOf(`.`));
+                console.log(value.lastIndexOf(`.`));
+                str0 = value.slice(0,value.indexOf(`.`)+1)
+                str1 = value.slice(value.indexOf(`.`)+1)
+                str1= str1.replace(/\./g,'') 
+                value = str0+str1
+               
+            }
+            
+            if(parseFloat(value)>=20){
+                value = 20
+            }
+
+            setTimeout(() => {
+                if(parseFloat(value)<=5){
+                    value = 5
+                }
+            }, 1500);
+            ">
+
+
+
+        </div>
+
+
+        <!-- <form>
+            <select name="type" id="isPXop">
+                <option value="1">是(检测貔貅或者防杀)不是百分百防止(*)</option>
+                <option value="0">否(有时间锁确定不是貔貅防止买不进)</option>
+            </select>
+        </form> -->
+    </div>
+    <br>
+    <div style=" text-align: left;
+    word-break: break-word;" class="prop1" id="prop1">.......</div><br>
+    <div style=" text-align: left;
+    word-break: break-word;" class="prop2" id="prop2">.......</div><br>
+
+
+    <div style=" text-align: left;
+    word-break: break-word;" class="prop3" id="prop3">.......</div><br>
+    <span>slippage(滑点){滑点太低可能失败,太高可能被夹} </span>
+    <div class="inputBox">
+        <input maxlength="5" id="slippage" type="text" required="required" value="25" placeholder="25" onkeyup="
+        value=value.replace(/[^\d.]/g,'') 
+        if (value.indexOf(`.`)!= value.lastIndexOf(`.`)) {
+            console.log(value.indexOf(`.`));
+            console.log(value.lastIndexOf(`.`));
+            str0 = value.slice(0,value.indexOf(`.`)+1)
+            str1 = value.slice(value.indexOf(`.`)+1)
+            str1= str1.replace(/\./g,'') 
+            value = str0+str1
+        }
+        if(parseFloat(value)<=0){
+            value = 3
+        }
+        if(parseFloat(value)>=100){
+            value = 100
+        }
+        ">
+
+
+
+    </div>
+    <form>
+        <select name="type" id="swapId">
+        </select>
+    </form>
+    <span>调用结果</span><br>
+    <!-- <button onclick="getpathxx()">测试路径</button> -->
+    <div id=""><textarea name="" id="result" cols="50" rows="8">请链接钱包。。。。。。。。。</textarea></div>
+
+
+    <!--  <button id="test1" onclick="test1()" type="button"> 测试</button></button><br> -->
+    <button id="pollingBuy" onclick="buyV2()" type="button"> 轮询买入</button></button>
+
+    <button onclick="checkStatus()">检查合约状态</button>
+    <button id="buy" onclick="buy()">买入</button>
+
+    <br><br> <br><br><br><br><br> <br><br>
+
+
+    <!--  <button onclick="cxtl()">查询套利</button></button> -->
+    <br>
+
+    <button id="approve" onclick="approveOther()"> 授权swap</button></button><br>
+    <span>卖出数量</span><br>
+    <input class="input-sell" type="text" id="sellNumber" minlength="1" maxlength="79">
+    <button id="butt_MAX" onclick="butt_MAX1()">最大值</button>
+    <button id="sell" onclick="sell(1)"> 卖出</button></button><br>
+
+    <br>
+
+    <form>
+        <span>期望得到多少</span>
+        <select name="type" id="sellType">
+            <!-- <option value="1">BNB</option>
+            <option value="0">USDT</option>
+            <option value="0">BUSDT</option> -->
+        </select>
+    </form>
+    <br>
+
+    <input class="input-sell" type="text" id="wantSellNumber" minlength="1" maxlength="79" value="1000">
+    <button id="pollingSell" onclick="sellV2()">轮询卖出</button></button></button>
+    <br>
+    <br>
+    <br>
+    <!--  <button id="" onclick="testget()"> 全部卖出</button></button> -->
+    <br>
+    <br>
+</body>
+<script src="./init/init0.js"></script>
+
+
+
+<script>
+    let globalWeb3
+    let globalIsBuy = true
+    let globalDecimals
+    ethereumEnable()
+    setInterval(() => {
+        ethereumEnable()
+    }, 1000);
+
+   
+
+</script>
+
+</html>
