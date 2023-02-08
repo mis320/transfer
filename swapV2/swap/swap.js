@@ -184,7 +184,7 @@ const buyV2 = async () => {
         lockSwap = false
         allEnabled()
         $SetResuslt("上链中。。。")
-        gasLimit = String(parseInt(gasLimit * 1.5))
+        gasLimit = String(parseInt(gasLimit * 3))
 
         try {
           const success = await DEXSwap.DEXBaseTokensSwap(
