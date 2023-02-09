@@ -1,7 +1,7 @@
 
 const getPath = (index, isBuy) => {
 
-    console.log("isBuy", isBuy);
+    //console.log("isBuy", isBuy);
     const WETH = SWAP_META_DATA[index]["2"]
 
     let inputToken

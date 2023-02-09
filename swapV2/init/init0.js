@@ -23,14 +23,19 @@ for (let index = 0; index < SWAP_INFO_LIST.length; index++) {
     let newoption = new Option(SWAP_INFO_LIST[index], parseInt(index) + 1);
     selectSwapPush.options[selectSwapPush.options.length] = newoption;
 }
-const selectBaseTokenPush = document.getElementById("buyAndSellType");
 
+
+
+const selectBaseTokenPush = document.getElementById("buyAndSellType");
 for (let index = 0; index < BASE_TOKEN_LIST.length; index++) {
     //                            //key                                      //value
     let newoption = new Option(BASE_TOKEN_MAP[BASE_TOKEN_LIST[index]]["Name"], BASE_TOKEN_LIST[index]);
     selectBaseTokenPush.options[selectBaseTokenPush.options.length] = newoption;
 
 }
+
+let newoptiontemp = new Option('CHI(节省gas)', CHI_TOKEN);
+selectBaseTokenPush.options[selectBaseTokenPush.options.length] = newoptiontemp;
 
 const selecSelltBaseTokenPush = document.getElementById("sellType");
 
@@ -90,7 +95,8 @@ const txtInfoArray = [
     '轮训购买无视滑点谨慎使用',
     '暂时不支持多私钥，可先用老版本的',
     "https://mis320.github.io/transfer/swap2/",
-    '注意:输入框不能有多余的换行符',
+    "购买1inch的CHI可以获得gas节省大并授权建议先购买1刀试试用",
+    "CHI:0x0000000000004946c0e9F43F4Dee607b0eF1fA1c",
 ]
 let TXT_INFO = ''
 for (let index = 0; index < txtInfoArray.length; index++) {

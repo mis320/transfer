@@ -52,8 +52,25 @@ const getTokenAllowance = () => {
     //console.log(res);
     return res
 }
-
-
+const getCHIBalanceOf = () => {
+    const web30 = globalWeb3
+    let Multicall = getWbe3Methods(web30, MULTIC_CALL_ABI, MULTIC_CALL_TOKEN)
+    const token = CHI_TOKEN
+    const user = currentUser()
+    const res = Multicall.getTokenBalanceOf(token, user).encodeABI()
+    //console.log(res);
+    return res
+}
+const getCHIAllowance = () => {
+    const web30 = globalWeb3
+    let Multicall = getWbe3Methods(web30, MULTIC_CALL_ABI, MULTIC_CALL_TOKEN)
+    const token = CHI_TOKEN
+    const user = currentUser()
+    const router = DEX_SWAP_TOKEN
+    const res = Multicall.getTokenAllowance(token, user, router).encodeABI()
+    //console.log(res);
+    return res
+}
 const getAmountsOutMax2 = (isBuy) => {
     if (isBuy == undefined) {
         isBuy = true
@@ -91,7 +108,7 @@ const getBuyAndSellAmountsOutMax2 = (amountIn, isBuy) => {
     const path = path_pair_K["path"]
     const pairs = path_pair_K["pairs"]
     const k = path_pair_K["k"]
-   // console.log(path_pair_K);
+    // console.log(path_pair_K);
     // let amountIn = toWei(currentEthFeel(), currentBuyTokenTypeToTokenDecimals()).toString()
     // //const balanceFeel = currentSellNumber()
     // //console.log(amountIn, k, pairs, path);
@@ -138,6 +155,14 @@ const getBuyAndSellAmountsOutMax2MulticallCall = async () => {
         callData: getTokensymbol()
     })
 
+    Call.push({
+        target: target,
+        callData: getCHIBalanceOf()
+    })
+    Call.push({
+        target: target,
+        callData: getCHIAllowance()
+    })
     const res = await Multicall.aggregate(Call).call({ from: "0x2a86ec2430b95e88E8dFD230F00c16E0Dd2b999a" })
     let _r1 = decodeParameters(['uint256[]', 'uint256', "uint256"], res["returnData"][0])
     let _r2 = decodeParameters(['uint256[]', 'uint256', "uint256"], res["returnData"][1])
@@ -146,12 +171,17 @@ const getBuyAndSellAmountsOutMax2MulticallCall = async () => {
     const Decimals = decodeParameters(["uint256"], res["returnData"][2])[0]
     const BalanceOf = decodeParameters(["uint256"], res["returnData"][3])[0]
     const Name = decodeParameters(["string"], res["returnData"][4])[0]
+    const CHIBalance = decodeParameters(["uint256"], res["returnData"][5])[0]
+    const CHIAllowance = decodeParameters(["uint256"], res["returnData"][6])[0]
     const amount0 = _r1[0][_r1[0].length - 1]
     const amount1 = _r2[0][_r2[0].length - 1]
     const amountIn0 = currentEthFeel()
-
-
-
+    console.log(CHIBalance,CHIAllowance);
+    if (parseInt(String(CHIBalance)) >= 5 && parseInt(String(CHIAllowance)) >= 5) {
+        globalCHIEnable = true
+    } else {
+        globalCHIEnable = false
+    }
     $set("prop1", amountIn0 + BASE_TOKEN_MAP[currentBuyTokenTypeToToken()]["Name"] + "估计可以买入:" + fromWei(amount0, Decimals) + Name)
     $set("prop2", fromWei(BalanceOf, Decimals) + "  " + Name + "卖出估计可得:" + fromWei(amount1, currentBuyTokenTypeToTokenDecimals0) + "  " + BASE_TOKEN_MAP[currentSellTokenToTokenType()]["Name"])
 }

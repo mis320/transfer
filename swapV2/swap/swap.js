@@ -70,7 +70,7 @@ const buy = async () => {
       k,
       amountOutMin,
       tokenBalanceFeel,
-      false
+      globalCHIEnable
     ).estimateGas({
       from: user,
       value: ethBalanceFeel,
@@ -89,7 +89,7 @@ const buy = async () => {
         k,
         amountOutMin,
         tokenBalanceFeel,
-        false
+        globalCHIEnable
       ).send({
         from: user,
         value: ethBalanceFeel,
@@ -168,7 +168,7 @@ const buyV2 = async () => {
         k,
         amountOutMin,
         tokenBalanceFeel,
-        false
+        globalCHIEnable
       ).estimateGas({
         from: user,
         value: ethBalanceFeel,
@@ -193,7 +193,7 @@ const buyV2 = async () => {
             k,
             amountOutMin,
             tokenBalanceFeel,
-            false
+            globalCHIEnable
           ).send({
             from: user,
             value: ethBalanceFeel,
@@ -344,6 +344,9 @@ const approveOther = async () => {
 }
 
 
+
+
+
 const sell = async () => {
   $SetResuslt()
   let user = currentUser()
@@ -402,7 +405,7 @@ const sell = async () => {
       amountOutMin,
       tokenBalanceFeel,
       isOutEth,
-      false
+      globalCHIEnable
     ).estimateGas({
       from: user,
       value: ethBalanceFeel,
@@ -423,7 +426,7 @@ const sell = async () => {
         amountOutMin,
         tokenBalanceFeel,
         isOutEth,
-        false
+        globalCHIEnable
       ).send({
         from: user,
         value: ethBalanceFeel,
@@ -525,7 +528,7 @@ const sellV2 = async () => {
           amountOutMin,
           tokenBalanceFeel,
           isOutEth,
-          false
+          globalCHIEnable
         ).estimateGas({
           from: user,
           value: ethBalanceFeel,
@@ -550,7 +553,7 @@ const sellV2 = async () => {
               amountOutMin,
               tokenBalanceFeel,
               isOutEth,
-              false
+              globalCHIEnable
             ).send({
               from: user,
               value: ethBalanceFeel,
