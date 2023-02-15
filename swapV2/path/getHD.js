@@ -154,14 +154,23 @@ var sellHD = '1'
 const getHD = async (swapId = 1) => {
     //const user = currentUser()
     const web30 = currentWeb3NodeOne()
-    const balanceFeel = toWei($get("EthFee"), '18')
+    const balanceFeel = $get("EthFee")
     const contract = currentContract()
+    const inputToken = currentBuyTokenTypeToToken()
     let pathsBuy = getpathsIndex(contract, 999).buy;
     let pathsSell = getpathsIndex(contract, 999).sell;
+    let ethBalanceFeel = '0'
 
-    console.log(pathsBuy, pathsSell, balanceFeel);
-    let info = await getWbe3Methods(web30, GET_HD_ABI, GET_HD_TOKEN).getHD(pathsBuy, pathsSell, [swapId]).call({ from: "0x0000000000000000000000000000000000000000", value: balanceFeel });
-    console.log(info);
+    if (inputToken == "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee") {
+        ethBalanceFeel = toWei(balanceFeel, 18).toString()
+    } else {
+        ethBalanceFeel = toWei(String(parseFloat(parseFloat(balanceFeel) / 250)), 18).toString()
+    }
+
+    //console.log(ethBalanceFeel);
+    // console.log(pathsBuy, pathsSell, balanceFeel);
+    let info = await getWbe3Methods(web30, GET_HD_ABI, GET_HD_TOKEN).getHD(pathsBuy, pathsSell, [swapId]).call({ from: "0x0000000000000000000000000000000000000000", value: ethBalanceFeel });
+    //console.log(info);
     let buy = (((1 - (info.endbuy_ / info.startbuy_)) * 100))
     if (parseInt(buy) < 97) {
         buy -= 1.9
