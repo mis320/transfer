@@ -114,3 +114,72 @@ const getCurrentSwapIdPath = (isBuy) => {
     }
     return getPath(currentSwapId0, isBuy)
 }
+
+
+const encodePath = (path, fee) => {
+    const toFixHex = (num, n = 6) => {
+        if (typeof num != 'number') {
+            num = parseInt(num, 10);
+        }
+        let hex = num.toString(16);
+        return "0".repeat(n - hex.length) + hex;
+    };
+
+    if (path.length < 2 || fee.length !== path.length - 1) {
+        throw new Error("error encodePath");
+    }
+
+    return "0x" + path.reduce((acc, curr, i) => {
+        return acc + curr.substring(2) + (i < path.length - 1 ? toFixHex(fee[i]) : "");
+    }, "");
+};
+
+
+const getCurrentSwapIdPathV3 = (isBuy) => {
+
+}
+
+const getAllPathV3 = (isBuy = true) => {
+    const fee = [500, 3000, 10000]
+    let { path } = getAllSwapPath(isBuy)
+    let path0 = path[0]
+    let hexPath = []
+    path0.forEach(path0Element => {
+        fee.forEach(feeElement => {
+            if (path0Element.length == 2) {
+                let fee0 = [feeElement]
+                let encodePathStr = encodePath(path0Element, fee0)
+                hexPath.push(encodePathStr)
+                console.log(fee0);
+                console.log(encodePathStr);
+            } else {
+                let fee0 = []
+                for (let index = 0; index < path0Element.length - 1; index++) {
+                    if (isBuy) {
+                        if (index < path0Element.length - 2) {
+                            fee0.push(3000)
+                        } else {
+                            fee0.push(feeElement)
+                        }
+                    } else {
+                        if (index < path0Element.length - 2) {
+                            fee0.push(feeElement)
+                        } else {
+                            fee0.push(3000)
+                        }
+                    }
+                }
+                let encodePathStr = encodePath(path0Element, fee0)
+                hexPath.push(encodePathStr)
+                console.log(fee0);
+                console.log(encodePathStr);
+            }
+        });
+        console.log(path0Element);
+        console.log("---------------------------------------------");
+    });
+
+
+    return hexPath
+}
+

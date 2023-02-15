@@ -268,6 +268,7 @@ getBuyAndSellAmountsOutMax2MulticallCall()
 setInterval(async () => {
     if ($get("contract").length >= 42) {
         getBuyAndSellAmountsOutMax2MulticallCall()
+        getHD()
     }
 
 }, 3000);

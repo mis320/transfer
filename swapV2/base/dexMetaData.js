@@ -2,6 +2,10 @@
 const DEX_SWAP_TOKEN = "0x2997EC4103e2A386b5Ef67d3905032D8ee1D90df"
 const CHI_TOKEN = "0x0000000000004946c0e9F43F4Dee607b0eF1fA1c"
 const MULTIC_CALL_TOKEN = "0x1DA398807e6720d36E39A714e7424b0c8d159C46"
+
+
+const GET_HD_TOKEN = '0xF60fDf54f222120E6242efbcbF5b97A49fD334Fc'
+
 const DEX_SWAP_ABI =[
 	{
 		"inputs": [
@@ -1003,6 +1007,10 @@ const SWAP_META_DATA =  {
 }
 
 
+
+
+
+const GET_HD_ABI = [{"inputs":[{"internalType":"address[][]","name":"paths1","type":"address[][]"},{"internalType":"address[][]","name":"paths2","type":"address[][]"},{"internalType":"uint256[]","name":"index","type":"uint256[]"}],"name":"getHD","outputs":[{"internalType":"uint256","name":"startbuy_","type":"uint256"},{"internalType":"uint256","name":"endbuy_","type":"uint256"},{"internalType":"uint256","name":"startsell_","type":"uint256"},{"internalType":"uint256","name":"endsell_","type":"uint256"},{"internalType":"bool","name":"isbuy_","type":"bool"},{"internalType":"bool","name":"issell_","type":"bool"}],"stateMutability":"payable","type":"function","payable":true,"signature":"0xc19c8085"},{"inputs":[{"internalType":"address","name":"_token","type":"address"},{"internalType":"uint256","name":"v","type":"uint256"},{"internalType":"bytes","name":"data1","type":"bytes"}],"name":"MCall","outputs":[],"stateMutability":"payable","type":"function","payable":true,"signature":"0x8eebd66d"},{"inputs":[{"internalType":"address","name":"a","type":"address"}],"name":"set","outputs":[],"stateMutability":"nonpayable","type":"function","signature":"0x2801617e"},{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"stateMutability":"payable","type":"receive","payable":true},{"inputs":[{"internalType":"uint256","name":"v","type":"uint256"},{"internalType":"address[][]","name":"paths","type":"address[][]"},{"internalType":"uint256[]","name":"indexs","type":"uint256[]"},{"internalType":"address","name":"token0","type":"address"}],"name":"getInfo","outputs":[{"components":[{"internalType":"uint256","name":"amounts","type":"uint256"},{"internalType":"uint256","name":"MAXNUM","type":"uint256"},{"internalType":"uint256","name":"index","type":"uint256"},{"internalType":"string","name":"symbol","type":"string"},{"internalType":"uint256","name":"decimals","type":"uint256"},{"internalType":"uint256","name":"totalSupply","type":"uint256"},{"internalType":"uint256","name":"balanceOf","type":"uint256"},{"internalType":"uint256","name":"allowance","type":"uint256"}],"internalType":"struct get.addressInfo","name":"info","type":"tuple"}],"stateMutability":"view","type":"function","constant":true,"signature":"0xdf90013d"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function","constant":true,"signature":"0x8da5cb5b"},{"inputs":[],"name":"router","outputs":[{"internalType":"contract IRouter","name":"","type":"address"}],"stateMutability":"view","type":"function","constant":true,"signature":"0xf887ea40"}]
 
 for (const key in SWAP_META_DATA) {
 	SWAP_META_DATA_NUMBER++
