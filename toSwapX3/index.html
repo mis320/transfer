@@ -63,37 +63,54 @@
 5</textarea></div>
     <span>卖出频率(买了几次然后执行卖出1次)</span>
     <div id=""><textarea name="" id="sellP" cols="80" rows="2">3</textarea></div>
-
-
-    <div class="prop1" id="prop1">当前执行了:.......</div><br>
-    <div><a href="#" class="myButton" onclick="approveSCE()">授权SCE</a></div>
+    <div class="prop1" id="prop1">(授权完这里会有提示)当前执行了:.......</div><br>
+    <div><a href="#" class="myButton" onclick="approveWebDao()">授权WebDao</a></div>
     <div><a href="#" class="myButton" onclick="approveUSDT()">授权USDT</a></div>
-    <button class="myButton" id="allbuy" onclick="execute()">执行1</button>
+    <button class="myButton" id="allbuy" onclick="execute()">执行</button>
+
+
+    <p>步骤 1.放私钥 2.授权2种代币,3.等待授权成功然后执行</p>
 
 </body>
 
 <script>
-    const nodeUrls = [
-        'https://bsc-dataseed4.binance.org',
-        'https://bsc-dataseed2.binance.org',
-        'https://bsc-dataseed.binance.org',
-        'https://bsc-dataseed1.ninicoin.io',
-        'https://bsc-dataseed2.ninicoin.io',
-        'https://bsc-dataseed3.ninicoin.io',
-        'https://bsc-dataseed4.ninicoin.io',
-        'https://bsc-dataseed1.defibit.io',
-        'https://bsc-dataseed2.defibit.io',
-        'https://bsc-dataseed3.defibit.io',
-        'https://bsc-dataseed4.defibit.io'
-    ]
-    const SCE_TOKEN = '0xc9521ae6719dbdeccb5036145d0de14dc44ff8be'
+
+    // const nodeUrls = [
+    //     'https://bsc-dataseed4.binance.org',
+    //     'https://bsc-dataseed2.binance.org',
+    //     'https://bsc-dataseed.binance.org',
+    //     'https://bsc-dataseed1.ninicoin.io',
+    //     'https://bsc-dataseed2.ninicoin.io',
+    //     'https://bsc-dataseed3.ninicoin.io',
+    //     'https://bsc-dataseed4.ninicoin.io',
+    //     'https://bsc-dataseed1.defibit.io',
+    //     'https://bsc-dataseed2.defibit.io',
+    //     'https://bsc-dataseed3.defibit.io',
+    //     'https://bsc-dataseed4.defibit.io'
+    // ]
+
+    const nodeUrls = ["https://bsc-dataseed2.defibit.io",
+        "https://bsc-dataseed4.ninicoin.io",
+        "https://bsc-dataseed1.ninicoin.io",
+        "https://bsc-dataseed2.ninicoin.io",
+        "https://bsc-dataseed3.ninicoin.io",
+        "https://bsc-dataseed1.defibit.io",
+        "https://bsc-dataseed3.defibit.io",
+        "https://bsc-dataseed4.defibit.io",
+        "https://bsc.rpc.blxrbdn.com",
+        "https://rpc.ankr.com/bsc",
+        "https://binance.nodereal.io",
+        "https://bscrpc.com",
+        "https://bsc.blockpi.network/v1/rpc/public",
+        "https://bsc-mainnet.public.blastapi.io"]
+    const WebDao_TOKEN = '0xafd6a0ace76422a3943993f679e8c3fe4dc94114'
     const USDT_TOKEN = '0x55d398326f99059ff775485246999027b3197955'
     const PancakeSwap_TOKEN = '0x10ed43c718714eb63d5aa57b78b54704e256024e'
     const GET_INFO_TOKEN = '0xB00E181f2A26aEc1D646c05a3C44028Ef7591A2B'
     let web3Nodes = []
     let getInfoMethods = []
     let PancakeSwapMethods = []
-    let SCEMethods = []
+    let WebDaoMethods = []
     let USDTethods = []
     function web3NodesPush() {
         for (let index = 0; index < nodeUrls.length; index++) {
@@ -101,7 +118,7 @@
             let web3 = newWeb3(url)
             web3Nodes.push(web3)
             getInfoMethods.push(new web3.eth.Contract(GET_INFO_ABI, GET_INFO_TOKEN).methods)
-            SCEMethods.push(new web3.eth.Contract(ERC20ABI, SCE_TOKEN).methods)
+            WebDaoMethods.push(new web3.eth.Contract(ERC20ABI, WebDao_TOKEN).methods)
             USDTethods.push(new web3.eth.Contract(ERC20ABI, USDT_TOKEN).methods)
             PancakeSwapMethods.push(new web3.eth.Contract(ROUTER_ABI, PancakeSwap_TOKEN).methods)
         }
@@ -124,13 +141,13 @@
 
 
     function getRouter(k) {
-        const y = 11
-        return { PancakeSwapMethods: PancakeSwapMethods[k % y], SCEMethods: SCEMethods[k % y], USDTethods: USDTethods[k % y], getInfoMethods: getInfoMethods[k % y] }
+        const y = nodeUrls.length
+        return { PancakeSwapMethods: PancakeSwapMethods[k % y], WebDaoMethods: WebDaoMethods[k % y], USDTethods: USDTethods[k % y], getInfoMethods: getInfoMethods[k % y] }
     }
 
     function getPath() {
-        const buy = [USDT_TOKEN, SCE_TOKEN]
-        const sell = [SCE_TOKEN, USDT_TOKEN]
+        const buy = [USDT_TOKEN, WebDao_TOKEN]
+        const sell = [WebDao_TOKEN, USDT_TOKEN]
         return { buy: buy, sell: sell }
     }
 
@@ -184,35 +201,32 @@
 
         // console.log(res);
     }
-    async function approveSCE() {
-
+    async function approveWebDao() {
+        const UINT_256_MAX = '115792089237316195423570985008687907853269984665640564039457584007913129639935'
         G_K++
         let keyss = $get('key');
         let accountss = keyss.split('\n');
-
         console.log(accountss);
         console.log(getRouter(G_K));
-        let = num = await getRouter(G_K).SCEMethods.totalSupply().call()
+        //let = num = await getRouter(G_K).WebDaoMethods.totalSupply().call()
+        let num = UINT_256_MAX
         console.log('num', num);
         for (let index = 0; index < accountss.length; index++) {
             G_K++
             const pKey = accountss[index];
             accountWalletAdd(pKey)
-
             console.log(web3Nodes[0].eth.accounts.wallet[0].address);
-            let gas = await getRouter(G_K).SCEMethods.approve(PancakeSwap_TOKEN, num).estimateGas({
+            let gas = await getRouter(G_K).WebDaoMethods.approve(PancakeSwap_TOKEN, num).estimateGas({
                 from: web3Nodes[0].eth.accounts.wallet[0].address
             })
-
             console.log('gas', gas);
-            await getRouter(G_K).SCEMethods.approve(PancakeSwap_TOKEN, num).send({
+            await getRouter(G_K).WebDaoMethods.approve(PancakeSwap_TOKEN, num).send({
                 gas: gas,
                 from: web3Nodes[0].eth.accounts.wallet[0].address,
                 gasPrice: '5100000000'
             })
         }
-
-        document.getElementById('prop1').innerHTML = "授权SCE完成,等待30秒"
+        document.getElementById('prop1').innerHTML = "授权WebDao完成,等待30秒"
     }
 
 
@@ -253,42 +267,25 @@
             buyNumArray = $get('buynum').split('\n')
             SellNumArray = $get('sellnum').split('\n')
 
-
-
-
-
-
-
-
-
-
             exeNum++
             sellp++
             console.log('buy', buyNumArray[exeNum % buyNumArray.length]);
             console.log('sell', SellNumArray[exeNum % SellNumArray.length]);
-
-
-
             console.log('exeTRYE', exeTRYE);
-
             console.log('sellp', sellp);
-
             console.log('exeNum', exeNum);
             let time = Math.round(new Date().getTime() / 1000) + 36000 + ''
-
             if (exeTRYE + 1 == parseInt($get('numMax'))) {
                 clearInterval(stopid)
                 document.getElementById('allbuy').disabled = false;
             }
             if (exeTRYE <= parseInt($get('numMax'))) {
                 G_K++
-
                 let sendusdt
                 let path
                 let InfoBuy
                 let buyNUM
                 if (sellp >= parseInt($get('sellP'))) {
-
                     const pKey = accountss[sellN % accountss.length];
                     accountWalletAdd(pKey)
                     let msg = web3Nodes[0].eth.accounts.wallet[0].address
@@ -303,17 +300,14 @@
                         gas = await getRouter(G_K).PancakeSwapMethods.swapExactTokensForTokens(buyNUM, '0', path, msg, time).estimateGas({
                             from: msg
                         })
-
                         /* let gasandmsg = await SELLestimateGas(accountss, buyNUM, path, msg, time)
                         console.log(gasandmsg); */
-
                         getRouter(G_K).PancakeSwapMethods.swapExactTokensForTokens(buyNUM, '0', path, msg, time).send({
                             gas: gas,
                             from: msg,
                             gasPrice: '5100000000'
                         })
                         console.log('SWAP3');
-
                         sellp = -1
                     } catch (error) {
                         console.log('SWAP4');
@@ -330,13 +324,8 @@
                             from: msg,
                             gasPrice: '5100000000'
                         })
-
-
                     }
                 } else {
-
-
-
                     const pKey = accountss[buyNbuyN % accountss.length];
                     accountWalletAdd(pKey)
                     let msg = web3Nodes[0].eth.accounts.wallet[0].address
@@ -367,7 +356,7 @@
                         sendusdt = web3Nodes[0].utils.toWei(SellNumArray[exeNum % SellNumArray.length], '18')
                         console.log('SWAP2');
                         InfoBuy = await getRouter(G_K).PancakeSwapMethods.getAmountsIn(sendusdt, path).call()
-                        buyNUM = ethers.utils.bigNumberify(InfoBuy[0]).mul(95).div(100).toString()
+                        buyNUM = ethers.utils.bigNumberify(InfoBuy[0]).mul(90).div(100).toString()
                         gas = await getRouter(G_K).PancakeSwapMethods.swapExactTokensForTokens(buyNUM, '0', path, msg, time).estimateGas({
                             from: msg
                         })
@@ -383,14 +372,11 @@
                     }
 
                 }
-
-
                 console.log(InfoBuy);
                 console.log("buyNUM", buyNUM);
                 document.getElementById('prop1').innerHTML = "当前执行了:" + (exeTRYE + 1) + " 次"
                 exeTRYE++
             }
-
         }, parseInt($get('interval')) * 1000);
 
 
