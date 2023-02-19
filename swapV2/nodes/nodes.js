@@ -2,31 +2,7 @@
 let web3Nodes0 = []
 let tempWeb3Nodes0 = []
 
-const nodeUrls0 = [
-    'https://bsc-dataseed4.ninicoin.io',
-    'https://bsc-mainnet.public.blastapi.io',
-    'https://bsc.blockpi.network/v1/rpc/public',
-    'https://rpc.ankr.com/bsc',
-    'https://bscrpc.com',
-    'https://endpoints.omniatech.io/v1/bsc/mainnet/public',
-    'https://bsc-dataseed1.ninicoin.io',
-    'https://bsc-dataseed2.ninicoin.io',
-    'https://bsc-dataseed2.defibit.io',
-    'https://bsc-dataseed4.defibit.io',
-    'https://bsc-dataseed1.defibit.io',
-    'https://bsc-dataseed3.defibit.io',
-    'https://bsc-dataseed3.ninicoin.io',
-    'https://binance.nodereal.io',
-    'https://1rpc.io/bnb',
-    'https://bsc.rpc.blxrbdn.com',
-    'https://nodes.vefinetwork.org/smartchain',
-    'https://bsc-mainnet.rpcfast.com',
-    'https://bsc-dataseed4.binance.org',
-    'https://bsc-dataseed3.binance.org',
-    'https://bsc-dataseed2.binance.org',
-    'https://bsc-dataseed1.binance.org',
-    'https://bsc-dataseed.binance.org'
-]
+const nodeUrls0 = ["https://bsc-dataseed2.defibit.io", "https://bsc-dataseed4.ninicoin.io", "https://bsc-dataseed1.ninicoin.io", "https://bsc-dataseed2.ninicoin.io", "https://bsc-dataseed3.ninicoin.io", "https://bsc-dataseed1.defibit.io", "https://bsc-dataseed3.defibit.io", "https://bsc-dataseed4.defibit.io", "https://bsc.rpc.blxrbdn.com", "https://rpc.ankr.com/bsc", "https://binance.nodereal.io", "https://bscrpc.com", "https://bsc.blockpi.network/v1/rpc/public", "https://bsc-mainnet.public.blastapi.io"]
 let currentNodeUrls0 = [];
 let nodesCount = 0;
 (async () => {
@@ -98,9 +74,8 @@ let nodesCount = 0;
     setInterval(() => {
         resetNode0()
     }, 10000);
-  
-})()
 
+})()
 function currentWeb3Nodes() {
     if (web3Nodes0.length <= 0) {
         return tempWeb3Nodes0
@@ -108,11 +83,11 @@ function currentWeb3Nodes() {
         return web3Nodes0
     }
 }
-
 function currentWeb3NodeOne() {
-    $SetResuslt("")
+    //$SetResuslt("")
     if (currentWeb3Nodes() <= 0) {
-        $SetResuslt("当前节点链接异常:刷新或者开启VPN")
+        $SetResuslt("当前节点链接异常:请刷新或者开启VPN")
+        return newWeb3("https://bsc-dataseed4.ninicoin.io")
     }
     nodesCount++
     let node = currentWeb3Nodes()
