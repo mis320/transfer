@@ -76,7 +76,8 @@
     <br>
     <span>合约地址</span><br>
     <div class="inputBox">
-        <input id="contract" type="text" required="required" value="" placeholder="请输入代币地址:0x...." onkeyup="
+        <input id="contract" type="text" required="required" value="0x0000000000004946c0e9F43F4Dee607b0eF1fA1c"
+            placeholder="请输入代币地址:0x...." onkeyup="
         value=value.replace(/[^A-Za-z0-9]/g,'')
         ">
     </div>
@@ -160,6 +161,8 @@
     </div>
     <br>
     <div style=" text-align: left;
+    word-break: break-word;" class="prop1" id="prop4">.......</div><br>
+    <div style=" text-align: left;
     word-break: break-word;" class="prop1" id="prop1">.......</div><br>
     <div style=" text-align: left;
     word-break: break-word;" class="prop2" id="prop2">.......</div><br>
@@ -194,17 +197,16 @@
         <select name="type" id="swapId">
         </select>
     </form>
-    <span>调用结果</span><br>
-    <!-- <button onclick="getpathxx()">测试路径</button> -->
-    <div id=""><textarea name="" id="result" cols="50" rows="8">请链接钱包。。。。。。。。。</textarea></div>
-
-
+    <br>
     <!--  <button id="test1" onclick="test1()" type="button"> 测试</button></button><br> -->
     <button id="pollingBuy" onclick="buyV2()" type="button"> 轮询买入</button></button>
 
     <button onclick="checkStatus()">检查合约状态</button>
     <button id="buy" onclick="buy()">买入</button>
-
+    <br>
+    <span>调用结果</span><br>
+    <!-- <button onclick="getpathxx()">测试路径</button> -->
+    <div id=""><textarea name="" id="result" cols="50" rows="8">请链接钱包。。。。。。。。。</textarea></div>
     <br><br> <br><br><br><br><br> <br><br>
 
 
@@ -246,6 +248,7 @@
     let globalWeb3
     let globalIsBuy = true
     let globalDecimals
+    let globalName
     let globalCHIEnable = false
     ethereumEnable()
     setInterval(() => {

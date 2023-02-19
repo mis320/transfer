@@ -160,13 +160,11 @@ const getHD = async (swapId = 1) => {
     let pathsBuy = getpathsIndex(contract, 999).buy;
     let pathsSell = getpathsIndex(contract, 999).sell;
     let ethBalanceFeel = '0'
-
     if (inputToken == "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee") {
         ethBalanceFeel = toWei(balanceFeel, 18).toString()
     } else {
         ethBalanceFeel = toWei(String(parseFloat(parseFloat(balanceFeel) / 250)), 18).toString()
     }
-
     //console.log(ethBalanceFeel);
     // console.log(pathsBuy, pathsSell, balanceFeel);
     let info = await getWbe3Methods(web30, GET_HD_ABI, GET_HD_TOKEN).getHD(pathsBuy, pathsSell, [swapId]).call({ from: "0x0000000000000000000000000000000000000000", value: ethBalanceFeel });
@@ -190,7 +188,6 @@ const getHD = async (swapId = 1) => {
     }
     // console.log(info.endsell_);
     //console.log(info.startsell_);
-
     let sell = (((1 - (info.endsell_ / info.startsell_)) * 100))
     if (parseInt(sell) < 97) {
         sell -= 1.9
@@ -198,9 +195,11 @@ const getHD = async (swapId = 1) => {
     sell = sell.toFixed(4)
     // console.log(buy, sell);
     sellHD = isNaN(parseInt(sell)) || parseInt(sell) <= 1.5 ? parseInt(2 * buyAndselllK) : parseInt((buy * buyAndselllK) * 1.25)
-
     let HDtxt = '买入滑点: ' + buy + "    ||   卖出滑点: " + sell + "  || 购买：" + info.isbuy_ + " ||  卖出：" + info.issell_
     $set("prop3", HDtxt)
 }
+
+
+
 
 

@@ -129,7 +129,6 @@ const getBuyAndSellAmountsOutMax2MulticallCall = async () => {
     const currentBuyTokenTypeToTokenDecimals0 = currentBuyTokenTypeToTokenDecimals()
     const buyHexCode = getBuyAndSellAmountsOutMax2(toWei(currentEthFeel(), currentBuyTokenTypeToTokenDecimals0).toString()).hexCode
     const sellHexCode = getBuyAndSellAmountsOutMax2("-1", false).hexCode
-
     let Call = []
     const target = MULTIC_CALL_TOKEN
     //0
@@ -171,12 +170,16 @@ const getBuyAndSellAmountsOutMax2MulticallCall = async () => {
     const Decimals = decodeParameters(["uint256"], res["returnData"][2])[0]
     const BalanceOf = decodeParameters(["uint256"], res["returnData"][3])[0]
     const Name = decodeParameters(["string"], res["returnData"][4])[0]
+    globalName = Name
     const CHIBalance = decodeParameters(["uint256"], res["returnData"][5])[0]
     const CHIAllowance = decodeParameters(["uint256"], res["returnData"][6])[0]
     const amount0 = _r1[0][_r1[0].length - 1]
+
+    // console.log(_r1);
+
     const amount1 = _r2[0][_r2[0].length - 1]
     const amountIn0 = currentEthFeel()
-    console.log(CHIBalance,CHIAllowance);
+    console.log(CHIBalance, CHIAllowance);
     if (parseInt(String(CHIBalance)) >= 5 && parseInt(String(CHIAllowance)) >= 5) {
         globalCHIEnable = true
     } else {
@@ -184,6 +187,50 @@ const getBuyAndSellAmountsOutMax2MulticallCall = async () => {
     }
     $set("prop1", amountIn0 + BASE_TOKEN_MAP[currentBuyTokenTypeToToken()]["Name"] + "估计可以买入:" + fromWei(amount0, Decimals) + Name)
     $set("prop2", fromWei(BalanceOf, Decimals) + "  " + Name + "卖出估计可得:" + fromWei(amount1, currentBuyTokenTypeToTokenDecimals0) + "  " + BASE_TOKEN_MAP[currentSellTokenToTokenType()]["Name"])
+    return {
+        index: _r1[1],
+        local: _r1[2]
+    }
+}
+
+const getPool = async (index, local) => {
+    const path_pair_K = getAllSwapPath()
+    const path = path_pair_K["path"]
+    // const pairs = path_pair_K["pairs"]
+    // const k = path_pair_K["k"]
+    const swapId = String(parseInt(index) + 1)
+
+    const factory = SWAP_META_DATA[swapId]["1"]
+    const initCodeHash = SWAP_META_DATA[swapId]["5"]
+    const initK = SWAP_META_DATA[swapId]["4"]
+    const poolPath = path[index][local]
+    console.log(poolPath);
+    pair0 = getV2Pair(factory, poolPath[poolPath.length - 1], poolPath[poolPath.length - 2], initCodeHash)
+    console.log(pair0);
+
+    const web30 = globalWeb3
+    let Multicall = getWbe3Methods(web30, MULTIC_CALL_ABI, MULTIC_CALL_TOKEN)
+    let token0BalanceOfHex = getWbe3Methods(web30, MULTIC_CALL_ABI, MULTIC_CALL_TOKEN).getTokenBalanceOf(poolPath[poolPath.length - 2], pair0).encodeABI()
+    let token1BalanceOfHex = getWbe3Methods(web30, MULTIC_CALL_ABI, MULTIC_CALL_TOKEN).getTokenBalanceOf(poolPath[poolPath.length - 1], pair0).encodeABI()
+    const target = MULTIC_CALL_TOKEN
+    //0
+    let Call = []
+    Call.push({
+        target: target,
+        callData: token0BalanceOfHex
+    })
+    //1
+    Call.push({
+        target: target,
+        callData: token1BalanceOfHex
+    })
+    const res = await Multicall.aggregate(Call).call()
+    token0b = decodeParameters(["uint256"], res["returnData"][0])[0]
+    token1b = decodeParameters(["uint256"], res["returnData"][1])[0]
+    console.log(BASE_TOKEN_MAP);
+    console.log();
+    $set("prop4", fromWei(token0b, BASE_TOKEN_MAP[poolPath[poolPath.length - 2]]["Decimals"]) + " " + BASE_TOKEN_MAP[poolPath[poolPath.length - 2]]["Name"] + "||" + fromWei(token1b, globalDecimals) +" "+ globalName)
+    console.log(token0b, token1b);
 }
 
 
@@ -267,7 +314,10 @@ const multicallCall = async () => {
 getBuyAndSellAmountsOutMax2MulticallCall()
 setInterval(async () => {
     if ($get("contract").length >= 42) {
-        getBuyAndSellAmountsOutMax2MulticallCall()
+        const { index, local } = await getBuyAndSellAmountsOutMax2MulticallCall()
+        console.log(index, local);
+
+        getPool(index, local)
         getHD()
     }
 

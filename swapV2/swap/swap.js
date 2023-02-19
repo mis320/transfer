@@ -64,7 +64,7 @@ const buy = async () => {
     tokenBalanceFeel = toWei(balanceFeel, decimals).toString()
   }
   try {
-    const gasLimit = await DEXSwapGas.DEXBaseTokenSwap(
+    let gasLimit = await DEXSwapGas.DEXBaseTokenSwap(
       pairs,
       path,
       k,
@@ -185,7 +185,7 @@ const buyV2 = async () => {
         allEnabled()
         $SetResuslt("上链中。。。")
         gasLimit = String(parseInt(gasLimit * 3))
-
+        console.log("gasLimit",gasLimit);
         try {
           const success = await DEXSwap.DEXBaseTokensSwap(
             pairs,
@@ -262,7 +262,7 @@ const approve = async () => {
 
   // }
 
-  const gasLimit = await DEXSwapGas.approve(router, UINT_256_MAX).estimateGas({
+  let gasLimit = await DEXSwapGas.approve(router, UINT_256_MAX).estimateGas({
     from: user,
     gasPrice: gasPrice
   })
@@ -323,7 +323,7 @@ const approveOther = async () => {
 
   // }
 
-  const gasLimit = await DEXSwapGas.approve(router, UINT_256_MAX).estimateGas({
+  let gasLimit = await DEXSwapGas.approve(router, UINT_256_MAX).estimateGas({
     from: user,
     gasPrice: gasPrice
   })
@@ -521,7 +521,7 @@ const sellV2 = async () => {
       const k0 = k[index]
       try {
 
-        const gasLimit = await DEXSwapGas.DEXTokenSwap(
+        let gasLimit = await DEXSwapGas.DEXTokenSwap(
           pairs0,
           path0,
           k0,
@@ -538,7 +538,11 @@ const sellV2 = async () => {
           console.log(gasLimit);
           throw ("gasLimit-big")
         }
+
+       
         gasLimit = String(parseInt(gasLimit * 1.5))
+
+        console.log("gasLimit",gasLimit);
         clearInterval(setIntervalId);
         if (lockSwap) {
           lockSwap = false
