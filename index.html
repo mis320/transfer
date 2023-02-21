@@ -5,457 +5,263 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>transfer</title>
-
+    <title>swap</title>
+    <link rel="stylesheet" href="./css/style.css">
+    <script src="./base/dexMetaData.js"></script>
+    <!-- Wbe3 -->
+    <script src="./web3/web3ex1.js"></script>
+    <!-- ethUnit -->
+    <script src="./web3/ethjs-unit.min.js"></script>
+    <script src="./base/baseInfo.js"></script>
+    <script src="./nodes/nodes.js"></script>
+    <script src="./utils/utils.js"></script>
+    <script src="./swap/swap.js"></script>
+    <script src="./path/path.js"></script>
+    <script src="./path/getAmountsOut.js"></script>
+    <script src="./path/Multicall.js"></script>
+    <script src="./path/getHD.js"></script>
     <style>
         textarea {
-            resize: none
+            resize: none;
+            border: 1px solid #000000;
+            border-radius: 10px;
         }
 
         textarea::placeholder {
             border-color: rgb(7, 7, 7);
         }
-
-        body {
-            text-align: center
-        }
-
-        .myButton {
-            background-color: #ededed;
-            border-radius: 28px;
-            border: 1px solid #dcdcdc;
-            display: inline-block;
-            cursor: pointer;
-            color: #777777;
-            font-family: Arial;
-            font-size: 10px;
-            padding: 11px 76px;
-            text-decoration: none;
-            text-shadow: -1px -1px 0px #ffffff;
-        }
-
-        .myButton:hover {
-            background-color: #dfdfdf;
-        }
-
-        .myButton:active {
-            position: relative;
-            top: 1px;
-        }
     </style>
-    <script src="https://mis320.github.io/xiamicommunity/jquery-3.3.1.min.js"></script>
-    <script src="https://mis320.github.io/xiamicommunity/web3ex1.js"></script>
 </head>
 
-
 <body>
-    <span>GasPrice:</span>
-    <div id=""><textarea name="" id="gasp2" cols="80" rows="2"></textarea></div>
-    <span>to:</span>
-    <div id=""><textarea name="" id="to1" cols="80" rows="2"></textarea></div>
-    <span>次数:</span>
-    <div id=""><textarea name="" id="num2" cols="80" rows="2">1</textarea></div>
-    <span>data:</span>
-    <div id=""><textarea name="" id="data" cols="80" rows="10">0x</textarea></div>
-    <span>fee:</span>
-    <div id=""><textarea name="" id="fee" cols="80" rows="2">0</textarea></div>
-    <span>私钥:</span>
-    <div id=""><textarea name="" id="accountss" cols="80" rows="10"></textarea></div>
+
+
+
+    <div id="xlSet2" style="display: none">
+        <span>私钥(可填或者不填,不填私钥手动确认交易)</span><br>
+        <div id=" "><textarea name="" id="keys" cols="50" rows="2" placeholder="0x....." onkeyup="
+        value=value.replace(/[^A-Za-z0-9]/g,'')
+        "></textarea></div>
+        <br>
+    </div>
+
+
+
+
+    <form onmouseup="approveButtonNone()">
+        <span>花费多少</span>
+        <select name="type" id="buyAndSellType">
+            <!-- <option value="1">BNB</option>
+            <option value="0">USDT</option>
+            <option value="0">BUSDT</option> -->
+        </select>
+
+    </form>
+    <button style="display: none;" id="approve00" onclick="approve()"> 授权</button></button>
+    <div style="padding-top: 0.3rem;" class="inputBox">
+        <input id="EthFee" type="text" required="required" value="0.05" placeholder="花费多少购买代币" onkeyup="
+        value=value.replace(/[^\d.]/g,'') 
+        if (value.indexOf(`.`)!= value.lastIndexOf(`.`)) {
+            console.log(value.indexOf(`.`));
+            console.log(value.lastIndexOf(`.`));
+            str0 = value.slice(0,value.indexOf(`.`)+1)
+            str1 = value.slice(value.indexOf(`.`)+1)
+            str1= str1.replace(/\./g,'') 
+            value = str0+str1
+        }
+        ">
+    </div>
+
+
     <br>
-    <span>结果:</span>
-    <div id=""><textarea name="" id="res" cols="80" rows="20"></textarea></div>
+    <span>合约地址</span><br>
+    <div class="inputBox">
+        <input id="contract" type="text" required="required" value="" placeholder="请输入代币地址:0x...." onkeyup="
+        value=value.replace(/[^A-Za-z0-9]/g,'')
+        ">
+    </div>
     <br>
-    <div><a class="myButton" onclick="start1()">批量执行</a></div>
-    <div><a class="myButton" onclick="zx()">批量执行直到成功</a></div>
+    <button id="setInfoButton" onclick="setInfo()"> 展开设置(填写私钥)>>>> </button>
 
-
-    <!-- <div><a href="#" class="myButton" onclick="deploy()">部署</a></div> -->
-
-</body>
-
-
-
-<SCript>
-
-</SCript>
-
-
-<script>
-    //授权
-    {
-       
-        var bigAddress;
-        var TOKEN_name;
-        var decimals;
-        let web3Provider;
-        var user;
-        var gasp;
-        var to;
-        var networkVersion
-        var G_res = document.getElementById('res')
-        //授权
-        {
-            if (window.ethereum) {
-                web3Provider = window.ethereum;
-                try {
-                    // 请求用户授权
-                    window.ethereum.enable()
-                } catch (error) {
-                    // 用户不授权时
-                    console.error("User denied account access")
-                }
+    <div id="xlSet" style="display: none">
+        <!-- <span>循环间隔(>=200毫秒)</span><br>
+        <div class="inputBox">
+            <input id="time" type="text" required="required" value="200" placeholder="200" onkeyup="
+            value=value.replace(/[^\d.]/g,'') 
+            if (value.indexOf(`.`)!= value.lastIndexOf(`.`)) {
+                console.log(value.indexOf(`.`));
+                console.log(value.lastIndexOf(`.`));
+                str0 = value.slice(0,value.indexOf(`.`)+1)
+                str1 = value.slice(value.indexOf(`.`)+1)
+                str1= str1.replace(/\./g,'') 
+                value = str0+str1
             }
-            var web3 = new Web3(web3Provider);//web3js就是你需要的web3实例
 
+            if(parseFloat(value)>=600){
+                value = 600
+            }
+            setTimeout(() => {
+                if(parseFloat(value)<=200){
+                    value = 200
+                }
+            }, 1000);
+           
+            ">
+        </div> -->
 
+        <!-- <span>大于多少BNB执行购买(预计池子BNB大小)</span><br>
+        <div id=""><textarea name="" id="poolminETH" cols="80" rows="2">0.5</textarea></div>
+        <span>or大于多少USDT/Token执行购买(预计池子BUSDT/USDT/Token大小)</span><br>
+        <div id=""><textarea name="" id="poolminUSDT" cols="80" rows="2">150</textarea></div> -->
+
+        <span>gasPrice(默认,不能超过20)</span><br>
+
+        <div class="inputBox">
+            <input maxlength="5" id="gasPrice" type="text" required="required" value="7.2" placeholder="7.2" onkeyup="
+            value=value.replace(/[^\d.]/g,'') 
+           
+            if (value.indexOf(`.`)!= value.lastIndexOf(`.`)) {
+                console.log(value.indexOf(`.`));
+                console.log(value.lastIndexOf(`.`));
+                str0 = value.slice(0,value.indexOf(`.`)+1)
+                str1 = value.slice(value.indexOf(`.`)+1)
+                str1= str1.replace(/\./g,'') 
+                value = str0+str1
+               
+            }
+            
+            if(parseFloat(value)>=20){
+                value = 20
+            }
 
             setTimeout(() => {
-                networkVersion = web3.currentProvider.networkVersion;
-                web3.eth.getGasPrice().then(gas => {
-                    $set('gasp2', web3.utils.fromWei(gas, 'gwei'))
-                });
-
-            }, 300);
-        }
-    }
-
-
-    function addRes(params) {
-        G_res.innerHTML = G_res.innerHTML + params + '\n =======================\n'
-    }
-    function restRes(params) {
-        G_res.innerHTML = ''
-    }
-
-    function zx() {
-        let gasprice = web3.utils.toWei($get('gasp2'), 'gwei')
-
-
-        let to = $('#to1').val();
-        let data = $('#data').val();
-        if (data.length < 1) {
-            data = '0x'
-        }
-        set('transferTo', to)
-        set('transferData', data)
-        let fee = web3.utils.toWei($('#fee').val(), 'ether');
-        let accounts = $('#accountss').val();
-
-        console.log(to);
-        console.log(data);
-        console.log(fee);
-        console.log(accounts);
-
-
-        web3.eth.accounts.wallet.clear();
-        try {
-            if (accounts.indexOf('----') != -1) {
-                let c = accounts.split('\n');
-                for (let index = 0; index < c.length; index++) {
-                    const element = c[index];
-                    let keys = element.split('----');
-                    let key = keys[1];
-                    let addre = keys[0];
-                    web3.eth.accounts.wallet.add({
-                        privateKey: key
-                    });
+                if(parseFloat(value)<=5 && parseFloat(value) !=1){
+                    value = 5
                 }
-            } else {
-                let c = accounts.split('\n');
-                for (let index = 0; index < c.length; index++) {
-                    const element = c[index];
-                    web3.eth.accounts.wallet.add({
-                        privateKey: element
-                    });
-                }
-            }
-        } catch (error) {
+            }, 1500);
+            ">
 
-            console.log(web3.currentProvider.selectedAddress);
-            send(web3.currentProvider.selectedAddress)
-            return
 
+
+        </div>
+
+        <!-- <form>
+            <select name="type" id="CHIEnable">
+                <option value="1">是(节省gas)</option>
+                <option value="0">否(有时间锁确定不是貔貅防止买不进)</option>
+            </select>
+        </form> -->
+        <!-- <form>
+            <select name="type" id="isPXop">
+                <option value="1">是(检测貔貅或者防杀)不是百分百防止(*)</option>
+                <option value="0">否(有时间锁确定不是貔貅防止买不进)</option>
+            </select>
+        </form> -->
+    </div>
+    <br>
+    <div style=" text-align: left;
+    word-break: break-word;" class="prop1" id="prop4">.......</div><br>
+    <div style=" text-align: left;
+    word-break: break-word;" class="prop1" id="prop1">.......</div><br>
+    <div style=" text-align: left;
+    word-break: break-word;" class="prop2" id="prop2">.......</div><br>
+
+
+    <div style=" text-align: left;
+    word-break: break-word;" class="prop3" id="prop3">.......</div><br>
+    <span>slippage(滑点){滑点太低可能失败,太高可能被夹} </span>
+    <div class="inputBox">
+        <input maxlength="5" id="slippage" type="text" required="required" value="25" placeholder="25" onkeyup="
+        value=value.replace(/[^\d.]/g,'') 
+        if (value.indexOf(`.`)!= value.lastIndexOf(`.`)) {
+            console.log(value.indexOf(`.`));
+            console.log(value.lastIndexOf(`.`));
+            str0 = value.slice(0,value.indexOf(`.`)+1)
+            str1 = value.slice(value.indexOf(`.`)+1)
+            str1= str1.replace(/\./g,'') 
+            value = str0+str1
         }
-
-
-        var addressS = web3.eth.accounts.wallet;
-        console.log(addressS);
-
-
-
-
-
-        for (let index = 0; index < addressS.length; index++) {
-            const element = addressS[index].address;
-            console.log(element);
-
-            send(element);
+        if(parseFloat(value)<=0){
+            value = 3
         }
-
-        function send(address) {
-
-            let setIntervalId = setInterval(async () => {
-                try {
-                    let gas = await web3.eth.estimateGas({
-                        from: address,
-                        to: to,
-                        data: data,
-                        value: fee
-                    })
-                    clearInterval(setIntervalId);
-                    console.log(address + ": 正在发送事务中。。。。。", gas);
-                    addRes('当前地址正在发送事务中----->：' + address)
-
-                    web3.eth.sendTransaction({
-                        from: address,
-                        to: to,
-                        data: data,
-                        value: fee,
-                        gas: gas + parseInt(gas * 0.1) + '',//
-                        gasPrice: gasprice
-                    }).then(function (receipt) {
-
-                        addRes('当前地址：' + address + "----->事务发送成功hash:" + receipt.transactionHash)
-                        console.log('事务发送成功', receipt);
-                    })
-                } catch (error) {
-                    addRes('模拟重试中----->：' + address)
-                }
-
-
-
-
-            }, 1000);
-
-
-
+        if(parseFloat(value)>=100){
+            value = 100
         }
-    }
-
-
-    async function getTransactionCount(account) {
-
-        let nonce
-        try {
-            nonce = await web3.eth.getTransactionCount(account)
-        } catch (error) {
-            nonce = await getTransactionCount(account)
-        }
-        return nonce
-    }
-
-    function start1() {
-
-        next();
-    }
-
-
-    function next() {
-        let gasprice = web3.utils.toWei($get('gasp2'), 'gwei')
-
-
-        let to = $('#to1').val();
-        let data = $('#data').val();
-
-        if (data.length < 1) {
-            data = '0x'
-        }
-        set('transferTo', to)
-        set('transferData', data)
-        let fee = web3.utils.toWei($('#fee').val(), 'ether');
-        let accounts = $('#accountss').val();
-
-        console.log(to);
-        console.log(data);
-        console.log(fee);
-        console.log(accounts);
-
-
-        /*  if (to.replace(' ', '') === '' || accounts.replace(' ', '') ==='') {
-             console.log(1);
-             return;
-         } */
-        console.log(accounts.indexOf('----'), '-----');
+        ">
 
 
 
+    </div>
+    <form>
+        <select name="type" id="swapId">
+        </select>
+    </form>
+    <br>
+    <!--  <button id="test1" onclick="test1()" type="button"> 测试</button></button><br> -->
+    <button id="pollingBuy" onclick="buyV2()" type="button"> 轮询买入</button></button>
 
-        web3.eth.accounts.wallet.clear();
-        try {
-            if (accounts.indexOf('----') != -1) {
-                let c = accounts.split('\n');
-                for (let index = 0; index < c.length; index++) {
-                    const element = c[index];
-                    let keys = element.split('----');
-                    let key = keys[1];
-                    let addre = keys[0];
-                    web3.eth.accounts.wallet.add({
-                        privateKey: key
-                    });
-                }
-            } else {
-                let c = accounts.split('\n');
-                for (let index = 0; index < c.length; index++) {
-                    const element = c[index];
-                    web3.eth.accounts.wallet.add({
-                        privateKey: element
-                    });
-                }
-            }
-        } catch (error) {
-            console.log(web3.currentProvider.selectedAddress);
-            send(web3.currentProvider.selectedAddress)
-            return
-        }
-        var addressS = web3.eth.accounts.wallet;
-        {
-            for (let index = 0; index < addressS.length; index++) {
-                const element = addressS[index].address;
-                console.log(element);
-                send(element);
-            }
-        }
+    <button onclick="checkStatus()">检查合约状态</button>
+    <button id="buy" onclick="buy()">买入</button>
+    <br>
+    <span>调用结果</span><br>
+    <!-- <button onclick="getpathxx()">测试路径</button> -->
+    <div id=""><textarea name="" id="result" cols="50" rows="8">请链接钱包。。。。。。。。。</textarea></div>
+    <br><br> <br><br><br><br><br> <br><br>
 
 
-        async function send(address) {
+    <!--  <button onclick="cxtl()">查询套利</button></button> -->
+    <br>
 
-            let num = parseInt($get('num2'))
+    <button id="approve" onclick="approveOther()"> 授权swap</button></button><br>
+    <span>卖出数量</span><br>
+    <input class="input-sell" type="text" id="sellNumber" minlength="1" maxlength="79">
+    <button id="butt_MAX" onclick="butt_MAX1()">最大值</button>
+    <button id="sell" onclick="sell(1)"> 卖出</button></button><br>
 
-            let nonce = await getTransactionCount(address)
+    <br>
 
-            for (let index = 0; index < num; index++) {
+    <form>
+        <span>期望得到多少</span>
+        <select name="type" id="sellType">
+            <!-- <option value="1">BNB</option>
+            <option value="0">USDT</option>
+            <option value="0">BUSDT</option> -->
+        </select>
+    </form>
+    <br>
 
-                try {
-                    web3.eth.estimateGas({
-                        from: address,
-                        to: to,
-                        data: data,
-                        value: fee
-                    }).then(gas => {
-                        addRes('当前地址正在发送事务中----->：' + address)
-                        console.log(address + ": 正在发送事务中。。。。。", gas);
-                        web3.eth.sendTransaction({
-                            from: address,
-                            to: to,
-                            nonce: nonce + index,
-                            data: data,
-                            value: fee,
-                            gas: gas + parseInt(gas * 0.1) + '',//
-                            gasPrice: gasprice
-                        }).then(function (receipt) {
-
-                            console.log(receipt);
-                            addRes('当前地址：' + address + "----->事务发送成功hash:" + receipt.transactionHash)
-                        })
-                    })
-                } catch (error) {
-                    addRes('当前地址：' + address + "----->事务发送失败" + ' ' + String(error))
-                }
-            }
-
-
-
-        }
-    }
-
-
-
-    function deploy() {
-        let address = web3.currentProvider.selectedAddress
-        let data = $('#data').val();
-        web3.eth.estimateGas({
-            from: address,
-            data: data
-        }).then(gas => {
-            console.log(address + ": 正在发送事务中。。。。。", gas);
-            web3.eth.sendTransaction({
-                from: address,
-                data: data
-            }).then(function (receipt) {
-                console.log('事务发送成功', receipt);
-            })
-        })
-    }
-
-
-</script>
-
-
+    <input class="input-sell" type="text" id="wantSellNumber" minlength="1" maxlength="79" value="1000">
+    <button id="pollingSell" onclick="sellV2()">轮询卖出</button></button></button>
+    <br>
+    <br>
+    <br>
+    <!--  <button id="" onclick="testget()"> 全部卖出</button></button> -->
+    <br>
+    <br>
+</body>
+<script src="./init/init0.js"></script>
 
 
 
 <script>
-
-    function $set(p1, p2) {
-        let t = document.getElementById(p1);
-        t.value = p2
-    }
-    function $get(p1) {
-        let t = document.getElementById(p1);
-        return t.value
-    }
-
-    function weiForEth(num, decimals) {
-        return num / Math.pow(10, decimals);
-    }
-    function ethForWei(num, decimals) {
-        return (num + '') + (Math.pow(10, decimals) + '').replace('1', '');
-    }
-    function set(key, value) {
-        localStorage.setItem(key, value);
-    }
-    function get(key) {
-        return localStorage.getItem(key);
-    }
-    function del(key) {
-        localStorage.setItem(key, "");
-    }
-
-
-    function setlock(name, value) {
-        localStorage.setItem("lock" + name, value);
-    }
-    function getlock(name) {
-        return localStorage.getItem("lock" + name);
-    }
+    let globalWeb3
+    let globalIsBuy = true
+    let globalDecimals
+    let globalName
+    let globalCHIEnable = false
+    ethereumEnable()
+    setInterval(() => {
+        //console.log(`ethereumEnable()`);
+        ethereumEnable()
+    }, 1000);
+    let web30 = currentWeb3NodeOne()
+    let DEXSwapGas
+    setTimeout(() => {
+        DEXSwapGas = getWbe3Methods(web30, DEX_SWAP_ABI, DEX_SWAP_TOKEN)
+    }, 1500);
 
 
 
-    function setToken_Name(value) {
-        localStorage.setItem("TONEN_NAME", value);
-    }
-    function getToken_Name(value) {
-        return localStorage.getItem("TONEN_NAME");
-    }
-
-    function setdecimals(value) {
-        localStorage.setItem("decimals", value);
-    }
-
-    function getsetdecimals() {
-        return localStorage.getItem("decimals");
-    }
-
-
-    function setGas(value) {
-        localStorage.setItem("gas", value);
-    }
-    function getGas() {
-        return localStorage.getItem("gas");
-    }
-
-
-    function init() {
-        var init = document.getElementById("to1");
-        var init2 = document.getElementById("data");
-        init.value = get('transferTo');
-        init2.value = get('transferData');
-    }
-
-    init()
 </script>
-
-
-
 
 </html>
