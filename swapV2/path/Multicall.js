@@ -167,7 +167,11 @@ const getBuyAndSellAmountsOutMax2MulticallCall = async () => {
     let _r2 = decodeParameters(['uint256[]', 'uint256', "uint256"], res["returnData"][1])
     //let _r3 = decodeParameters(['uint256[]', 'uint256', "uint256"], res["returnData"][2])
     //let _r2
+
+
     const Decimals = decodeParameters(["uint256"], res["returnData"][2])[0]
+
+    globalDecimals = Decimals
     const BalanceOf = decodeParameters(["uint256"], res["returnData"][3])[0]
     const Name = decodeParameters(["string"], res["returnData"][4])[0]
     globalName = Name
