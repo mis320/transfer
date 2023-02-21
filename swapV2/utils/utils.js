@@ -35,11 +35,11 @@ function getWbe3Methods(web30, abi, address) {
 
 function $set(p1, p2) {
     let t = document.getElementById(p1);
-    
+
     if (
         t.nodeName.toUpperCase() == 'SPAN' ||
         t.nodeName.toUpperCase() == 'P' ||
-        t.nodeName.toUpperCase() =='DIV'
+        t.nodeName.toUpperCase() == 'DIV'
     ) {
         t.innerHTML = p2
     } else if (t.nodeName.toUpperCase() == 'IMG') {
@@ -71,9 +71,16 @@ const currentIsUserUseKey = () => {
 
 //获取当前用户
 const currentUser = () => {
-    $SetResuslt("")
-    if (currentWeb3Nodes() <= 0) {
-        $SetResuslt("当前节点链接异常:刷新或者开启VPN")
+    //$SetResuslt("")
+    // if (currentWeb3Nodes() <= 0) {
+    //     $SetResuslt("当前节点链接异常:刷新或者开启VPN")
+    // }
+    let web3CurrentProviderAddres
+
+    try {
+        web3CurrentProviderAddres = globalWeb3.currentProvider.selectedAddress
+    } catch (error) {
+        web3CurrentProviderAddres = null
     }
     if (currentIsUserUseKey()) {
         let Wallet0 = globalWeb3.eth.accounts.wallet
@@ -84,8 +91,10 @@ const currentUser = () => {
         const user = Wallet0[0]["address"]
         Wallet0.clear()
         return user
+    } else if (web3CurrentProviderAddres != null || web3CurrentProviderAddres != undefined) {
+        return web3CurrentProviderAddres
     } else {
-        return globalWeb3.currentProvider.selectedAddress
+        return "0x0000000000000000000000000000000000000000"
     }
 }
 
@@ -164,14 +173,15 @@ const currentCheck = () => {
 }
 //获取gasPrice
 const currentGasPrice = () => {
-    let gasPrice = $get("gasPrice")
-    if (gasPrice <= 5) {
+    let gasPrice = parseFloat($get("gasPrice"))
+    if (gasPrice <= 5 && gasPrice!=1    ) {
         gasPrice = 5
     }
     if (gasPrice >= 20) {
         gasPrice = 20
     }
-    return gasPrice
+    console.log(String(gasPrice),"gwei");
+    return String(gasPrice)
 }
 //获取滑点
 const currentSlippage = () => {
@@ -195,3 +205,15 @@ const currentWantSellNumber = () => {
     return $get("wantSellNumber")
 }
 
+
+//获取nonce
+async function getTransactionNonce(account) {
+    let nonce
+    let web30 = currentWeb3NodeOne()
+    try {
+        nonce = await web30.eth.getTransactionCount(account)
+    } catch (error) {
+        nonce = await getTransactionNonce(account)
+    }
+    return nonce
+}

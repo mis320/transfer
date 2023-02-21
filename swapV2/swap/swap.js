@@ -76,7 +76,7 @@ const buy = async () => {
       value: ethBalanceFeel,
       gasPrice: gasPrice
     })
-    if (parseInt(gasLimit) >= GAS_LIMIT || parseInt(gasLimit) <= 80000) {
+    if (parseInt(gasLimit) >= GAS_LIMIT || parseInt(gasLimit) <= 70000) {
       console.log(gasLimit);
       throw ("gasLimit-big")
     }
@@ -94,6 +94,7 @@ const buy = async () => {
         from: user,
         value: ethBalanceFeel,
         gasPrice: gasPrice,
+        chainId:CHAIN_ID,
         gas: String(parseInt(gasLimit * 1.5))
       })
       console.log(success);
@@ -174,7 +175,7 @@ const buyV2 = async () => {
         value: ethBalanceFeel,
         gasPrice: gasPrice
       })
-      if (parseInt(gasLimit) >= GAS_LIMIT || parseInt(gasLimit) <= 80000) {
+      if (parseInt(gasLimit) >= GAS_LIMIT || parseInt(gasLimit) <= 70000) {
         console.log(gasLimit);
         throw ("gasLimit-big")
       }
@@ -198,6 +199,7 @@ const buyV2 = async () => {
             from: user,
             value: ethBalanceFeel,
             gasPrice: gasPrice,
+        chainId:CHAIN_ID,
             gas: gasLimit
           })
           console.log(success);
@@ -337,7 +339,8 @@ const approveOther = async () => {
   const success = await DEXSwap.approve(router, UINT_256_MAX).send({
     from: user,
     gas: gasLimit,
-    gasPrice: gasPrice
+    gasPrice: gasPrice,
+    chainId:CHAIN_ID
   })
   $SetResuslt("交易成功:" + String(success.transactionHash))
 
@@ -412,7 +415,7 @@ const sell = async () => {
       gasPrice: gasPrice
     })
     console.log(gasLimit);
-    if (parseInt(gasLimit) >= GAS_LIMIT || parseInt(gasLimit) <= 80000) {
+    if (parseInt(gasLimit) >= GAS_LIMIT || parseInt(gasLimit) <= 70000) {
       console.log(gasLimit);
       throw ("gasLimit-big")
     }
@@ -431,6 +434,7 @@ const sell = async () => {
         from: user,
         value: ethBalanceFeel,
         gasPrice: gasPrice,
+        chainId:CHAIN_ID,
         gas: gasLimit
       })
       console.log(success);
@@ -534,7 +538,7 @@ const sellV2 = async () => {
           value: ethBalanceFeel,
           gasPrice: gasPrice
         })
-        if (parseInt(gasLimit) >= GAS_LIMIT || parseInt(gasLimit) <= 80000) {
+        if (parseInt(gasLimit) >= GAS_LIMIT || parseInt(gasLimit) <= 70000) {
           console.log(gasLimit);
           throw ("gasLimit-big")
         }
@@ -562,6 +566,7 @@ const sellV2 = async () => {
               from: user,
               value: ethBalanceFeel,
               gasPrice: gasPrice,
+              chainId:CHAIN_ID,
               gas: gasLimit
             })
             console.log(success);

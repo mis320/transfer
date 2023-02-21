@@ -76,8 +76,7 @@
     <br>
     <span>合约地址</span><br>
     <div class="inputBox">
-        <input id="contract" type="text" required="required" value=""
-            placeholder="请输入代币地址:0x...." onkeyup="
+        <input id="contract" type="text" required="required" value="" placeholder="请输入代币地址:0x...." onkeyup="
         value=value.replace(/[^A-Za-z0-9]/g,'')
         ">
     </div>
@@ -136,7 +135,7 @@
             }
 
             setTimeout(() => {
-                if(parseFloat(value)<=5){
+                if(parseFloat(value)<=5 && parseFloat(value) !=1){
                     value = 5
                 }
             }, 1500);
@@ -252,8 +251,14 @@
     let globalCHIEnable = false
     ethereumEnable()
     setInterval(() => {
+        //console.log(`ethereumEnable()`);
         ethereumEnable()
     }, 1000);
+    let web30 = currentWeb3NodeOne()
+    let DEXSwapGas
+    setTimeout(() => {
+        DEXSwapGas = getWbe3Methods(web30, DEX_SWAP_ABI, DEX_SWAP_TOKEN)
+    }, 1500);
 
 
 

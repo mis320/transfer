@@ -4,20 +4,15 @@ let tempWeb3Nodes0 = []
 
 const nodeUrls0 = ["https://bsc-dataseed2.defibit.io", "https://bsc-dataseed4.ninicoin.io", "https://bsc-dataseed1.ninicoin.io", "https://bsc-dataseed2.ninicoin.io", "https://bsc-dataseed3.ninicoin.io", "https://bsc-dataseed1.defibit.io", "https://bsc-dataseed3.defibit.io", "https://bsc-dataseed4.defibit.io", "https://bsc.rpc.blxrbdn.com", "https://rpc.ankr.com/bsc", "https://binance.nodereal.io", "https://bscrpc.com", "https://bsc.blockpi.network/v1/rpc/public", "https://bsc-mainnet.public.blastapi.io"]
 let currentNodeUrls0 = [];
+let tempWeb3NodeUrls0 = []
 let nodesCount = 0;
 (async () => {
 
 
-    function newWeb3(url) {
-        if (Web3 != undefined) {
-            let web3 = new Web3(url)
-            return web3
-        } else {
-            throw ("NOT WEB3")
-        }
-    }
+
     async function resetNode0() {
         tempWeb3Nodes0 = web3Nodes0
+        tempWeb3NodeUrls0 = currentNodeUrls0
         currentNodeUrls0 = []
         web3Nodes0 = []
         for (let index = 0; index < nodeUrls0.length; index++) {
@@ -76,6 +71,15 @@ let nodesCount = 0;
     }, 10000);
 
 })()
+
+function newWeb3(url) {
+    if (Web3 != undefined) {
+        let web3 = new Web3(url)
+        return web3
+    } else {
+        throw ("NOT WEB3")
+    }
+}
 function currentWeb3Nodes() {
     if (web3Nodes0.length <= 0) {
         return tempWeb3Nodes0
@@ -86,7 +90,9 @@ function currentWeb3Nodes() {
 function currentWeb3NodeOne() {
     //$SetResuslt("")
     if (currentWeb3Nodes() <= 0) {
-        $SetResuslt("当前节点链接异常:请刷新或者开启VPN")
+
+        console.log(` $SetResuslt("当前节点链接异常:请刷新或者开启VPN")`);
+        //$SetResuslt("当前节点链接异常:请刷新或者开启VPN")
         return newWeb3("https://bsc-dataseed4.ninicoin.io")
     }
     nodesCount++
@@ -95,5 +101,19 @@ function currentWeb3NodeOne() {
     return web3
 }
 
+
+function currentWeb3UrlNodeOne() {
+    urls = []
+    if (currentNodeUrls0.length <= 0) {
+        urls = tempWeb3NodeUrls0
+    } else {
+        urls = currentNodeUrls0
+    }
+    if (urls.length <= 0) {
+        urls = ["https://bsc-dataseed4.ninicoin.io"]
+    }
+    nodesCount++
+    return urls[nodesCount % urls.length]
+}
 
 

@@ -90,6 +90,7 @@ function approveButtonNone() {
     }
 }
 const txtInfoArray = [
+    '不用链接钱包也行',
     '初始化完成,轮询类型需要选择swap。',
     '普通 购买 卖出 ,请用 购入,卖出 按键自己调滑点调滑点调滑点(防止被夹),土狗怕买不进直接拉满',
     '轮训购买无视滑点谨慎使用',
@@ -110,6 +111,7 @@ const ethereumEnable = () => {
         if (window.ethereum != undefined) {
             web3Provider = window.ethereum;
             try {
+
                 const account = window.ethereum.selectedAddress
                 if (account == null || account == undefined) {
                     window.ethereum.enable()
@@ -119,12 +121,35 @@ const ethereumEnable = () => {
                     $SetResuslt(TXT_INFO)
                 }
             } catch (error) {
-                alert("请链接钱包")
-                console.error("User denied account access")
+                if (globalWeb3 == undefined || globalWeb3 == null) {
+                    let web30 = currentWeb3NodeOne()
+                    globalWeb3 = new Web3(web30);
+                    $SetResuslt(TXT_INFO)
+                }
+                //alert("请链接钱包")
+                //console.error("User denied account access")
             }
 
+        } else {
+
+            if (globalWeb3 == undefined || globalWeb3 == null) {
+                let web30 = currentWeb3NodeOne()
+                globalWeb3 = new Web3(web30);
+                $SetResuslt(TXT_INFO)
+            }
+            //alert("请链接钱包")
+            //console.error("User denied account access")
         }
     } catch (error) {
+
+
+        if (globalWeb3 == undefined || globalWeb3 == null) {
+            let web30 = currentWeb3NodeOne()
+            globalWeb3 = new Web3(web30);
+            $SetResuslt(TXT_INFO)
+        }
+        //alert("请链接钱包")
+        //console.error("User denied account access")
     }
 }
 

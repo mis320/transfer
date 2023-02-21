@@ -39,8 +39,8 @@ for (const key in BASE_TOKEN_MAP) {
 console.log(BASE_TOKEN_LIST);
 const SWAP_INFO = {
     1: "pancakeSwap(薄饼)",
-    2:"babySwap",
-    3:"apeswap",
+    2: "babySwap",
+    3: "apeswap",
 }
 let SWAP_INFO_MAX_NUMBER = 0
 for (const key in SWAP_INFO) {
