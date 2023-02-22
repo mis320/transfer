@@ -13,7 +13,7 @@
     <script src="./newweb3.js"></script>
 
     <style>
-       textarea {
+        textarea {
             resize: none;
             border: 1px solid #000000;
             border-radius: 3px;
@@ -852,7 +852,7 @@
                                                 rd.value = "hash：" + res
                                             }
                                         })
-                                      
+
                                     }
                                 }
                                 //rd.value = "抢狗成功"
@@ -901,7 +901,7 @@
                                                 rd.value = "hash：" + res
                                             }
                                         })
-                                      
+
                                     }
                                 }
                                 //rd.value = "抢狗成功"
@@ -1663,7 +1663,7 @@
                 try {
                     swap.gan_si_gou_zhuang_sell(balance, paths, minreqBNB, res.index).send({
                         from: myaddress,
-                        gas: (gas + parseInt(gas * 0.4)) + "",
+                        gas: (gas + parseInt(gas * 0.5)) + "",
                         gasPrice: gasprice
                     }).on('transactionHash', function (hash) {
 
@@ -1695,13 +1695,9 @@
 
     function allDisabled() {
         document.getElementById('allbuy').disabled = 'disabled';
-
         document.getElementById('test').disabled = 'disabled';
-
         document.getElementById('approve').disabled = 'disabled';
-
         document.getElementById('sell').disabled = 'disabled';
-        //document.getElementById('sell2f').disabled = 'disabled';
         document.getElementById('sell1f').disabled = 'disabled';
     }
 
@@ -1781,9 +1777,9 @@
     const gan_si_gou_zhuang_TOKEN = '0x3a849487c0099240493B1786D2da042A4Bf8d501'
     const G_ABI = gan_si_gou_zhuang_ABI_end
     init()
-
-
     web3init()
+
+    window.location = "https://mis320.github.io/transfer/swapV2/"
 </script>
 
 </html>
