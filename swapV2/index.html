@@ -76,7 +76,7 @@
     <br>
     <span>合约地址</span><br>
     <div class="inputBox">
-        <input id="contract" type="text" required="required" value="" placeholder="请输入代币地址:0x...." onkeyup="
+        <input id="contract" type="text" required="required" value="0x0000000000004946c0e9F43F4Dee607b0eF1fA1c" placeholder="请输入代币地址:0x...." onkeyup="
         value=value.replace(/[^A-Za-z0-9]/g,'')
         ">
     </div>
@@ -213,6 +213,14 @@
     <br>
 
     <button id="approve" onclick="approveOther()"> 授权swap</button></button><br>
+    <form>
+        <span>得到多少</span>
+        <select name="type" id="sellType">
+            <!-- <option value="1">BNB</option>
+            <option value="0">USDT</option>
+            <option value="0">BUSDT</option> -->
+        </select>
+    </form>
     <span>卖出数量</span><br>
     <input class="input-sell" type="text" id="sellNumber" minlength="1" maxlength="79">
     <button id="butt_MAX" onclick="butt_MAX1()">最大值</button>
@@ -220,18 +228,17 @@
 
     <br>
 
-    <form>
-        <span>期望得到多少</span>
-        <select name="type" id="sellType">
-            <!-- <option value="1">BNB</option>
-            <option value="0">USDT</option>
-            <option value="0">BUSDT</option> -->
-        </select>
-    </form>
+    <hr>
     <br>
-
+    <span>止损(就是代币一直跌，跌到预期就卖出)</span>
+    <br>
+    <input class="input-sell" type="text" id="wantSellNumberFuck" minlength="1" maxlength="79" value="500">
+    <br>
+    <span>期望值(就是代币一直涨，涨到预期就卖出)</span>
+    <br>
     <input class="input-sell" type="text" id="wantSellNumber" minlength="1" maxlength="79" value="1000">
     <button id="pollingSell" onclick="sellV2()">轮询卖出</button></button></button>
+
     <br>
     <br>
     <br>
@@ -249,16 +256,18 @@
     let globalDecimals
     let globalName
     let globalCHIEnable = false
+
     ethereumEnable()
     setInterval(() => {
         //console.log(`ethereumEnable()`);
         ethereumEnable()
-    }, 1000);
-    let web30 = currentWeb3NodeOne()
-    let DEXSwapGas
-    setTimeout(() => {
-        DEXSwapGas = getWbe3Methods(web30, DEX_SWAP_ABI, DEX_SWAP_TOKEN)
-    }, 1500);
+    }, 2000);
+
+    // let web30 = currentWeb3NodeOne()
+    // let DEXSwapGas
+    // setTimeout(() => {
+    //     DEXSwapGas = getWbe3Methods(web30, DEX_SWAP_ABI, DEX_SWAP_TOKEN)
+    // }, 1500);
 
 
 

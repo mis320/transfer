@@ -63,6 +63,8 @@ const buy = async () => {
     const decimals = currentBuyTokenTypeToTokenDecimals()
     tokenBalanceFeel = toWei(balanceFeel, decimals).toString()
   }
+
+
   try {
     let gasLimit = await DEXSwapGas.DEXBaseTokenSwap(
       pairs,
@@ -70,7 +72,7 @@ const buy = async () => {
       k,
       amountOutMin,
       tokenBalanceFeel,
-      globalCHIEnable
+      parseFloat(currentGasPrice()) == 1 ? false : ethBalanceFeel
     ).estimateGas({
       from: user,
       value: ethBalanceFeel,
@@ -89,12 +91,12 @@ const buy = async () => {
         k,
         amountOutMin,
         tokenBalanceFeel,
-        globalCHIEnable
+        parseFloat(currentGasPrice()) == 1 ? false : ethBalanceFeel
       ).send({
         from: user,
         value: ethBalanceFeel,
         gasPrice: gasPrice,
-        chainId:CHAIN_ID,
+        chainId: CHAIN_ID,
         gas: String(parseInt(gasLimit * 1.5))
       })
       console.log(success);
@@ -169,7 +171,7 @@ const buyV2 = async () => {
         k,
         amountOutMin,
         tokenBalanceFeel,
-        globalCHIEnable
+        parseFloat(currentGasPrice()) == 1 ? false : ethBalanceFeel
       ).estimateGas({
         from: user,
         value: ethBalanceFeel,
@@ -186,7 +188,7 @@ const buyV2 = async () => {
         allEnabled()
         $SetResuslt("上链中。。。")
         gasLimit = String(parseInt(gasLimit * 3))
-        console.log("gasLimit",gasLimit);
+        console.log("gasLimit", gasLimit);
         try {
           const success = await DEXSwap.DEXBaseTokensSwap(
             pairs,
@@ -194,12 +196,12 @@ const buyV2 = async () => {
             k,
             amountOutMin,
             tokenBalanceFeel,
-            globalCHIEnable
+            parseFloat(currentGasPrice()) == 1 ? false : ethBalanceFeel
           ).send({
             from: user,
             value: ethBalanceFeel,
             gasPrice: gasPrice,
-        chainId:CHAIN_ID,
+            chainId: CHAIN_ID,
             gas: gasLimit
           })
           console.log(success);
@@ -270,7 +272,7 @@ const approve = async () => {
   })
 
   console.log(gasLimit);
-  if (parseInt(gasLimit) >= 1000000) {
+  if (parseInt(gasLimit) >= 600000) {
     $SetResuslt("该代币可能有问题超过了正常代币交易gas-NN倍")
     throw ("gasLimit-big")
   }
@@ -340,7 +342,7 @@ const approveOther = async () => {
     from: user,
     gas: gasLimit,
     gasPrice: gasPrice,
-    chainId:CHAIN_ID
+    chainId: CHAIN_ID
   })
   $SetResuslt("交易成功:" + String(success.transactionHash))
 
@@ -408,7 +410,7 @@ const sell = async () => {
       amountOutMin,
       tokenBalanceFeel,
       isOutEth,
-      globalCHIEnable
+      parseFloat(currentGasPrice()) == 1 ? false : ethBalanceFeel
     ).estimateGas({
       from: user,
       value: ethBalanceFeel,
@@ -429,12 +431,12 @@ const sell = async () => {
         amountOutMin,
         tokenBalanceFeel,
         isOutEth,
-        globalCHIEnable
+        parseFloat(currentGasPrice()) == 1 ? false : ethBalanceFeel
       ).send({
         from: user,
         value: ethBalanceFeel,
         gasPrice: gasPrice,
-        chainId:CHAIN_ID,
+        chainId: CHAIN_ID,
         gas: gasLimit
       })
       console.log(success);
@@ -459,7 +461,7 @@ const sellV2 = async () => {
   const gasPrice = toWei(currentGasPrice(), "gwei").toString()
   const slippage = currentSlippage()
   const WantSellNumber = toWei(currentWantSellNumber(), currentSellTokenToTokenTypeDecimals())
-
+  const WantSellNumberFuck = toWei(currentWantSellNumberFuck(), currentSellTokenToTokenTypeDecimals())
   let web30 = currentWeb3NodeOne()
   const ethBalanceFeel = "0"
   //console.log(web30);
@@ -490,7 +492,7 @@ const sellV2 = async () => {
   const path_pair_K = getDEXSWAPSellAmountsOutMax2Methods(false)['path_pair_K']
   globalIsBuy = true
 
-  let amountOutMin = WantSellNumber.mul(BN(String(100 - parseInt(slippage)))).div(BN('100')).toString()
+  let amountOutMin = WantSellNumberFuck.mul(BN(String(100 - parseInt(slippage)))).div(BN('100')).toString()
   if (amountOutMin == '0' || amountOutMin == 0) {
     amountOutMin = '1'
   }
@@ -507,13 +509,21 @@ const sellV2 = async () => {
   let setIntervalId = setInterval(async () => {
 
     console.log(count, time);
-
+    console.log("START1");
+    console.log(sellAmoutMethod);
     const amount_index_local = await sellAmoutMethod.call()
+
+    console.log("START2221");
     console.log(amount_index_local);
     const amounts = amount_index_local.amounts
-    const outAmount = amounts[amounts.length - 1]
+    const outAmount = amounts[amounts.length - 1] //100
 
-    if (WantSellNumber.lt(BN(String(outAmount)))) {
+    // console.log(` WantSellNumber`, WantSellNumber.toString(), outAmount, WantSellNumber.lt(BN(String(outAmount))));
+
+    // console.log(` WantSellNumberFuck`, WantSellNumberFuck.toString(), outAmount, WantSellNumberFuck.gt(BN(String(outAmount))));
+
+
+    if (WantSellNumber.lte(BN(String(outAmount))) || WantSellNumberFuck.gte(BN(String(outAmount)))) {
       const path = path_pair_K["path"]
       const pairs = path_pair_K["pairs"]
       const k = path_pair_K["k"]
@@ -532,7 +542,7 @@ const sellV2 = async () => {
           amountOutMin,
           tokenBalanceFeel,
           isOutEth,
-          globalCHIEnable
+          parseFloat(currentGasPrice()) == 1 ? false : ethBalanceFeel
         ).estimateGas({
           from: user,
           value: ethBalanceFeel,
@@ -543,10 +553,10 @@ const sellV2 = async () => {
           throw ("gasLimit-big")
         }
 
-       
+
         gasLimit = String(parseInt(gasLimit * 1.5))
 
-        console.log("gasLimit",gasLimit);
+        console.log("gasLimit", gasLimit);
         clearInterval(setIntervalId);
         if (lockSwap) {
           lockSwap = false
@@ -561,12 +571,12 @@ const sellV2 = async () => {
               amountOutMin,
               tokenBalanceFeel,
               isOutEth,
-              globalCHIEnable
+              parseFloat(currentGasPrice()) == 1 ? false : ethBalanceFeel
             ).send({
               from: user,
               value: ethBalanceFeel,
               gasPrice: gasPrice,
-              chainId:CHAIN_ID,
+              chainId: CHAIN_ID,
               gas: gasLimit
             })
             console.log(success);

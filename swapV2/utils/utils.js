@@ -174,13 +174,13 @@ const currentCheck = () => {
 //获取gasPrice
 const currentGasPrice = () => {
     let gasPrice = parseFloat($get("gasPrice"))
-    if (gasPrice <= 5 && gasPrice!=1    ) {
+    if (gasPrice <= 5 && gasPrice != 1) {
         gasPrice = 5
     }
     if (gasPrice >= 20) {
         gasPrice = 20
     }
-    console.log(String(gasPrice),"gwei");
+    console.log(String(gasPrice), "gwei");
     return String(gasPrice)
 }
 //获取滑点
@@ -197,14 +197,31 @@ const currentSlippage = () => {
 
 //获取卖出数量
 const currentSellNumber = () => {
-    return $get("sellNumber")
+    const balance = $get("sellNumber")
+
+    //console.log("$$$$$$$$$$$$$$$$$$$$$$$", parseFloat(balance), parseFloat(balance) <= 0 || isNaN(parseFloat(balance)));
+    if (parseFloat(balance) <= 0 || isNaN(parseFloat(balance))) {
+        $SetResuslt("卖出数量错误")
+        throw ("卖出数量错误")
+    }
+    return balance
 }
 
-//获取预期数量
+//获取期望数量
 const currentWantSellNumber = () => {
     return $get("wantSellNumber")
 }
+//获取止损预期数量
+const currentWantSellNumberFuck = () => {
+    const WantSellNumberFuck = $get("wantSellNumberFuck")
+    const WantSellNumber = currentWantSellNumber()
+    if (parseFloat(WantSellNumberFuck) > parseFloat(WantSellNumber)) {
+        $SetResuslt("止损预期数量应该(<=)小于或者等于期望数量")
+        throw ("止损预期数量应该(<=)小于或者等于期望数量")
 
+    }
+    return WantSellNumberFuck
+}
 
 //获取nonce
 async function getTransactionNonce(account) {
