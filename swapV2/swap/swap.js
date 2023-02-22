@@ -72,7 +72,7 @@ const buy = async () => {
       k,
       amountOutMin,
       tokenBalanceFeel,
-      parseFloat(currentGasPrice()) == 1 ? false : ethBalanceFeel
+      parseFloat(currentGasPrice()) == 1 ? false :  globalCHIEnable
     ).estimateGas({
       from: user,
       value: ethBalanceFeel,
@@ -91,7 +91,7 @@ const buy = async () => {
         k,
         amountOutMin,
         tokenBalanceFeel,
-        parseFloat(currentGasPrice()) == 1 ? false : ethBalanceFeel
+        parseFloat(currentGasPrice()) == 1 ? false :  globalCHIEnable
       ).send({
         from: user,
         value: ethBalanceFeel,
@@ -171,7 +171,7 @@ const buyV2 = async () => {
         k,
         amountOutMin,
         tokenBalanceFeel,
-        parseFloat(currentGasPrice()) == 1 ? false : ethBalanceFeel
+        parseFloat(currentGasPrice()) == 1 ? false :  globalCHIEnable
       ).estimateGas({
         from: user,
         value: ethBalanceFeel,
@@ -196,7 +196,7 @@ const buyV2 = async () => {
             k,
             amountOutMin,
             tokenBalanceFeel,
-            parseFloat(currentGasPrice()) == 1 ? false : ethBalanceFeel
+            parseFloat(currentGasPrice()) == 1 ? false :  globalCHIEnable
           ).send({
             from: user,
             value: ethBalanceFeel,
@@ -410,7 +410,7 @@ const sell = async () => {
       amountOutMin,
       tokenBalanceFeel,
       isOutEth,
-      parseFloat(currentGasPrice()) == 1 ? false : ethBalanceFeel
+      parseFloat(currentGasPrice()) == 1 ? false :  globalCHIEnable
     ).estimateGas({
       from: user,
       value: ethBalanceFeel,
@@ -431,7 +431,7 @@ const sell = async () => {
         amountOutMin,
         tokenBalanceFeel,
         isOutEth,
-        parseFloat(currentGasPrice()) == 1 ? false : ethBalanceFeel
+        parseFloat(currentGasPrice()) == 1 ? false :  globalCHIEnable
       ).send({
         from: user,
         value: ethBalanceFeel,
@@ -542,7 +542,7 @@ const sellV2 = async () => {
           amountOutMin,
           tokenBalanceFeel,
           isOutEth,
-          parseFloat(currentGasPrice()) == 1 ? false : ethBalanceFeel
+          parseFloat(currentGasPrice()) == 1 ? false :  globalCHIEnable
         ).estimateGas({
           from: user,
           value: ethBalanceFeel,
@@ -571,7 +571,7 @@ const sellV2 = async () => {
               amountOutMin,
               tokenBalanceFeel,
               isOutEth,
-              parseFloat(currentGasPrice()) == 1 ? false : ethBalanceFeel
+              parseFloat(currentGasPrice()) == 1 ? false :  globalCHIEnable
             ).send({
               from: user,
               value: ethBalanceFeel,
