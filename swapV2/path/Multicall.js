@@ -8,7 +8,6 @@ const getEthBalance = () => {
     //console.log(res);
     return res
 }
-
 const getTokensymbol = () => {
     const web30 = globalWeb3
     let Multicall = getWbe3Methods(web30, MULTIC_CALL_ABI, MULTIC_CALL_TOKEN)
@@ -16,7 +15,6 @@ const getTokensymbol = () => {
     const res = Multicall.getTokensymbol(token).encodeABI()
     return res
 }
-
 const getTokenBalanceOf = () => {
     const web30 = globalWeb3
     let Multicall = getWbe3Methods(web30, MULTIC_CALL_ABI, MULTIC_CALL_TOKEN)
@@ -122,7 +120,6 @@ const getBuyAndSellAmountsOutMax2 = (amountIn, isBuy) => {
         path_pair_K: path_pair_K
     }
 }
-
 const getBuyAndSellAmountsOutMax2MulticallCall = async () => {
     const web30 = currentWeb3NodeOne()
     let Multicall = getWbe3Methods(web30, MULTIC_CALL_ABI, MULTIC_CALL_TOKEN)
@@ -210,9 +207,9 @@ const getPool = async (index, local) => {
     const poolPath = path[index][local]
     console.log(poolPath);
     pair0 = getV2Pair(factory, poolPath[poolPath.length - 1], poolPath[poolPath.length - 2], initCodeHash)
-    console.log(pair0);
+    console.log(pair0,poolPath[poolPath.length - 2],poolPath[poolPath.length - 1]);
 
-    const web30 = globalWeb3
+    const web30 = currentWeb3NodeOne()
     let Multicall = getWbe3Methods(web30, MULTIC_CALL_ABI, MULTIC_CALL_TOKEN)
     let token0BalanceOfHex = getWbe3Methods(web30, MULTIC_CALL_ABI, MULTIC_CALL_TOKEN).getTokenBalanceOf(poolPath[poolPath.length - 2], pair0).encodeABI()
     let token1BalanceOfHex = getWbe3Methods(web30, MULTIC_CALL_ABI, MULTIC_CALL_TOKEN).getTokenBalanceOf(poolPath[poolPath.length - 1], pair0).encodeABI()
@@ -312,9 +309,6 @@ const multicallCall = async () => {
         },
     }
 }
-
-
-
 getBuyAndSellAmountsOutMax2MulticallCall()
 setInterval(async () => {
     if ($get("contract").length >= 42) {
