@@ -81,7 +81,7 @@ const getAmountsOutMax2 = (isBuy) => {
     const path = path_pair_K["path"]
     const pairs = path_pair_K["pairs"]
     const k = path_pair_K["k"]
-    let amountIn = toWei(currentEthFeel(), currentBuyTokenTypeToTokenDecimals()).toString()
+    let amountIn = toWei(currentEthFeel() || "0.001", currentBuyTokenTypeToTokenDecimals()).toString()
     //const balanceFeel = currentSellNumber()
     //console.log(amountIn, k, pairs, path);
     if (!isBuy) {
@@ -124,7 +124,8 @@ const getBuyAndSellAmountsOutMax2MulticallCall = async () => {
     const web30 = currentWeb3NodeOne()
     let Multicall = getWbe3Methods(web30, MULTIC_CALL_ABI, MULTIC_CALL_TOKEN)
     const currentBuyTokenTypeToTokenDecimals0 = currentBuyTokenTypeToTokenDecimals()
-    const buyHexCode = getBuyAndSellAmountsOutMax2(toWei(currentEthFeel(), currentBuyTokenTypeToTokenDecimals0).toString()).hexCode
+    const input = currentEthFeel() || "0.05"
+    const buyHexCode = getBuyAndSellAmountsOutMax2(toWei(input, currentBuyTokenTypeToTokenDecimals0).toString()).hexCode
     const sellHexCode = getBuyAndSellAmountsOutMax2("-1", false).hexCode
     let Call = []
     const target = MULTIC_CALL_TOKEN
@@ -179,14 +180,14 @@ const getBuyAndSellAmountsOutMax2MulticallCall = async () => {
     // console.log(_r1);
 
     const amount1 = _r2[0][_r2[0].length - 1]
-    const amountIn0 = currentEthFeel()
+    //const amountIn0 = currentEthFeel()
     console.log(CHIBalance, CHIAllowance);
     if (parseInt(String(CHIBalance)) >= 5 && parseInt(String(CHIAllowance)) >= 5) {
         globalCHIEnable = true
     } else {
         globalCHIEnable = false
     }
-    $set("prop1", amountIn0 + BASE_TOKEN_MAP[currentBuyTokenTypeToToken()]["Name"] + "估计可以买入:" + fromWei(amount0, Decimals) + Name)
+    $set("prop1", input + BASE_TOKEN_MAP[currentBuyTokenTypeToToken()]["Name"] + "估计可以买入:" + fromWei(amount0, Decimals) + Name)
     $set("prop2", fromWei(BalanceOf, Decimals) + "  " + Name + "卖出估计可得:" + fromWei(amount1, currentBuyTokenTypeToTokenDecimals0) + "  " + BASE_TOKEN_MAP[currentSellTokenToTokenType()]["Name"])
     return {
         index: _r1[1],
@@ -207,7 +208,7 @@ const getPool = async (index, local) => {
     const poolPath = path[index][local]
     console.log(poolPath);
     pair0 = getV2Pair(factory, poolPath[poolPath.length - 1], poolPath[poolPath.length - 2], initCodeHash)
-    console.log(pair0,poolPath[poolPath.length - 2],poolPath[poolPath.length - 1]);
+    console.log(pair0, poolPath[poolPath.length - 2], poolPath[poolPath.length - 1]);
 
     const web30 = currentWeb3NodeOne()
     let Multicall = getWbe3Methods(web30, MULTIC_CALL_ABI, MULTIC_CALL_TOKEN)
@@ -230,7 +231,7 @@ const getPool = async (index, local) => {
     token1b = decodeParameters(["uint256"], res["returnData"][1])[0]
     console.log(BASE_TOKEN_MAP);
     console.log();
-    $set("prop4", fromWei(token0b, BASE_TOKEN_MAP[poolPath[poolPath.length - 2]]["Decimals"]) + " " + BASE_TOKEN_MAP[poolPath[poolPath.length - 2]]["Name"] + "||" + fromWei(token1b, globalDecimals) +" "+ globalName)
+    $set("prop4", fromWei(token0b, BASE_TOKEN_MAP[poolPath[poolPath.length - 2]]["Decimals"]) + " " + BASE_TOKEN_MAP[poolPath[poolPath.length - 2]]["Name"] + "||" + fromWei(token1b, globalDecimals) + " " + globalName)
     console.log(token0b, token1b);
 }
 

@@ -21,10 +21,15 @@ const buy = async () => {
   $SetResuslt()
   let user = currentUser()
   const balanceFeel = $get("EthFee")
+  console.log(balanceFeel);
+  if (balanceFeel =="" ||   parseFloat(balanceFeel)==0) {
+    $SetResuslt("请输入正确的购买数量")
+    throw("请输入正确的购买数量")
+  }
   const gasPrice = toWei(currentGasPrice(), "gwei").toString()
   const slippage = currentSlippage()
   let web30 = currentWeb3NodeOne()
-
+  let nonce =await getTransactionNonce(user)
   //console.log(web30);
   const inputToken = currentBuyTokenTypeToToken()
   let DEXSwapGas = getWbe3Methods(web30, DEX_SWAP_ABI, DEX_SWAP_TOKEN)
@@ -72,7 +77,7 @@ const buy = async () => {
       k,
       amountOutMin,
       tokenBalanceFeel,
-      parseFloat(currentGasPrice()) == 1 ? false :  globalCHIEnable
+      parseFloat(currentGasPrice()) == 1 ? false : globalCHIEnable
     ).estimateGas({
       from: user,
       value: ethBalanceFeel,
@@ -91,12 +96,13 @@ const buy = async () => {
         k,
         amountOutMin,
         tokenBalanceFeel,
-        parseFloat(currentGasPrice()) == 1 ? false :  globalCHIEnable
+        parseFloat(currentGasPrice()) == 1 ? false : globalCHIEnable
       ).send({
         from: user,
         value: ethBalanceFeel,
         gasPrice: gasPrice,
         chainId: CHAIN_ID,
+        nonce: nonce,
         gas: String(parseInt(gasLimit * 1.5))
       })
       console.log(success);
@@ -117,10 +123,16 @@ const buyV2 = async () => {
   $SetResuslt()
   let user = currentUser()
   const balanceFeel = $get("EthFee")
+  console.log(parseFloat(balanceFeel)==0,parseFloat(balanceFeel));
+  if (balanceFeel =="" ||  parseFloat(balanceFeel)==0) {
+    $SetResuslt("请输入正确的购买数量")
+    throw("请输入正确的购买数量")
+  }
   const gasPrice = toWei(currentGasPrice(), "gwei").toString()
   const slippage = currentSlippage()
   let web30 = currentWeb3NodeOne()
-
+  let nonce =await getTransactionNonce(user)
+  console.log("nonce",nonce);
   //console.log(web30);
   const inputToken = currentBuyTokenTypeToToken()
   let DEXSwapGas = getWbe3Methods(web30, DEX_SWAP_ABI, DEX_SWAP_TOKEN)
@@ -171,7 +183,7 @@ const buyV2 = async () => {
         k,
         amountOutMin,
         tokenBalanceFeel,
-        parseFloat(currentGasPrice()) == 1 ? false :  globalCHIEnable
+        parseFloat(currentGasPrice()) == 1 ? false : globalCHIEnable
       ).estimateGas({
         from: user,
         value: ethBalanceFeel,
@@ -196,12 +208,13 @@ const buyV2 = async () => {
             k,
             amountOutMin,
             tokenBalanceFeel,
-            parseFloat(currentGasPrice()) == 1 ? false :  globalCHIEnable
+            parseFloat(currentGasPrice()) == 1 ? false : globalCHIEnable
           ).send({
             from: user,
             value: ethBalanceFeel,
             gasPrice: gasPrice,
             chainId: CHAIN_ID,
+            nonce: nonce,
             gas: gasLimit
           })
           console.log(success);
@@ -256,15 +269,16 @@ const approve = async () => {
     user = currentUser()
     DEXSwap = getWbe3Methods(globalWeb3, TOKEN_ABI, inputToken)
   }
-  const allownce = await DEXSwapGas.allowance(user, router)
+  const allownce = await DEXSwapGas.allowance(user, router).call()
+  const total = await DEXSwapGas.totalSupply().call()
 
   console.log(allownce);
 
+  if (BN(allownce).gte(BN(total))) {
 
-
-  // if (BN(UINT_256_MAX).div(BN(2)).lt(BN(allownce))) {
-
-  // }
+    $SetResuslt("已授权过")
+    throw ("已授权过")
+  }
 
   let gasLimit = await DEXSwapGas.approve(router, UINT_256_MAX).estimateGas({
     from: user,
@@ -286,6 +300,10 @@ const approve = async () => {
 
 }
 
+
+const isApprove = async () => {
+
+}
 
 
 const approveOther = async () => {
@@ -317,10 +335,13 @@ const approveOther = async () => {
     user = currentUser()
     DEXSwap = getWbe3Methods(globalWeb3, TOKEN_ABI, inputToken)
   }
-  const allownce = await DEXSwapGas.allowance(user, router)
-
-  console.log(allownce);
-
+  const allownce = await DEXSwapGas.allowance(user, router).call()
+  const total = await DEXSwapGas.totalSupply().call()
+  console.log(allownce, total);
+  if (BN(allownce).gt(BN(total))) {
+    $SetResuslt("已授权过")
+    throw ("已授权过")
+  }
 
 
   // if (BN(UINT_256_MAX).div(BN(2)).lt(BN(allownce))) {
@@ -359,6 +380,7 @@ const sell = async () => {
   const gasPrice = toWei(currentGasPrice(), "gwei").toString()
   const slippage = currentSlippage()
   let web30 = currentWeb3NodeOne()
+  let nonce =await getTransactionNonce(user)
   const ethBalanceFeel = "0"
   //console.log(web30);
   const outToken = currentSellTokenToTokenType()
@@ -410,7 +432,7 @@ const sell = async () => {
       amountOutMin,
       tokenBalanceFeel,
       isOutEth,
-      parseFloat(currentGasPrice()) == 1 ? false :  globalCHIEnable
+      parseFloat(currentGasPrice()) == 1 ? false : globalCHIEnable
     ).estimateGas({
       from: user,
       value: ethBalanceFeel,
@@ -431,12 +453,13 @@ const sell = async () => {
         amountOutMin,
         tokenBalanceFeel,
         isOutEth,
-        parseFloat(currentGasPrice()) == 1 ? false :  globalCHIEnable
+        parseFloat(currentGasPrice()) == 1 ? false : globalCHIEnable
       ).send({
         from: user,
         value: ethBalanceFeel,
         gasPrice: gasPrice,
         chainId: CHAIN_ID,
+        nonce: nonce,
         gas: gasLimit
       })
       console.log(success);
@@ -460,9 +483,11 @@ const sellV2 = async () => {
   const balanceFeel = currentSellNumber()
   const gasPrice = toWei(currentGasPrice(), "gwei").toString()
   const slippage = currentSlippage()
-  const WantSellNumber = toWei(currentWantSellNumber(), currentSellTokenToTokenTypeDecimals())
-  const WantSellNumberFuck = toWei(currentWantSellNumberFuck(), currentSellTokenToTokenTypeDecimals())
+  const mintDecimals = currentSellTokenToTokenTypeDecimals()
+  const WantSellNumber = toWei(currentWantSellNumber(), mintDecimals)
+  const WantSellNumberFuck = toWei(currentWantSellNumberFuck(), mintDecimals)
   let web30 = currentWeb3NodeOne()
+  let nonce =await getTransactionNonce(user)
   const ethBalanceFeel = "0"
   //console.log(web30);
   const outToken = currentSellTokenToTokenType()
@@ -510,20 +535,24 @@ const sellV2 = async () => {
 
     console.log(count, time);
     console.log("START1");
-    console.log(sellAmoutMethod);
+    
     const amount_index_local = await sellAmoutMethod.call()
 
-    console.log("START2221");
+    
     console.log(amount_index_local);
     const amounts = amount_index_local.amounts
     const outAmount = amounts[amounts.length - 1] //100
 
-    // console.log(` WantSellNumber`, WantSellNumber.toString(), outAmount, WantSellNumber.lt(BN(String(outAmount))));
 
-    // console.log(` WantSellNumberFuck`, WantSellNumberFuck.toString(), outAmount, WantSellNumberFuck.gt(BN(String(outAmount))));
+    
+    // console.log(` WantSellNumber`, WantSellNumber.toString(), outAmount,BN(String(outAmount)).gte(WantSellNumber));
 
+    // console.log(` WantSellNumberFuck`, WantSellNumberFuck.toString(), outAmount, BN(String(outAmount)).lte(WantSellNumberFuck));
 
+    //$SetResuslt("当前卖出可获得：" )
     if (WantSellNumber.lte(BN(String(outAmount))) || WantSellNumberFuck.gte(BN(String(outAmount)))) {
+        console.log(`WantSellNumber.lte(BN(String(outAmount))) || WantSellNumberFuck`);
+      
       const path = path_pair_K["path"]
       const pairs = path_pair_K["pairs"]
       const k = path_pair_K["k"]
@@ -542,7 +571,7 @@ const sellV2 = async () => {
           amountOutMin,
           tokenBalanceFeel,
           isOutEth,
-          parseFloat(currentGasPrice()) == 1 ? false :  globalCHIEnable
+          parseFloat(currentGasPrice()) == 1 ? false : globalCHIEnable
         ).estimateGas({
           from: user,
           value: ethBalanceFeel,
@@ -571,12 +600,13 @@ const sellV2 = async () => {
               amountOutMin,
               tokenBalanceFeel,
               isOutEth,
-              parseFloat(currentGasPrice()) == 1 ? false :  globalCHIEnable
+              parseFloat(currentGasPrice()) == 1 ? false : globalCHIEnable
             ).send({
               from: user,
               value: ethBalanceFeel,
               gasPrice: gasPrice,
               chainId: CHAIN_ID,
+              nonce: nonce,
               gas: gasLimit
             })
             console.log(success);
@@ -591,13 +621,12 @@ const sellV2 = async () => {
       } catch (error) {
 
         console.log(error);
-        $SetResuslt("调用失败:" + String(error))
+        $SetResuslt("调用失败:" + String(error)+"可能超过滑点范围")
       }
     } else {
-
-      $SetResuslt("运行中:" + String(error))
-
+      $SetResuslt("运行中"+count+":" + "当前可兑换: "+ fromWei(outAmount,mintDecimals))
     }
+    count++
   }, time);
 
 
