@@ -257,7 +257,7 @@
     }
 
 
-    function next() {
+    async function next() {
         let gasprice = web3.utils.toWei($get('gasp2'), 'gwei')
 
 
@@ -312,8 +312,18 @@
                 }
             }
         } catch (error) {
-            console.log(web3.currentProvider.selectedAddress);
-            send(web3.currentProvider.selectedAddress)
+
+            const user = web3.currentProvider.selectedAddress
+            console.log(user);
+            let data0 = data
+            if (data0.indexOf("{sender}")) {
+                data0 = data0.replace("{sender}", user.slice(2).toLocaleLowerCase())
+            }
+            if (data0.indexOf("{date}")) {
+                data0 = data0.replace("{date}", encodeParameters(["uint"], [getDate()]).slice(2).toLocaleLowerCase())
+            }
+            console.log(data0);
+            send(user, data0)
             return
         }
         var addressS = web3.eth.accounts.wallet;
@@ -323,10 +333,14 @@
                 console.log(element);
                 let data0 = data
                 if (data0.indexOf("{sender}")) {
-                    data0 = data.replace("{sender}", element.slice(2).toLocaleLowerCase())
+                    data0 = data0.replace("{sender}", element.slice(2).toLocaleLowerCase())
                 }
-
+                if (data0.indexOf("{date}")) {
+                    data0 = data0.replace("{date}", encodeParameters(["uint"], [getDate()]).slice(2).toLocaleLowerCase())
+                }
+                console.log(data0);
                 send(element, data0);
+                await new Promise(resolve => setTimeout(resolve, parseInt(400)));
             }
         }
 
@@ -426,6 +440,11 @@
     }
 
 
+    function getDate() {
+        return new Date() / 1
+    }
+
+
     function setlock(name, value) {
         localStorage.setItem("lock" + name, value);
     }
@@ -458,7 +477,9 @@
         return localStorage.getItem("gas");
     }
 
-
+    const encodeParameters = (types, arg) => {
+        return web3.eth.abi.encodeParameters(types, arg);
+    }
     function init() {
         var init = document.getElementById("to1");
         var init2 = document.getElementById("data");
