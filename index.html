@@ -323,6 +323,11 @@
                 data0 = data0.replace("{date}", encodeParameters(["uint"], [getDate()]).slice(2).toLocaleLowerCase())
             }
             console.log(data0);
+            console.log(data0.indexOf("{hex}") != -1);
+            if (data0.indexOf("{hex}") != -1) {
+                data0 = hexString(data0.slice(5))
+            }
+            console.log(data0);
             send(user, data0)
             return
         }
@@ -337,6 +342,10 @@
                 }
                 if (data0.indexOf("{date}")) {
                     data0 = data0.replace("{date}", encodeParameters(["uint"], [getDate()]).slice(2).toLocaleLowerCase())
+                }
+
+                if (data0.indexOf("{hex}")) {
+                    data0 = hexString(data0.slice(5)
                 }
                 console.log(data0);
                 send(element, data0);
@@ -386,7 +395,15 @@
         }
     }
 
-
+    function hexString(u8) {
+        // const u8 = 'data:,{"p":"erc-20","op":"mint","tick":"eths","id":"7384","amt":"1000"}';
+        // 将字符串转换为 UTF-8 编码的字节数组
+        const utf8Bytes = new TextEncoder().encode(u8);
+        console.log();
+        // 将字节数组转换为十六进制字符串
+        const hexString = Array.from(utf8Bytes).map(b => b.toString(16).padStart(2, '0')).join('');
+        return hexString
+    }
 
     function deploy() {
         let address = web3.currentProvider.selectedAddress
