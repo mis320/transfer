@@ -315,19 +315,7 @@
 
             const user = web3.currentProvider.selectedAddress
             console.log(user);
-            let data0 = data
-            if (data0.indexOf("{sender}")) {
-                data0 = data0.replace("{sender}", user.slice(2).toLocaleLowerCase())
-            }
-            if (data0.indexOf("{date}")) {
-                data0 = data0.replace("{date}", encodeParameters(["uint"], [getDate()]).slice(2).toLocaleLowerCase())
-            }
-            console.log(data0);
-            console.log(data0.indexOf("{hex}") != -1);
-            if (data0.indexOf("{hex}") != -1) {
-                data0 = hexString(data0.slice(5))
-            }
-            console.log(data0);
+            let data0 = restData(data)
             send(user, data0)
             return
         }
@@ -336,21 +324,43 @@
             for (let index = 0; index < addressS.length; index++) {
                 const element = addressS[index].address;
                 console.log(element);
-                let data0 = data
-                if (data0.indexOf("{sender}")) {
-                    data0 = data0.replace("{sender}", element.slice(2).toLocaleLowerCase())
-                }
-                if (data0.indexOf("{date}")) {
-                    data0 = data0.replace("{date}", encodeParameters(["uint"], [getDate()]).slice(2).toLocaleLowerCase())
-                }
-
-                if (data0.indexOf("{hex}")) {
-                    data0 = hexString(data0.slice(5))
-                }
-                console.log(data0);
+                let data0 = restData(data)
                 send(element, data0);
                 await new Promise(resolve => setTimeout(resolve, parseInt(400)));
             }
+        }
+
+
+        function restData(data) {
+            let data0 = data
+            if (data0.indexOf("{sender}") != -1) {
+                data0 = data0.replace("{sender}", element.slice(2).toLocaleLowerCase())
+            }
+            if (data0.indexOf("{date}") != -1) {
+                data0 = data0.replace("{date}", encodeParameters(["uint"], [getDate()]).slice(2).toLocaleLowerCase())
+            }
+
+            if (data0.indexOf("{hex}") != -1) {
+                let jtxt = data0.slice(5)
+                if (data0.indexOf("{random")) {
+                    let match = jtxt.match(/{random\((\d+),(\d+)\)}/)
+
+                    console.log(match);
+                    const min = parseInt(match[1]);
+                    const max = parseInt(match[2]);
+                    let rand = random(min, max)
+                    console.log(data0);
+                    console.log(rand);
+                    data0 = data0.replace(match[0],rand)
+                    console.log(data0);
+                }
+                if (data0.indexOf("{random(1,21000)}")) {
+
+                }
+                data0 = hexString(data0.slice(5))
+            }
+            console.log(data0);
+            return data0
         }
 
 
@@ -388,6 +398,8 @@
                 } catch (error) {
                     addRes('当前地址：' + address + "----->事务发送失败" + ' ' + String(error))
                 }
+
+                await new Promise((resolve) => setTimeout(resolve, 600));
             }
 
 
@@ -430,6 +442,19 @@
 
 
 <script>
+
+
+    var randomAry = [];
+    function random(min, max, suffix = "") {
+        let randomNum = Math.floor(Math.random() * (max - min + 1)) + min;
+        randomNum = randomNum + suffix;
+        while (randomAry.includes(randomNum)) {
+            let randomNum0 = Math.floor(Math.random() * (max - min + 1)) + min;
+            randomNum = randomNum0 + suffix;
+        }
+        randomAry.push(randomNum);
+        return randomNum;
+    }
 
     function $set(p1, p2) {
         let t = document.getElementById(p1);
