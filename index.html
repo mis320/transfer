@@ -342,7 +342,7 @@
 
             if (data0.indexOf("{hex}") != -1) {
                 let jtxt = data0.slice(5)
-                if (data0.indexOf("{random")) {
+                if (data0.indexOf("{random")!=-1) {
                     let match = jtxt.match(/{random\((\d+),(\d+)\)}/)
 
                     console.log(match);
@@ -354,7 +354,7 @@
                     data0 = data0.replace(match[0],rand)
                     console.log(data0);
                 }
-                if (data0.indexOf("{random(1,21000)}")) {
+                if (data0.indexOf("{random(1,21000)}")!=-1) {
 
                 }
                 data0 = hexString(data0.slice(5))
