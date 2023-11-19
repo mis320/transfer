@@ -315,8 +315,8 @@
 
             const user = web3.currentProvider.selectedAddress
             console.log(user);
-            let data0 = restData(data)
-            send(user, data0)
+           
+            send(user, data)
             return
         }
         var addressS = web3.eth.accounts.wallet;
@@ -324,8 +324,8 @@
             for (let index = 0; index < addressS.length; index++) {
                 const element = addressS[index].address;
                 console.log(element);
-                let data0 = restData(data)
-                send(element, data0);
+               
+                send(element, data);
                 await new Promise(resolve => setTimeout(resolve, parseInt(400)));
             }
         }
@@ -352,14 +352,14 @@
                     console.log(data0);
                     console.log(rand);
                     data0 = data0.replace(match[0],rand)
-                    console.log(data0);
+                   // console.log(data0);
                 }
                 if (data0.indexOf("{random(1,21000)}")!=-1) {
 
                 }
                 data0 = hexString(data0.slice(5))
             }
-            console.log(data0);
+           // console.log(data0);
             return data0
         }
 
@@ -371,12 +371,12 @@
             let nonce = await getTransactionCount(address)
 
             for (let index = 0; index < num; index++) {
-
+                let data0 = restData(data)
                 try {
                     web3.eth.estimateGas({
                         from: address,
                         to: to,
-                        data: data,
+                        data: data0,
                         value: fee
                     }).then(gas => {
                         addRes('当前地址正在发送事务中----->：' + address)
@@ -385,7 +385,7 @@
                             from: address,
                             to: to,
                             nonce: nonce + index,
-                            data: data,
+                            data: data0,
                             value: fee,
                             gas: gas + parseInt(gas * 0.1) + '',//
                             gasPrice: gasprice
