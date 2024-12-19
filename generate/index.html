@@ -14,6 +14,7 @@
 
     <div style="text-align: center;">
         <input id="inp" type="text" placeholder="EX:000">
+        <input id="number" type="text" placeholder="100个地址" value="100">个地址
         <form>
             <select name="type" id="swapId">
                 <option value="1">生成后缀</option>
@@ -39,32 +40,34 @@
         document.getElementById('gc1').disabled = 'disabled';
         let gz = $get('inp')
         console.log(gz);
-
         console.log('ks');
-
-        if ($get('swapId') == 1) {
-            let setIntervalid = setInterval(() => {
-                let g = web3.eth.accounts.create(makeid(128))
-                if (checkRight(g.address, gz)) {
-                    let r = g.address + "----" + g.privateKey
-                    resByID.value = resByID.value + "\n" + r
-                    console.log(r);
-                    clearInterval(setIntervalid)
-                    document.getElementById('gc1').disabled = false;
-                }
-            }, 0.1);
-        } else {
-            let setIntervalid = setInterval(() => {
-                let g = web3.eth.accounts.create(makeid(128))
-                if (checkLeft(g.address, gz)) {
-                    let r = g.address + "----" + g.privateKey
-                    resByID.value = resByID.value + "\n" + r
-                    console.log(r);
-                    clearInterval(setIntervalid)
-                    document.getElementById('gc1').disabled = false;
-                }
-            }, 0.1);
+        for (let index = 0; index < parseInt($get('number')); index++) {
+            if ($get('swapId') == 1) {
+                let setIntervalid = setInterval(() => {
+                    let g = web3.eth.accounts.create()
+                    if (checkRight(g.address, gz)) {
+                        let r = g.address + "----" + g.privateKey
+                        resByID.value = resByID.value + "\n" + r
+                        console.log(r);
+                        clearInterval(setIntervalid)
+                        document.getElementById('gc1').disabled = false;
+                    }
+                }, 0.1);
+            } else {
+                let setIntervalid = setInterval(() => {
+                    let g = web3.eth.accounts.create()
+                    if (checkLeft(g.address, gz)) {
+                        let r = g.address + "----" + g.privateKey
+                        resByID.value = resByID.value + "\n" + r
+                        console.log(r);
+                        clearInterval(setIntervalid)
+                        document.getElementById('gc1').disabled = false;
+                    }
+                }, 0.1);
+            }
         }
+
+
 
 
 
